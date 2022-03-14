@@ -7,9 +7,13 @@ from tkinter import RAISED, ttk
 import tkinter as tk
 import fontawesome as fa
 import os
+import json
+import GenerateConfig as Gc
 
 class AutoFill(tk.Frame):
-
+    RootPath=""
+    TemplatePath=""
+    DataFilePath=""
 
     #Theme Color
     COLOR_TOP_BACKGROUND="#44a2d2"
@@ -55,8 +59,13 @@ class AutoFill(tk.Frame):
     def __init__(self, isapp=True, name='AutoFill'):
         tk.Frame.__init__(self)
         self.pack(expand=tk.Y, fill=tk.BOTH)
-        self.master.title('Hello World')
-        self.master.overrideredirect(1)
+        self.master["bd"]=1
+        self.master["relief"]=tk.RAISED
+        self.master.title('Auto Fill')
+        #self.master.wm_attributes('-fullscreen', 'True')        
+        
+        #self.master.overrideredirect(1)
+        self.master.unbind("<FocusIn>")
         self.isapp = isapp                        
         self.varMenu =tk.StringVar()
         self._create_widgets()
@@ -263,7 +272,7 @@ class AutoFill(tk.Frame):
     
 
     def fncAddAction(self,treeView):
-        frmAddAction = tk.Toplevel(relief=tk.RAISED,bd=1)
+        frmAddAction = tk.Toplevel(relief=tk.RAISED,bd=1,bg=self.COLOR_BACKGROUND)
         frmAddAction.title("Add Action")
         frmAddAction.geometry("480x400")
         frmAddAction.overrideredirect(1)
@@ -278,10 +287,49 @@ class AutoFill(tk.Frame):
         btnClose.pack(side=tk.RIGHT, pady=7,padx=5)        
         btnClose.bind('<Enter>', self.on_enter_button)
         btnClose.bind('<Leave>', self.on_leave_button)
-        label = tk.Label(frmAddAction,text = "This is a Toplevel2 window")        
-        label.pack()
+        frmBody = tk.Frame(frmAddAction,height=300 ,width=480,bg=self.COLOR_MENU_BACKGROUND,padx=20,pady=20)
+        frmBody.pack( side=tk.TOP,fill=tk.BOTH,expand=True,anchor=tk.NW,ipadx=20,ipady=20 )
+
+        varActionType = tk.StringVar()
+        varActionOn = tk.StringVar(frmAddAction,"ById")
         
-        self.frmAddAction.mainloop()
+        combostyle = ttk.Style()
+        combostyle.theme_create('combostyle', parent='alt',settings = {'TCombobox':{'configure':{'selectbackground': self.COLOR_MENU_FOREGROUND,'fieldbackground': self.COLOR_BACKGROUND,'background': self.COLOR_BACKGROUND}}})
+        combostyle.theme_use('combostyle') 
+        cmbActionType = ttk.Combobox(frmBody, width = 25, textvariable = varActionType)
+        # Adding combobox drop down list
+        cmbActionType['values'] = ('Fill Input', 'Fill TextArea','Select Option','Click Button','Click Submit' )
+        rdoById = tk.Radiobutton(frmBody, text="ById", variable=varActionOn, value="ById",bg=self.COLOR_MENU_BACKGROUND,font=self.displayFont)
+        rdoByName = tk.Radiobutton(frmBody, text="ByName", variable=varActionOn, value="ByName",bg=self.COLOR_MENU_BACKGROUND,font=self.displayFont)
+        txtControlId = tk.Entry(frmBody,bg=self.COLOR_BACKGROUND, width = 25,font=self.displayFont)
+        txtControlName =tk.Entry(frmBody, width = 25,bg=self.COLOR_BACKGROUND,font=self.displayFont)
+        txtFieldId =tk.Entry(frmBody, width = 25,bg=self.COLOR_BACKGROUND,font=self.displayFont)
+
+        lbl1 = tk.Label(frmBody,text = "Action Type",font=self.displayFont, bg=self.COLOR_MENU_BACKGROUND).place(x = 40,y = 10, anchor=tk.NW)
+        lbl2 = tk.Label(frmBody,text = "Action On" ,font=self.displayFont,bg=self.COLOR_MENU_BACKGROUND).place(x = 40,y = 50, anchor=tk.NW)
+        lbl3 = tk.Label(frmBody,text = "Control Id" ,font=self.displayFont,bg=self.COLOR_MENU_BACKGROUND).place(x = 40,y = 90, anchor=tk.NW)
+        lbl4 = tk.Label(frmBody,text = "Control Name" ,font=self.displayFont,bg=self.COLOR_MENU_BACKGROUND).place(x = 40,y = 130, anchor=tk.NW)
+        lbl5 = tk.Label(frmBody,text = "Field Id" ,font=self.displayFont,bg=self.COLOR_MENU_BACKGROUND).place(x = 40,y = 170, anchor=tk.NW)
+        cmbActionType.place(x = 170,y = 10, anchor=tk.NW)	
+        rdoById.place(x = 170,y = 50, anchor=tk.NW)	
+        rdoByName.place(x = 210,y = 50, anchor=tk.NW)	
+        txtControlId.place(x = 170,y = 90, anchor=tk.NW)	
+        txtControlName.place(x = 170,y = 130, anchor=tk.NW)	
+        txtFieldId.place(x = 170,y = 170, anchor=tk.NW)	
+
+
+        btnAction = tk.Button ( frmBody, text ="Save",width=10, relief='flat', font=self.displayFont,fg=self.COLOR_MENU_BACKGROUND,bg=self.COLOR_TOP_BACKGROUND,  command =lambda: self.fncAddAction(treeView) )
+        btnSave = tk.Button ( frmBody, text ="Reset", width=10,relief='flat', font=self.displayFont,fg=self.COLOR_MENU_BACKGROUND,bg=self.COLOR_TOP_BACKGROUND, command =lambda: self.fncAddAction(treeView))
+        btnAction.bind('<Enter>', self.on_enter_button)
+        btnAction.bind('<Leave>', self.on_leave_button)
+        btnSave.bind('<Enter>', self.on_enter_button)
+        btnSave.bind('<Leave>', self.on_leave_button)
+        btnAction.place(x = 170,y = 210, anchor=tk.NW)
+        btnSave.place(x = 230,y = 210, anchor=tk.NW)
+
+
+        frmAddAction.mainloop()
+    
     
 
 
@@ -307,5 +355,12 @@ if __name__ == '__main__':
     # root.wm_title("This is my title")
     # AutoFill(root)
     # root.mainloop()
+    config= Gc.GenerateConfig()
+    if(config.Name==None):
+        config.fnc_CreateDefaultFile();
+    
+        
+
     AutoFill().mainloop()
+
 
