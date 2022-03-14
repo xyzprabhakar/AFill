@@ -3,12 +3,14 @@
 #from tkinter.ttk import *
 from cgitb import grey
 from pickle import TRUE
-from tkinter import ttk
+from tkinter import RAISED, ttk
 import tkinter as tk
 import fontawesome as fa
 import os
 
 class AutoFill(tk.Frame):
+
+
     #Theme Color
     COLOR_TOP_BACKGROUND="#44a2d2"
     COLOR_TOP_FOREGROUND="#44a2d2"
@@ -22,7 +24,10 @@ class AutoFill(tk.Frame):
     COLOR_BUTTON_HOVER_BACKGROUND="#283234"
     COLOR_BUTTON_PRESSED_BACKGROUND="#bd55f9"
     COLOR_BUTTON_PRESSED_FOREGROUND="#f5f5f5"
-
+    
+    
+    headerFonts = ("Verdana", 15, "bold")
+    displayFont = ( "Verdana", 10)
     ##Declare All Control 
     # frmTopFrame = tk.Frame(self)
     # frmMainFrame= tk.Frame(self)
@@ -50,25 +55,37 @@ class AutoFill(tk.Frame):
     def __init__(self, isapp=True, name='AutoFill'):
         tk.Frame.__init__(self)
         self.pack(expand=tk.Y, fill=tk.BOTH)
-        self.master.title('Auto Fill')
-        self.isapp = isapp
+        self.master.title('Hello World')
+        self.master.overrideredirect(1)
+        self.isapp = isapp                        
         self.varMenu =tk.StringVar()
         self._create_widgets()
+
         
+
 
     def _create_widgets(self):
         self._create_Master()
 
+
+    
+
     def _create_Master(self):
         frmTopFrame = tk.Frame(self,height=48,width=768,bg=self.COLOR_TOP_BACKGROUND)
-        frmMainFrame = tk.Frame(self,height=450,width=768,bg="grey")
+        frmTopFrame.bind("<B1-Motion>",lambda e: self.move_app(e,self.master))        
+        btnClose = tk.Button(frmTopFrame, text = fa.icons['trash'],font= self.headerFonts,command =self.master.destroy,bg=self.COLOR_TOP_BACKGROUND,fg=self.COLOR_MENU_BACKGROUND,relief=tk.FLAT)
+        btnClose.pack(side=tk.RIGHT, pady=7,padx=5)        
+        btnClose.bind('<Enter>', self.on_enter_button)
+        btnClose.bind('<Leave>', self.on_leave_button)
+
+        frmMainFrame = tk.Frame(self,height=450,width=768)
         frmLeftFrame = tk.Frame(frmMainFrame,height=450,width=200,bg=self.COLOR_MENU_BACKGROUND)
         frmContentFrame = tk.Frame(frmMainFrame,height=450,width=514,bg=self.COLOR_BACKGROUND)
         #statusbar = tk.Label(self, text="Status", bd=1, relief=tk.SUNKEN, anchor=tk.W)
-        
-        
+        lblHeader= tk.Label(frmTopFrame,text="Auto Fill",font= self.headerFonts,bg=self.COLOR_TOP_BACKGROUND,fg=self.COLOR_MENU_BACKGROUND)
+        lblHeader.pack(side=tk.LEFT, pady=7,padx=5)
 
-        frmTopFrame.pack(side=tk.TOP, fill=tk.X)        
+        frmTopFrame.pack(side=tk.TOP, fill=tk.X, anchor=tk.NW)        
         #statusbar.pack(side=tk.BOTTOM, fill=tk.X)
         frmMainFrame.pack(expand=True,fill=tk.BOTH)
         frmLeftFrame.pack(side=tk.LEFT, fill=tk.BOTH)
@@ -100,10 +117,23 @@ class AutoFill(tk.Frame):
 
     def on_leave_menu(self,e):
         e.widget['background'] = self.COLOR_MENU_BACKGROUND
-        e.widget['foreground'] = self.COLOR_FOREGROUND 
+        e.widget['foreground'] = self.COLOR_FOREGROUND     
+
+    def on_enter_button(self,e):
+        e.widget['background'] = self.COLOR_BACKGROUND
+        e.widget['foreground'] = self.COLOR_MENU_FOREGROUND
+
+    def on_leave_button(self,e):
+        e.widget['background'] = self.COLOR_TOP_BACKGROUND
+        e.widget['foreground'] = self.COLOR_MENU_BACKGROUND 
+    
+    def move_app(self,event,parent):
+        parent.geometry('+{0}+{1}'.format(event.x_root, event.y_root))
+    
+    
 
     def _create_inner_content(self,parent):
-        headerFonts = ("Verdana", 15, "bold")
+        
         if ("frmInnerContentFrame" in parent.children.keys()) :
             parent.children["frmInnerContentFrame"].pack_forget()
         frmInnerContentFrame = tk.Frame(parent,name="frmInnerContentFrame",height=400 ,width=490,bg=self.COLOR_MENU_BACKGROUND)
@@ -113,7 +143,7 @@ class AutoFill(tk.Frame):
         frmInnerContentFrame.rowconfigure(1, weight=1)
         frmInnerContentFrame.rowconfigure(2, weight=100)
 
-        lblHeader= tk.Label(frmInnerContentFrame,text=self.varMenu.get(),font= headerFonts,bg=self.COLOR_MENU_BACKGROUND, padx=10)
+        lblHeader= tk.Label(frmInnerContentFrame,text=self.varMenu.get(),font= self.headerFonts,bg=self.COLOR_MENU_BACKGROUND, padx=10)
         lblHeader.grid(row=0, column=0, sticky=tk.N+tk.W)
         #lblHeader.pack(side=tk.TOP,  anchor=tk.NW,padx=8,pady=8)
         separator = tk.Frame(frmInnerContentFrame, bg=self.COLOR_TOP_BACKGROUND, height=1, bd=0)
@@ -124,22 +154,32 @@ class AutoFill(tk.Frame):
         #frmInnerDisplayContentFrame.pack(side=tk.TOP, fill=tk.BOTH,expand=True,padx=8,pady=8,anchor=tk.N )
         if(self.varMenu.get()=="Dashboard"):
             self._create_Template(frmInnerDisplayContentFrame)
-        
+
     def _create_Template(self,parent):
-        displayFont = ( "Verdana", 10)        
-        frmHeader = tk.Frame(parent,height=100 ,width=460,bg=self.COLOR_MENU_BACKGROUND)
-        frmBody = tk.Frame(parent,height=300 ,width=460,bg=self.COLOR_MENU_BACKGROUND)
-        lblTemplateName = tk.Label(frmHeader,text = "Template Name",font=displayFont, bg=self.COLOR_MENU_BACKGROUND).place(x = 40,y = 10, anchor=tk.NW)
-        lblTemplateUrl = tk.Label(frmHeader,text = "Url" ,font=displayFont,bg=self.COLOR_MENU_BACKGROUND).place(x = 40,y = 50, anchor=tk.NW)
-        txtTemplateName = tk.Entry(frmHeader,name="txtTemplateName",bg=self.COLOR_BACKGROUND, width = 30,font=displayFont).place(x = 200,y = 10, anchor=tk.NW)	
-        txtUrl =tk.Entry(frmHeader,name="txtUrl", width = 30,bg=self.COLOR_BACKGROUND,font=displayFont).place(x = 200,y = 50, anchor=tk.NW)
+                
+        frmHeader = tk.Frame(parent,height=100 ,width=480,bg=self.COLOR_MENU_BACKGROUND)
+        frmBody = tk.Frame(parent,height=300 ,width=480,bg=self.COLOR_MENU_BACKGROUND)
+        lblTemplateName = tk.Label(frmHeader,text = "Template Name",font=self.displayFont, bg=self.COLOR_MENU_BACKGROUND).place(x = 40,y = 10, anchor=tk.NW)
+        lblTemplateUrl = tk.Label(frmHeader,text = "Url" ,font=self.displayFont,bg=self.COLOR_MENU_BACKGROUND).place(x = 40,y = 50, anchor=tk.NW)
+        txtTemplateName = tk.Entry(frmHeader,name="txtTemplateName",bg=self.COLOR_BACKGROUND, width = 25,font=self.displayFont).place(x = 170,y = 10, anchor=tk.NW)	
+        txtUrl =tk.Entry(frmHeader,name="txtUrl", width = 25,bg=self.COLOR_BACKGROUND,font=self.displayFont).place(x = 170,y = 50, anchor=tk.NW)
         treev = ttk.Treeview(frmBody, selectmode ='browse')
+        btnAction = tk.Button ( frmHeader, text ="Add Action",width=10, relief='flat', font=self.displayFont,fg=self.COLOR_MENU_BACKGROUND,bg=self.COLOR_TOP_BACKGROUND,  command =lambda: self.fncAddAction(treev) )
+        btnSave = tk.Button ( frmHeader, text ="Save", width=10,relief='flat', font=self.displayFont,fg=self.COLOR_MENU_BACKGROUND,bg=self.COLOR_TOP_BACKGROUND, command =lambda: self.fncAddAction(treev))
+        btnAction.bind('<Enter>', self.on_enter_button)
+        btnAction.bind('<Leave>', self.on_leave_button)
+        btnSave.bind('<Enter>', self.on_enter_button)
+        btnSave.bind('<Leave>', self.on_leave_button)
+        btnAction.place(x = 390,y = 8, anchor=tk.NW)
+        btnSave.place(x = 390,y = 43, anchor=tk.NW)
+
+        
         parent.columnconfigure(0, weight=1)
         parent.rowconfigure(0, weight=1)        
         parent.rowconfigure(1, weight=100)
         frmHeader.grid(row=0, column=0, sticky=tk.N+tk.W)
         frmBody.grid(row=1, column=0, sticky=tk.N+tk.S+tk.E+tk.W)
-        
+
         # Constructing vertical scrollbar
         # with treeview
         verscrlbar = ttk.Scrollbar(frmBody,orient ="vertical",command = treev.yview)
@@ -220,8 +260,29 @@ class AutoFill(tk.Frame):
         treev.insert("", 'end', text ="L11",values =("Mohit", "M", "16"))
         treev.insert("", 'end', text ="L12",values =("Vivek", "M", "22"))
         treev.insert("", 'end', text ="L13",values =("Suman", "F", "30"))
+    
 
+    def fncAddAction(self,treeView):
+        frmAddAction = tk.Toplevel(relief=tk.RAISED,bd=1)
+        frmAddAction.title("Add Action")
+        frmAddAction.geometry("480x400")
+        frmAddAction.overrideredirect(1)
 
+        frmTopFrame1 = tk.Frame(frmAddAction,height=48,width=480,bg=self.COLOR_TOP_BACKGROUND)
+        frmTopFrame1.pack( side=tk.TOP,fill=tk.X,expand=True,anchor=tk.NW )
+        frmTopFrame1.bind("<B1-Motion>",lambda e: self.move_app(e,frmAddAction))
+
+        lblHeader= tk.Label(frmTopFrame1,text="Add Action",font= self.headerFonts,bg=self.COLOR_TOP_BACKGROUND,fg=self.COLOR_MENU_BACKGROUND)
+        lblHeader.pack(side=tk.LEFT, pady=7,padx=5)
+        btnClose = tk.Button(frmTopFrame1, text = fa.icons['trash'],font= self.headerFonts,command =frmAddAction.destroy,bg=self.COLOR_TOP_BACKGROUND,fg=self.COLOR_MENU_BACKGROUND,relief=tk.FLAT)
+        btnClose.pack(side=tk.RIGHT, pady=7,padx=5)        
+        btnClose.bind('<Enter>', self.on_enter_button)
+        btnClose.bind('<Leave>', self.on_leave_button)
+        label = tk.Label(frmAddAction,text = "This is a Toplevel2 window")        
+        label.pack()
+        
+        self.frmAddAction.mainloop()
+    
 
 
 
@@ -242,5 +303,9 @@ class AutoFill(tk.Frame):
 
 
 if __name__ == '__main__':
+    # root = tk.Tk()
+    # root.wm_title("This is my title")
+    # AutoFill(root)
+    # root.mainloop()
     AutoFill().mainloop()
 
