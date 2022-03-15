@@ -355,12 +355,9 @@ if __name__ == '__main__':
     # root.wm_title("This is my title")
     # AutoFill(root)
     # root.mainloop()
-    config= Gc.GenerateConfig()
-    if(config.Name==None):
-        config.fnc_CreateDefaultFile();
-    
-        
-
+    #config= Gc.GenerateConfig()
+    #if(config.Name==None):
+    #    config.fnc_CreateDefaultFile();
     AutoFill().mainloop()
 
 
