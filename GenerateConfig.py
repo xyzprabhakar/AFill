@@ -1,30 +1,54 @@
-import configparser
-
+import configparser,os
 
 class GenerateConfig:
-
-
-
     # CREATE OBJECT
     config_file = configparser.ConfigParser()
     ConfigFileName="configurations.ini"
     Name=None
     Email=None
     ContactNo=None
+    IO_Name=[]
+    COLOR_TOP_BACKGROUND="#44a2d2"
+    COLOR_BACKGROUND="#f2f5f7"
+    COLOR_FOREGROUND="#343a40"
+    COLOR_MENU_BACKGROUND="#ffffff"
+    displayFont=( "Verdana", 10)
 
-    def __init__(self):        
+
+    def on_enter_menu(self,e):
+        e.widget['background'] = self.COLOR_BACKGROUND
+        e.widget['foreground'] = self.COLOR_TOP_BACKGROUND
+
+    def on_leave_menu(self,e):
+        e.widget['background'] = self.COLOR_TOP_BACKGROUND
+        e.widget['foreground'] = self.COLOR_FOREGROUND     
+
+    def on_enter_button(self,e):
+        e.widget['background'] = self.COLOR_BACKGROUND
+        e.widget['foreground'] = self.COLOR_TOP_BACKGROUND
+
+    def on_leave_button(self,e):
+        e.widget['background'] = self.COLOR_TOP_BACKGROUND
+        e.widget['foreground'] = self.COLOR_FOREGROUND 
+
+    def __init__(self):                
         self.LoadAllData()
     
     def LoadAllData(self):
-        self.config = helper.read_config()
-        self.Name = self.config['AFill_Register']['Name']
-        self.Email = self.config['AFill_Register']['Email']
-        self.ContactNo = self.config['AFill_Register']['ContactNo']
-        self.FilePath = self.config['AFill_FileSetting']['FilePath']
-        self.TemplateFileName = self.config['AFill_FileSetting']['TemplateFileName']
-        self.DataFileName = self.config['AFill_FileSetting']['DataFileName']
-        self.UserName = self.config['AFill_Users']['UserName']
-        self.Password = self.config['AFill_Users']['Password']
+        if not os.path.exists(self.ConfigFileName):
+            self.fnc_CreateDefaultFile()
+
+        self.config_file.read(self.ConfigFileName)
+        self.Name = self.config_file['AFill_Register']['Name']
+        self.Email = self.config_file['AFill_Register']['Email']
+        self.ContactNo =self.config_file['AFill_Register']['ContactNo']
+        self.FilePath = self.config_file['AFill_FileSetting']['FilePath']
+        self.TemplateFileName = self.config_file['AFill_FileSetting']['TemplateFileName']
+        self.DataFileName = self.config_file['AFill_FileSetting']['DataFileName']
+        self.UserName = self.config_file['AFill_Users']['UserName']
+        self.Password = self.config_file['AFill_Users']['Password']
+        self.IO_Name=self.config_file['InputTemplate']['IO_Name'].split(",")
+
 
     def fnc_CreateDefaultFile(self):    
         # ADD SECTION
@@ -45,8 +69,11 @@ class GenerateConfig:
         self.config_file.set("AFill_Register", "Email", "")
         self.config_file.set("AFill_Register", "ContactNo", "")
 
+        self.config_file.add_section("InputTemplate")
+        self.config_file.set("InputTemplate", "IO_Name", "Name, FatherName, ContactNo, Email")
+
         # SAVE CONFIG FILE
-        with open(r"configurations.ini", 'w') as configfileObj:
+        with open(self.ConfigFileName, 'w') as configfileObj:
             self.config_file.write(configfileObj)
             configfileObj.flush()
             configfileObj.close()
@@ -63,7 +90,7 @@ class GenerateConfig:
         #self.config_file["AFill_Register"].update({"Format":"(message)"})
 
         # SAVE THE SETTINGS TO THE FILE
-        with open("configurations.ini","w") as file_object:
+        with open(self.ConfigFileName,"w") as file_object:
             self.config_file.write(file_object)
         self.LoadAllData()
 
