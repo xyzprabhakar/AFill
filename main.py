@@ -309,7 +309,7 @@ class AutoFill(tk.Frame):
         lbl2 = tk.Label(frmBody,text = "Action On" ,font=self.displayFont,bg=self.COLOR_MENU_BACKGROUND).place(x = 40,y = 50, anchor=tk.NW)
         lbl3 = tk.Label(frmBody,text = "Control Id" ,font=self.displayFont,bg=self.COLOR_MENU_BACKGROUND).place(x = 40,y = 90, anchor=tk.NW)
         lbl4 = tk.Label(frmBody,text = "Control Name" ,font=self.displayFont,bg=self.COLOR_MENU_BACKGROUND).place(x = 40,y = 130, anchor=tk.NW)
-        lbl5 = tk.Label(frmBody,text = "Field Id" ,font=self.displayFont,bg=self.COLOR_MENU_BACKGROUND).place(x = 40,y = 170, anchor=tk.NW)
+        lbl5 = tk.Label(frmBody,text = "IO Name" ,font=self.displayFont,bg=self.COLOR_MENU_BACKGROUND).place(x = 40,y = 170, anchor=tk.NW)
         cmbActionType.place(x = 170,y = 10, anchor=tk.NW)	
         rdoById.place(x = 170,y = 50, anchor=tk.NW)	
         rdoByName.place(x = 210,y = 50, anchor=tk.NW)	
@@ -355,9 +355,9 @@ if __name__ == '__main__':
     # root.wm_title("This is my title")
     # AutoFill(root)
     # root.mainloop()
-    #config= Gc.GenerateConfig()
-    #if(config.Name==None):
-    #    config.fnc_CreateDefaultFile();
+    config= Gc.GenerateConfig()
+    if(config.Name==None):
+        config.fnc_CreateDefaultFile();
     AutoFill().mainloop()
 
 
