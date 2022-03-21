@@ -62,9 +62,6 @@ class AutoFill(tk.Frame):
         self.master["bd"]=1
         self.master["relief"]=tk.RAISED
         self.master.title('Auto Fill')
-        #self.master.wm_attributes('-fullscreen', 'True')        
-        
-        #self.master.overrideredirect(1)
         self.master.unbind("<FocusIn>")
         self.isapp = isapp                        
         self.varMenu =tk.StringVar()
@@ -90,7 +87,6 @@ class AutoFill(tk.Frame):
         frmMainFrame = tk.Frame(self,height=450,width=768)
         frmLeftFrame = tk.Frame(frmMainFrame,height=450,width=200,bg=self.COLOR_MENU_BACKGROUND)
         frmContentFrame = tk.Frame(frmMainFrame,height=450,width=514,bg=self.COLOR_BACKGROUND)
-        #statusbar = tk.Label(self, text="Status", bd=1, relief=tk.SUNKEN, anchor=tk.W)
         lblHeader= tk.Label(frmTopFrame,text="Auto Fill",font= self.headerFonts,bg=self.COLOR_TOP_BACKGROUND,fg=self.COLOR_MENU_BACKGROUND)
         lblHeader.pack(side=tk.LEFT, pady=7,padx=5)
 
