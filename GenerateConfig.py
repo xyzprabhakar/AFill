@@ -8,6 +8,7 @@ class GenerateConfig:
     Email=None
     ContactNo=None
     IO_Name=[]
+    IO_Template=[]
     COLOR_TOP_BACKGROUND="#44a2d2"
     COLOR_BACKGROUND="#f2f5f7"
     COLOR_FOREGROUND="#343a40"
@@ -48,6 +49,7 @@ class GenerateConfig:
         self.UserName = self.config_file['AFill_Users']['UserName']
         self.Password = self.config_file['AFill_Users']['Password']
         self.IO_Name=self.config_file['InputTemplate']['IO_Name'].split(",")
+        self.IO_Template=self.config_file['InputTemplate']['IO_Template'].split(",")
 
 
     def fnc_CreateDefaultFile(self):    
@@ -70,7 +72,8 @@ class GenerateConfig:
         self.config_file.set("AFill_Register", "ContactNo", "")
 
         self.config_file.add_section("InputTemplate")
-        self.config_file.set("InputTemplate", "IO_Name", "Name, FatherName, ContactNo, Email")
+        self.config_file.set("InputTemplate", "IO_Name", "Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Age,Gender,Country of Birth,Nationality,Address Line 1,Address Line 2,City,Country,Postcode,Address Type,Address Status,Date From,Date To,Telephone,Mobile,E Mail")
+        self.config_file.set("InputTemplate", "IO_Template", "Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Age,Gender,Country of Birth,Nationality,Address Line 1,Address Line 2,City,Country,Postcode,Address Type,Address Status,Date From,Date To,Telephone,Mobile,E-Mail")
 
         # SAVE CONFIG FILE
         with open(self.ConfigFileName, 'w') as configfileObj:
