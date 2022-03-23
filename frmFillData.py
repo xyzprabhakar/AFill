@@ -1,0 +1,174 @@
+from multiprocessing.sharedctypes import Value
+from tkinter import font
+import PyPDF2 as pdf
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer.converter import TextConverter
+from pdfminer.layout import LAParams
+from pdfminer.pdfpage import PDFPage
+from io import StringIO
+import os
+
+import tabula 
+#from tabula import read_pdf
+#from tabulate import tabulate
+
+import io
+import tkinter as tk
+from tkinter.filedialog import askopenfile, askopenfilename
+from tkinter import RAISED, ttk
+import GenerateConfig as Gc
+import json
+
+# import webdriver
+from selenium import webdriver
+
+
+class FillData(ttk.Frame):
+    config=None
+    varTemplateType = None
+    varApplicantType = None
+    varStarttingPoint=0
+    varAllTemlateName=[]
+    varAllTemlate=[]
+    varAllJsonData=[]
+    varCurrentData=None
+    varCurrentTemplate=None
+    varId=None
+    vardriver=None
+
+    def __init__(self,config):
+        tk.Frame.__init__(self)        
+        self.config=config
+        self["background"]=self.config.COLOR_MENU_BACKGROUND
+        self["height"]=600
+        self["width"]=768
+        self.varTemplateType = tk.StringVar()
+        self.varApplicantType = tk.StringVar()
+        self.varId=tk.StringVar()
+        self.pack(expand=True, fill=tk.BOTH)        
+        self.LoadAllJsonData()
+        self.fncCreateItems()
+        
+    
+    def LoadAllJsonData(self):
+        if not os.path.exists(self.config.FilePath):
+            os.makedirs(self.config.FilePath)
+        if os.path.isfile(os.path.join(self.config.FilePath, self.config.DataFileName)) is False:
+            with io.open(os.path.join(self.config.FilePath, self.config.DataFileName), 'w') as fp:
+                print('Empty File Created')
+        else:
+            with io.open(os.path.join(self.config.FilePath, self.config.DataFileName)) as fp:
+                self.varAllJsonData = json.load(fp)
+                if(len(self.varAllJsonData)>0):
+                    last_element = self.varAllJsonData[-1]
+                    try:
+                        self.varId.set(int(last_element["id"])+1) 
+                    except:
+                        print('lat Id is not a number')
+        if os.path.isfile(os.path.join(self.config.FilePath, self.config.TemplateFileName)) is False:
+            with io.open(os.path.join(self.config.FilePath, self.config.TemplateFileName), 'w') as fp:
+                print('Empty File Created')
+        else:
+            with io.open(os.path.join(self.config.FilePath, self.config.TemplateFileName)) as fp:
+                self.varAllTemlate = json.load(fp)
+                for x in self.varAllTemlate:
+                    self.varAllTemlateName.append(x["templateName"])
+                
+    def load_data(self):
+        self.varCurrentData=self.varAllJsonData[0]
+        self.varCurrentTemplate=self.varAllTemlate[0]
+        print(self.varCurrentData)
+        self.children["txtApplicantData"].delete('1.0', tk.END)
+        self.children["txtApplicantData"].insert('1.0', str(self.varCurrentData) )
+
+    
+    def fill_data(self):
+        if(self.vardriver is None):
+            self.driver = webdriver.Chrome('C:/Users/prabhakarsingh/Documents/Afill/chromedriver.exe')
+            self.driver.get(self.varCurrentTemplate["url"])
+        # get google.co.in
+        for action in self.varCurrentTemplate["actions"]:            
+            element=None
+            if(action["action_on"]=="ByName"):
+                element=self.driver.find_element_by_name(action["control_name"])
+            else :
+                element=self.driver.find_element_by_if(action["control_id"])
+            if(element != None):
+                if(action["action_type"]=="Fill Input"):
+                    element.send_keys(self.varCurrentData["applicantData"][action["io_name"]])
+                if(action["action_type"]=="Check Checkbox"):
+                    # create action chain object
+                    action = ActionChains(self.driver)
+                    
+                    # click the item
+                    action.click(on_element = element)
+                    
+                    # perform the operation
+                    action.perform()
+                
+
+
+    def reset_data(self):
+        for x in self.config.IO_Name:
+            self.children["txtApplicant"+ x.strip().replace(' ', '_')].delete(0,"end")
+            if(self.varApplicantType.get()=="Co Applicant"):                
+                self.children["txtCoApplicant"+ x.strip().replace(' ', '_')].delete(0,"end")
+        try:
+            self.varId.set(int(self.varId.get()) +1)
+        except:
+            print('Id is not a number')
+                
+
+    def hide_unhide_applicant(self,event):
+        yaxis= self.varStarttingPoint
+        if(self.varApplicantType.get()=="Single"):
+            for x in self.config.IO_Name:
+               self.children["txtCoApplicant"+ x.strip().replace(' ', '_')].place_forget() 
+        else:
+            for x in self.config.IO_Name:
+               self.children["txtCoApplicant"+ x.strip().replace(' ', '_')].place(x = 400,y = (10+yaxis), anchor=tk.NW)
+               yaxis=yaxis+40
+
+        
+    
+
+
+    def fncCreateItems(self):
+        self.varApplicantType.set("")
+        self.varTemplateType.set("")
+        
+        yaxis=0
+        tk.Label(self,text = "Id",font=self.config.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).place(x = 40,y = (10), anchor=tk.NW)
+        tk.Entry(self,bg=self.config.COLOR_BACKGROUND,name="txt__Id",textvariable = self.varId ,width = 25,font=self.config.displayFont).place(x = 170,y = (10), anchor=tk.NW)	
+        yaxis=40
+        tk.Label(self,text = "Template",font=self.config.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).place(x = 40,y = (10+yaxis), anchor=tk.NW)
+        combostyle = ttk.Style()
+        combostyle.theme_create('combostyle', parent='alt',settings = {'TCombobox':{'configure':{'fieldbackground': self.config.COLOR_BACKGROUND,'background': self.config.COLOR_BACKGROUND}}})
+        
+        combostyle.theme_use('combostyle') 
+        cmbTemplateType = ttk.Combobox(self, width = 23, textvariable =self.varTemplateType,font=self.config.displayFont)
+        # Adding combobox drop down list
+        cmbTemplateType['values'] = self.varAllTemlateName
+        cmbTemplateType.place(x = 170,y = (10+yaxis), anchor=tk.NW)	
+
+        yaxis=yaxis+40
+        tk.Label(self,text = "Data",font=self.config.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).place(x = 40,y = (10+yaxis), anchor=tk.NW)
+        tk.Text(self,name="txtApplicantData",bg=self.config.COLOR_BACKGROUND, width = 25, height=5,font=self.config.displayFont).place(x = 170,y = (10+yaxis), anchor=tk.NW)
+        
+        btnLoadData = tk.Button ( self, text ="Get Data",width=10, relief='flat', font=self.config.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND,  command =lambda:self.load_data() )
+        btnFillData = tk.Button ( self, text ="Fill", width=10,relief='flat', font=self.config.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND, command =lambda: self.fill_data())
+        
+        btnLoadData.bind('<Enter>', self.config.on_enter_button)
+        btnLoadData.bind('<Leave>', self.config.on_leave_button)
+        btnFillData.bind('<Enter>', self.config.on_enter_button)
+        btnFillData.bind('<Leave>', self.config.on_leave_button)
+        
+        btnLoadData.place(x = 400,y = 10, anchor=tk.NW)
+        btnFillData.place(x = 400,y = 50, anchor=tk.NW)
+        
+
+if __name__ == '__main__':
+    config= Gc.GenerateConfig()
+    FillData(config).mainloop()
+        
+

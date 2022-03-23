@@ -1,3 +1,4 @@
+from multiprocessing.sharedctypes import Value
 from tkinter import font
 import PyPDF2 as pdf
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
@@ -5,7 +6,7 @@ from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 from io import StringIO
-
+import os
 
 import tabula 
 #from tabula import read_pdf
@@ -16,6 +17,7 @@ import tkinter as tk
 from tkinter.filedialog import askopenfile, askopenfilename
 from tkinter import RAISED, ttk
 import GenerateConfig as Gc
+import json
 
 
 class ImportData(ttk.Frame):
@@ -23,26 +25,8 @@ class ImportData(ttk.Frame):
     varTemplateType = None
     varApplicantType = None
     varStarttingPoint=0
-
-    def __init__1(self, container, *args, **kwargs):
-        super().__init__(container, *args, **kwargs)
-        canvas = tk.Canvas(self)
-        scrollbar = ttk.Scrollbar(self, orient="vertical", command=canvas.yview)
-        self.scrollable_frame = ttk.Frame(canvas)
-
-        self.scrollable_frame.bind(
-            "<Configure>",
-            lambda e: canvas.configure(
-                scrollregion=canvas.bbox("all")
-            )
-        )
-
-        canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
-
-        canvas.configure(yscrollcommand=scrollbar.set)
-
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
+    varAllJsonData=[]
+    varId=None
 
     def __init__(self,config):
         tk.Frame.__init__(self)        
@@ -60,10 +44,28 @@ class ImportData(ttk.Frame):
 
         self.varTemplateType = tk.StringVar()
         self.varApplicantType = tk.StringVar()
+        self.varId=tk.StringVar()
         self.pack(expand=True, fill=tk.BOTH)        
+        self.LoadAllJsonData()
         self.fncCreateItems()
         
     
+    def LoadAllJsonData(self):
+        if not os.path.exists(self.config.FilePath):
+            os.makedirs(self.config.FilePath)
+        if os.path.isfile(os.path.join(self.config.FilePath, self.config.DataFileName)) is False:
+            with io.open(os.path.join(self.config.FilePath, self.config.DataFileName), 'w') as fp:
+                print('Empty File Created')
+        else:
+            with io.open(os.path.join(self.config.FilePath, self.config.DataFileName)) as fp:
+                self.varAllJsonData = json.load(fp)
+                if(len(self.varAllJsonData)>0):
+                    last_element = self.varAllJsonData[-1]
+                    try:
+                        self.varId.set(int(last_element["id"])+1) 
+                    except:
+                        print('lat Id is not a number')
+
     def convert_pdf_to_txt(self,path):
         rsrcmgr = PDFResourceManager()
         retstr = StringIO()
@@ -76,10 +78,8 @@ class ImportData(ttk.Frame):
         maxpages = 0
         caching = True
         pagenos=set()
-
         for page in PDFPage.get_pages(fp, pagenos, maxpages=maxpages, password=password,caching=caching, check_extractable=True):
             interpreter.process_page(page)
-
         text = retstr.getvalue()
 
         fp.close()
@@ -106,13 +106,16 @@ class ImportData(ttk.Frame):
                 dataFound=0
                 for table in tables:
                     for i, j in table.iterrows():
-                        print(j[0],j[1])                        
+                        #print(j[0],j[1])                        
                         if(j[0]==self.config.IO_Template[ioindex]):
-                            self.children["txtApplicant"+ x.strip().replace(' ', '_')].delete(0,tk.END)
-                            self.children["txtApplicant"+ x.strip().replace(' ', '_')].insert(0,j[1]) 
-                            if(self.varApplicantType.get()=="Co Applicant"):
-                                self.children["txtCoApplicant"+ x.strip().replace(' ', '_')].delete(0,tk.END)
-                                self.children["txtCoApplicant"+ x.strip().replace(' ', '_')].insert(0,j[2]) 
+                            try:
+                                self.children["txtApplicant"+ x.strip().replace(' ', '_')].delete(0,tk.END)
+                                self.children["txtApplicant"+ x.strip().replace(' ', '_')].insert(0,j[1]) 
+                                if(self.varApplicantType.get()=="Co Applicant"):
+                                    self.children["txtCoApplicant"+ x.strip().replace(' ', '_')].delete(0,tk.END)
+                                    self.children["txtCoApplicant"+ x.strip().replace(' ', '_')].insert(0,j[2]) 
+                            except:
+                                print("Something went wrong")
                             dataFound=1
                         if(dataFound==1):
                             break
@@ -120,23 +123,30 @@ class ImportData(ttk.Frame):
                         break
                 ioindex=ioindex+1
 
-                        
-
-                        
-                    
             
-
-            #tabula.convert_into(open_file,"output1.json", output_format="json", pages='all')
-            #print(tabulate(df))
-            #txtbox=self.children["txtremarks"]
-            #txtbox.delete(1.0,"end")             
-            #txtbox.insert("end",df)
-            #txtbox.insert("end",tabulate(df))
-            # closing the pdf file object
-            #pdfFileObj.close()
-
     def save_data(self):
-        print("Hello World")
+        applicantDic={}
+        CoapplicantDic={}
+        for x in self.config.IO_Name:
+            applicantDic[x.strip().replace(' ', '_')]= self.children["txtApplicant"+ x.strip().replace(' ', '_')].get()            
+            if(self.varApplicantType.get()=="Co Applicant"):                
+                CoapplicantDic[x.strip().replace(' ', '_')]=self.children["txtCoApplicant"+ x.strip().replace(' ', '_')].get()
+        aDict = {"id":self.varId.get(), "applicantType":self.varApplicantType.get(), "applicantData":applicantDic,"coApplicantData":CoapplicantDic}
+        self.varAllJsonData.append(aDict)
+        with open(os.path.join(self.config.FilePath, self.config.DataFileName), 'w', encoding='utf-8') as f:
+            json.dump(self.varAllJsonData, f, ensure_ascii=False, indent=4,separators=(',',': '))            
+            tk.messagebox.showinfo("showinfo", "Save Successfully")
+
+    def reset_data(self):
+        for x in self.config.IO_Name:
+            self.children["txtApplicant"+ x.strip().replace(' ', '_')].delete(0,"end")
+            if(self.varApplicantType.get()=="Co Applicant"):                
+                self.children["txtCoApplicant"+ x.strip().replace(' ', '_')].delete(0,"end")
+        try:
+            self.varId.set(int(self.varId.get()) +1)
+        except:
+            print('Id is not a number')
+                
 
     def hide_unhide_applicant(self,event):
         yaxis= self.varStarttingPoint
@@ -153,15 +163,12 @@ class ImportData(ttk.Frame):
 
 
     def fncCreateItems(self):
-
         self.varApplicantType.set("Co Applicant")
         self.varTemplateType.set("IO Template")
-
-        
         
         yaxis=0
         tk.Label(self,text = "Id",font=self.config.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).place(x = 40,y = (10), anchor=tk.NW)
-        tk.Entry(self,bg=self.config.COLOR_BACKGROUND,name="txt__Id" ,width = 25,font=self.config.displayFont).place(x = 170,y = (10), anchor=tk.NW)	
+        tk.Entry(self,bg=self.config.COLOR_BACKGROUND,name="txt__Id",textvariable = self.varId ,width = 25,font=self.config.displayFont).place(x = 170,y = (10), anchor=tk.NW)	
         yaxis=40
         tk.Label(self,text = "Template Type",font=self.config.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).place(x = 40,y = (10+yaxis), anchor=tk.NW)
         combostyle = ttk.Style()
@@ -189,12 +196,16 @@ class ImportData(ttk.Frame):
         
         btnImport = tk.Button ( self, text ="Import",width=10, relief='flat', font=self.config.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND,  command =lambda:self.open_file() )
         btnSave = tk.Button ( self, text ="Save", width=10,relief='flat', font=self.config.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND, command =lambda: self.save_data())
+        btnReset = tk.Button ( self, text ="Reset", width=10,relief='flat', font=self.config.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND, command =lambda: self.reset_data())
         btnImport.bind('<Enter>', self.config.on_enter_button)
         btnImport.bind('<Leave>', self.config.on_leave_button)
         btnSave.bind('<Enter>', self.config.on_enter_button)
         btnSave.bind('<Leave>', self.config.on_leave_button)
+        btnReset.bind('<Enter>', self.config.on_enter_button)
+        btnReset.bind('<Leave>', self.config.on_leave_button)
         btnImport.place(x = 400,y = 10, anchor=tk.NW)
-        btnSave.place(x = 400,y = 60, anchor=tk.NW)
+        btnSave.place(x = 400,y = 50, anchor=tk.NW)
+        btnReset.place(x = 400,y = 90, anchor=tk.NW)
         yaxis=yaxis+50
         #txtDetail=tk.Text(self,height=5, name="txtremarks")
         #txtDetail.place(x = 170,y = 10+yaxis, anchor=tk.NW)
@@ -204,7 +215,4 @@ if __name__ == '__main__':
     config= Gc.GenerateConfig()
     ImportData(config).mainloop()
         
-
-
-
 
