@@ -14,6 +14,7 @@ class GenerateConfig:
     COLOR_FOREGROUND="#343a40"
     COLOR_MENU_BACKGROUND="#ffffff"
     displayFont=( "Verdana", 10)
+    ChromeDriver="chromedriver.exe"
 
 
     def on_enter_menu(self,e):
@@ -46,6 +47,7 @@ class GenerateConfig:
         self.FilePath = self.config_file['AFill_FileSetting']['FilePath']
         self.TemplateFileName = self.config_file['AFill_FileSetting']['TemplateFileName']
         self.DataFileName = self.config_file['AFill_FileSetting']['DataFileName']
+        self.ChromeDriver = self.config_file['AFill_FileSetting']['ChromeDriver']
         self.UserName = self.config_file['AFill_Users']['UserName']
         self.Password = self.config_file['AFill_Users']['Password']
         self.IO_Name=self.config_file['InputTemplate']['IO_Name'].split(",")

@@ -294,7 +294,7 @@ class AutoFill(tk.Frame):
         combostyle.theme_use('combostyle') 
         cmbActionType = ttk.Combobox(frmBody, width = 25, textvariable = varActionType)
         # Adding combobox drop down list
-        cmbActionType['values'] = ('Fill Input', 'Fill TextArea','Select Option','Click Button','Click Submit' )
+        cmbActionType['values'] = ('Fill Input', 'Fill TextArea','Select Option','Check Checkbox','Click Button','Click Submit' )
         rdoById = tk.Radiobutton(frmBody, text="ById", variable=varActionOn, value="ById",bg=self.COLOR_MENU_BACKGROUND,font=self.displayFont)
         rdoByName = tk.Radiobutton(frmBody, text="ByName", variable=varActionOn, value="ByName",bg=self.COLOR_MENU_BACKGROUND,font=self.displayFont)
         txtControlId = tk.Entry(frmBody,bg=self.COLOR_BACKGROUND, width = 25,font=self.displayFont)
