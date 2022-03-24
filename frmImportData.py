@@ -1,10 +1,5 @@
 from multiprocessing.sharedctypes import Value
 from tkinter import font
-import PyPDF2 as pdf
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
-from pdfminer.converter import TextConverter
-from pdfminer.layout import LAParams
-from pdfminer.pdfpage import PDFPage
 from io import StringIO
 import os
 

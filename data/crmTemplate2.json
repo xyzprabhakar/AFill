@@ -1,0 +1,31 @@
+[
+    {
+        "templateName": "Barclays",
+        "url": "https://crm.globalglaze.in/login.aspx",
+        "actions": [
+		{
+            "action_type": "Fill Input",
+            "action_on": "ByName",
+            "control_id": "UName",
+	    "io_name":"",
+            "control_value": "sit0022"
+	        },
+	        {
+            "action_type": "Fill Input",
+            "action_on": "ByName",
+            "control_id": "Pwd",
+	    "io_name":"",
+            "control_value": "r@ndi420"
+	        },
+                {
+            "action_type": "Button Click",
+            "action_on": "ByName",
+            "control_id": "Button1",
+	    "io_name":"",
+            "control_value": ""
+	 	}
+
+	]        
+    }
+   
+]

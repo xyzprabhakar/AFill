@@ -6,44 +6,33 @@
             {
                 "action_type": "Wait",
                 "action_on": "ByName",
-                "control_id": "surname",
+                "control_id": "",
+                "control_name": "surname",
                 "io_name":"Last Name",
                 "control_value": "30"
                 },
-                {
-            "action_type": "Button Click",
-            "action_on": "ByClass",
-            "control_id": "barclays-gdpr__accept-all-button",
-	        "io_name":"",
-            "control_value": "Y"
-	 }
-                ,
 		{
             "action_type": "Fill Input",
             "action_on": "ByName",
-            "control_id": "surname",
+            "control_id": "",
+            "control_name": "surname",
 	        "io_name":"Last Name",
             "control_value": ""
 	        },
 	{
             "action_type": "Fill Input",
             "action_on": "ByName",
-            "control_id": "membership",
+            "control_id": "",
+            "control_name": "membership",
 	        "io_name":"Mobile",
             "control_value": ""
 	},{
             "action_type": "Check Checkbox",
             "action_on": "ByName",
-            "control_id": "confirmation",
+            "control_id": "",
+            "control_name": "confirmation",
 	        "io_name":"",
             "control_value": "Y"
-	 }
-	 ,{
-            "action_type": "Button Click",
-            "action_on": "ById",
-            "control_id": "continue",
-	        "io_name":"",
-            "control_value": ""
 	 }
 
 	]        

@@ -1,10 +1,10 @@
 from multiprocessing.sharedctypes import Value
 from tkinter import font
-import PyPDF2 as pdf
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
-from pdfminer.converter import TextConverter
-from pdfminer.layout import LAParams
-from pdfminer.pdfpage import PDFPage
+#import PyPDF2 as pdf
+#from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+#from pdfminer.converter import TextConverter
+#from pdfminer.layout import LAParams
+#from pdfminer.pdfpage import PDFPage
 from io import StringIO
 import os
 
@@ -21,6 +21,10 @@ import json
 
 # import webdriver
 from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
+
 
 
 class FillData(ttk.Frame):
@@ -34,14 +38,14 @@ class FillData(ttk.Frame):
     varCurrentData=None
     varCurrentTemplate=None
     varId=None
-    vardriver=None
+    driver=None
 
     def __init__(self,config):
         tk.Frame.__init__(self)        
         self.config=config
         self["background"]=self.config.COLOR_MENU_BACKGROUND
-        self["height"]=600
-        self["width"]=768
+        self["height"]=300
+        self["width"]=560
         self.varTemplateType = tk.StringVar()
         self.varApplicantType = tk.StringVar()
         self.varId=tk.StringVar()
@@ -77,36 +81,110 @@ class FillData(ttk.Frame):
     def load_data(self):
         self.varCurrentData=self.varAllJsonData[0]
         self.varCurrentTemplate=self.varAllTemlate[0]
-        print(self.varCurrentData)
+        #print(self.varCurrentData)
         self.children["txtApplicantData"].delete('1.0', tk.END)
         self.children["txtApplicantData"].insert('1.0', str(self.varCurrentData) )
 
     
     def fill_data(self):
-        if(self.vardriver is None):
-            self.driver = webdriver.Chrome('C:/Users/prabhakarsingh/Documents/Afill/chromedriver.exe')
+        timeout=30
+        if(self.driver is None):
+            self.driver = webdriver.Firefox()
             self.driver.get(self.varCurrentTemplate["url"])
+        
+        element=None        
+        controlId=None
+        IoName=None
+        controlValue=None
+        actiontype=None
+        finalValue=None
+        actionOn=None
         # get google.co.in
         for action in self.varCurrentTemplate["actions"]:            
             element=None
-            if(action["action_on"]=="ByName"):
-                element=self.driver.find_element_by_name(action["control_name"])
-            else :
-                element=self.driver.find_element_by_if(action["control_id"])
-            if(element != None):
-                if(action["action_type"]=="Fill Input"):
-                    element.send_keys(self.varCurrentData["applicantData"][action["io_name"]])
-                if(action["action_type"]=="Check Checkbox"):
-                    # create action chain object
-                    action = ActionChains(self.driver)
-                    
-                    # click the item
-                    action.click(on_element = element)
-                    
-                    # perform the operation
-                    action.perform()
-                
+            actiontype=action["action_type"]
+            IoName=action["io_name"]
+            controlValue=action["control_value"]
+            
+            controlId=action["control_id"]
+            actionOn=action["action_on"]            
+            if(len(IoName)>0):
+                finalValue=self.varCurrentData["applicantData"][action["io_name"].strip().replace(' ', '_')]
+            if(len(controlValue)>0):
+                finalValue=controlValue
 
+            if(actiontype=="Wait"):
+                timeout=int(controlValue)
+                self.driver.implicitly_wait(timeout) 
+            if(actiontype=="Fill Input" or actiontype=="Select Option" ):
+                if(actionOn=="ByName"):
+                    element=self.driver.find_element(By.NAME,controlId)
+                elif(actionOn=="ById") :
+                    element=self.driver.find_element(By.ID ,controlId)
+                elif(actionOn=="ByXpath") :
+                    element=self.driver.find_element(By.XPATH ,controlId)
+                if(element != None):
+                    if(actiontype=="Fill Input"):
+                        element.send_keys(finalValue)
+                    elif(actiontype=="Select Option"):
+                        select = Select(element)
+                        select.select_by_value(finalValue)
+
+            if(actiontype=="Check Checkbox"):
+                if(actionOn=="ByName"):
+                    if(len(finalValue)>0 ):
+                        element=self.driver.find_element(By.XPATH,f"//input[@name='{controlId}'][@value='{finalValue}']")
+                    else:
+                        element=self.driver.find_element(By.XPATH,f"//input[@name='{controlId}']")
+                elif(actionOn=="ById") :
+                    if(len(finalValue)>0 ):
+                        element=self.driver.find_element(By.XPATH,f"//input[@id='{controlId}'][@value='{finalValue}']")
+                    else:
+                        element=self.driver.find_element(By.XPATH,f"//input[@id='{controlId}']")
+                elif(actionOn=="ByXpath") :
+                    if(len(finalValue)>0 ):
+                        element=self.driver.find_element(By.XPATH,controlId)
+                    else:
+                        element=self.driver.find_element(By.XPATH,controlId)
+                if(element != None):
+                    #self.driver.execute_script("arguments[0].scrollIntoView();",element )
+                    #self.driver.execute_script("arguments[0].click();",element )
+                    
+                    action=ActionChains(self.driver)
+                    action.move_to_element(element)
+                    action.click(on_element = element)
+                    #element.click()
+                    action.perform()
+            
+            if(actiontype=="Button Click" or actiontype=="Hover"):
+                if(actionOn=="ByName"):
+                    element=self.driver.find_element(By.NAME,controlId)
+                elif(actionOn=="ById") :
+                    element=self.driver.find_element(By.ID ,controlId)
+                elif(actionOn=="ByXpath") :
+                    element=self.driver.find_element(By.XPATH,controlId)
+
+                if(element != None):
+                    action=ActionChains(self.driver)
+                    action.move_to_element(element)
+                    if(actiontype=="Button Click"):
+                        action.click(on_element = element)
+                    #element.click()
+                    action.perform()
+        try:
+            print (1)
+        except:
+            print ('error occured')
+        #finally:
+
+            #self.driver.quit()
+
+    def Open_Template(self):
+        if(self.driver is None):
+            self.driver = webdriver.Firefox()
+            self.driver.get(self.varCurrentTemplate["url"])
+        
+        
 
     def reset_data(self):
         for x in self.config.IO_Name:
@@ -155,16 +233,20 @@ class FillData(ttk.Frame):
         tk.Label(self,text = "Data",font=self.config.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).place(x = 40,y = (10+yaxis), anchor=tk.NW)
         tk.Text(self,name="txtApplicantData",bg=self.config.COLOR_BACKGROUND, width = 25, height=5,font=self.config.displayFont).place(x = 170,y = (10+yaxis), anchor=tk.NW)
         
-        btnLoadData = tk.Button ( self, text ="Get Data",width=10, relief='flat', font=self.config.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND,  command =lambda:self.load_data() )
-        btnFillData = tk.Button ( self, text ="Fill", width=10,relief='flat', font=self.config.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND, command =lambda: self.fill_data())
+        btnLoadData = tk.Button ( self, text ="Get Data",width=10, relief='flat', font=self.config.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND,  command =self.load_data )
+        btnOpenTemplate = tk.Button ( self, text ="Open Template", width=10,relief='flat', font=self.config.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND, command = self.Open_Template)
+        btnFillData = tk.Button ( self, text ="Fill", width=10,relief='flat', font=self.config.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND, command = self.fill_data)
         
         btnLoadData.bind('<Enter>', self.config.on_enter_button)
         btnLoadData.bind('<Leave>', self.config.on_leave_button)
         btnFillData.bind('<Enter>', self.config.on_enter_button)
         btnFillData.bind('<Leave>', self.config.on_leave_button)
+        btnOpenTemplate.bind('<Enter>', self.config.on_enter_button)
+        btnOpenTemplate.bind('<Leave>', self.config.on_leave_button)
         
         btnLoadData.place(x = 400,y = 10, anchor=tk.NW)
-        btnFillData.place(x = 400,y = 50, anchor=tk.NW)
+        btnOpenTemplate.place(x = 400,y = 50, anchor=tk.NW)
+        btnFillData.place(x = 400,y = 90, anchor=tk.NW)
         
 
 if __name__ == '__main__':
