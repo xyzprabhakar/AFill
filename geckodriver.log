@@ -849,3 +849,87 @@ console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkErr
 
 ###!!! [Parent][PImageBridgeParent] Error: RunMessage(msgname=PImageBridge::Msg_WillClose) Channel closing: too late to send/recv, messages will be lost
 
+1648109908358	geckodriver	INFO	Listening on 127.0.0.1:44229
+1648109908864	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "33361" "-no-remote" "-profile" "/tmp/rust_mozprofileLAEddC"
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+1648109909806	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileLAEddC/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:33361/devtools/browser/e9e2b6ed-231d-452a-8314-c3daddd41bf9
+1648109911095	Marionette	INFO	Listening on port 46741
+1648109911192	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://crm.globalglaze.in/login.aspx, line 34: TypeError: $(...).fancybox is not a function
+JavaScript error: https://crm.globalglaze.in/login.aspx, line 349: TypeError: document.getElementById(...) is null
+console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "https://crm.globalglaze.in"
+console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "https://crm.globalglaze.in"
+JavaScript error: resource://gre/modules/LoginManagerParent.jsm, line 136: TypeError: gRecipeManager is null
+JavaScript error: https://crm.globalglaze.in/login.aspx, line 365: ReferenceError: timer is not defined
+JavaScript error: https://crm.globalglaze.in/login.aspx, line 34: TypeError: $(...).fancybox is not a function
+JavaScript error: https://crm.globalglaze.in/login.aspx, line 349: TypeError: document.getElementById(...) is null
+JavaScript error: https://crm.globalglaze.in/login.aspx, line 365: ReferenceError: timer is not defined
+1648109944743	Marionette	INFO	Stopped listening on port 46741
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+1648110004759	geckodriver	INFO	Listening on 127.0.0.1:36897
+1648110004767	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "47227" "-no-remote" "-profile" "/tmp/rust_mozprofilehiX19f"
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+1648110005574	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofilehiX19f/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:47227/devtools/browser/dfb5889c-6c4f-4c6f-870f-fe4df9158522
+1648110006800	Marionette	INFO	Listening on port 38785
+1648110006890	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+ATTENTION: default value of option mesa_glthread overridden by environment.
+JavaScript warning: https://bank.barclays.co.uk/js/bc/2.19.2/6bb5a42d.min.js, line 3: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "https://bank.barclays.co.uk"
+1648110576070	Marionette	INFO	Stopped listening on port 38785
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+JavaScript error: chrome://remote/content/marionette/cert.js, line 55: NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsICertOverrideService.setDisableAllSecurityChecksAndLetAttackersInterceptMyData]
+1648111219512	geckodriver	INFO	Listening on 127.0.0.1:59681
+1648111219517	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "50551" "-no-remote" "-profile" "/tmp/rust_mozprofile83NpLa"
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+1648111220680	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofile83NpLa/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:50551/devtools/browser/ceacd960-d6d2-4f5d-83c7-23893f9ff587
+1648111222442	Marionette	INFO	Listening on port 43959
+1648111222548	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://crm.globalglaze.in/login.aspx, line 34: TypeError: $(...).fancybox is not a function
+JavaScript error: https://crm.globalglaze.in/login.aspx, line 349: TypeError: document.getElementById(...) is null
+console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "https://crm.globalglaze.in"
+console.warn: LoginRecipes: "getRecipes: falling back to a synchronous message for:" "https://crm.globalglaze.in"
+JavaScript error: resource://gre/modules/LoginManagerParent.jsm, line 136: TypeError: gRecipeManager is null
+JavaScript error: https://crm.globalglaze.in/login.aspx, line 365: ReferenceError: timer is not defined
+JavaScript error: https://crm.globalglaze.in/login.aspx, line 34: TypeError: $(...).fancybox is not a function
+JavaScript error: https://crm.globalglaze.in/login.aspx, line 349: TypeError: document.getElementById(...) is null
+JavaScript error: https://crm.globalglaze.in/login.aspx, line 365: ReferenceError: timer is not defined
+1648113999052	Marionette	INFO	Stopped listening on port 43959
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+
+###!!! [Parent][PImageBridgeParent] Error: RunMessage(msgname=PImageBridge::Msg_WillClose) Channel closing: too late to send/recv, messages will be lost
+
+1648114089026	geckodriver	INFO	Listening on 127.0.0.1:46787
+1648114089034	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "60093" "-no-remote" "-profile" "/tmp/rust_mozprofileKcK8WG"
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+1648114090211	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileKcK8WG/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:60093/devtools/browser/1b723acb-75fa-4d05-9340-6cbd755bd3cb
+1648114092015	Marionette	INFO	Listening on port 41473
+1648114092067	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://crm.globalglaze.in/login.aspx, line 34: TypeError: $(...).fancybox is not a function
+JavaScript error: https://crm.globalglaze.in/login.aspx, line 349: TypeError: document.getElementById(...) is null
+JavaScript error: resource://gre/actors/AutoScrollChild.jsm, line 64: TypeError: node.closest(...).constructor.name is undefined
+JavaScript error: https://crm.globalglaze.in/login.aspx, line 365: ReferenceError: timer is not defined
+1648114925373	Marionette	INFO	Stopped listening on port 41473
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+
+###!!! [Parent][PImageBridgeParent] Error: RunMessage(msgname=PImageBridge::Msg_WillClose) Channel closing: too late to send/recv, messages will be lost
+
