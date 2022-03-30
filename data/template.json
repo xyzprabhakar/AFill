@@ -5,32 +5,28 @@
         "actions": [
             {
                 "action_type": "Wait",
-                "action_on": "ByName",
-                "control_id": "",
-                "control_name": "surname",
+                "action_on": "ByName",                
+                "control": "surname",
                 "io_name":"Last Name",
                 "control_value": "30"
                 },
 		{
             "action_type": "Fill Input",
-            "action_on": "ByName",
-            "control_id": "",
-            "control_name": "surname",
+            "action_on": "ByName",            
+            "control": "surname",
 	        "io_name":"Last Name",
             "control_value": ""
 	        },
 	{
             "action_type": "Fill Input",
-            "action_on": "ByName",
-            "control_id": "",
-            "control_name": "membership",
+            "action_on": "ByName",            
+            "control": "membership",
 	        "io_name":"Mobile",
             "control_value": ""
 	},{
             "action_type": "Check Checkbox",
-            "action_on": "ByName",
-            "control_id": "",
-            "control_name": "confirmation",
+            "action_on": "ByName",            
+            "control": "confirmation",
 	        "io_name":"",
             "control_value": "Y"
 	 }

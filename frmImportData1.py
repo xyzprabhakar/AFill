@@ -56,7 +56,7 @@ class MainWindow:
         self.ContainerCanvas.configure(yscrollcommand=scrollbar_y.set,xscrollcommand=scrollbar_x.set)
         self.ContainerCanvas.pack(expand=tk.TRUE, fill="both")
         self.ContainerCanvas.create_window((0,0),window=self.ContainerFrame,anchor='nw')
-        self.ContainerFrame.bind("<Configure>",self.myfunction)
+        self.ContainerFrame.bind("<Configure>",self.fnc_resizeScroll)
 
         self.fncCreateItems()
 
@@ -82,7 +82,7 @@ class MainWindow:
         self.fncCreateItems()
          
     
-    def myfunction(self,event):
+    def fnc_resizeScroll(self,event):
         #print('Hello World')
         #self.canvas.configure(scrollregion=self.canvas.bbox("all"),width=self.Parent_Width,height=self.Parent_Height)
         self.ContainerCanvas.configure(scrollregion=self.ContainerCanvas.bbox("all"),width=self.Parent_Width,height=self.Parent_Height)
@@ -121,13 +121,13 @@ class MainWindow:
         tk.Label(self.ContainerFrame,text = "Template Type",font=self.config.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).grid(row=1,column = 0, sticky=tk.N+tk.S+tk.E)
         combostyle = ttk.Style()
         combostyle.theme_create('combostyle', parent='alt',settings = {'TCombobox':{'configure':{'fieldbackground': self.config.COLOR_BACKGROUND,'background': self.config.COLOR_BACKGROUND}}})
-        
         combostyle.theme_use('combostyle') 
         cmbTemplateType = ttk.Combobox(self.ContainerFrame, width = 23, textvariable =self.varTemplateType,font=self.config.displayFont)
         # Adding combobox drop down list
         cmbTemplateType['values'] = ('IO Template', 'Fact Find')
         cmbTemplateType.grid(row=1,column = 1, sticky=tk.N+tk.S+tk.W)
         tk.Label(self.ContainerFrame,text = "Applicant Type",font=self.config.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).grid(row=2,column = 0, sticky=tk.N+tk.S+tk.E)
+        
         cmbApplicantType = ttk.Combobox(self.ContainerFrame, width = 23, textvariable = self.varApplicantType,font=self.config.displayFont)
         cmbApplicantType['values'] = ('Single', 'Co Applicant')
         cmbApplicantType.grid(row=2,column = 1, sticky=tk.N+tk.S+tk.W)	
@@ -137,8 +137,8 @@ class MainWindow:
         self.varStarttingPoint=yaxis
         for x in self.config.IO_Name:
             tk.Label(self.ContainerFrame,  text = x.strip(),font=self.config.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).grid(row=yaxis,column =0, sticky=tk.N+tk.S+tk.E)
-            tk.Entry(self.ContainerFrame,name="txtApplicant"+ x.strip().replace(' ', '_'),bg=self.config.COLOR_BACKGROUND, width = 25,font=self.config.displayFont).grid(row=yaxis,column = 1, sticky=tk.N+tk.S+tk.W)
-            tk.Entry(self.ContainerFrame,name="txtCoApplicant"+ x.strip().replace(' ', '_'),bg=self.config.COLOR_BACKGROUND, width = 25,font=self.config.displayFont).grid(row=yaxis,column = 2, sticky=tk.N+tk.S+tk.W)	
+            tk.Entry(self.ContainerFrame,name="txtApplicant"+ x.strip().replace(' ', '_'),bg=self.config.COLOR_BACKGROUND, width = 25,font=self.config.displayFont).grid(row=yaxis,column = 1, sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
+            tk.Entry(self.ContainerFrame,name="txtCoApplicant"+ x.strip().replace(' ', '_'),bg=self.config.COLOR_BACKGROUND, width = 25,font=self.config.displayFont).grid(row=yaxis,column = 2, sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))	
             yaxis=yaxis+1
         
         btnImport = tk.Button (self.ContainerFrame, text ="Import",width=10, relief='flat', font=self.config.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND,  command =lambda:self.open_file() )

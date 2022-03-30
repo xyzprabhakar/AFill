@@ -169,6 +169,7 @@ class AutoFill(tk.Frame):
         txtTemplateName = tk.Entry(frmHeader,name="txtTemplateName",bg=self.COLOR_BACKGROUND, width = 25,font=self.displayFont).place(x = 170,y = 10, anchor=tk.NW)	
         txtUrl =tk.Entry(frmHeader,name="txtUrl", width = 25,bg=self.COLOR_BACKGROUND,font=self.displayFont).place(x = 170,y = 50, anchor=tk.NW)
         treev = ttk.Treeview(frmBody, selectmode ='browse')
+
         btnAction = tk.Button ( frmHeader, text ="Add Action",width=10, relief='flat', font=self.displayFont,fg=self.COLOR_MENU_BACKGROUND,bg=self.COLOR_TOP_BACKGROUND,  command =lambda: self.fncAddAction(treev) )
         btnSave = tk.Button ( frmHeader, text ="Save", width=10,relief='flat', font=self.displayFont,fg=self.COLOR_MENU_BACKGROUND,bg=self.COLOR_TOP_BACKGROUND, command =lambda: self.fncAddAction(treev))
         btnAction.bind('<Enter>', self.on_enter_button)
