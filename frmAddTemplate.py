@@ -6,6 +6,7 @@ from tkinter import messagebox
 import GenerateConfig as Gc
 import json,io,os
 import fontawesome as fa
+from ttkthemes import ThemedStyle
 
 
 class AddTemplate:
@@ -19,11 +20,13 @@ class AddTemplate:
     treeViewStyle=None
     varAllTemlateName=[]
     varAllTemlate=[]
+
+    varActionType= None
     varCurrentTemplate=None
     varCurrentTemplateName=None
-    #varCurrentTemplateName_cmb=None
-    #varCurrentTemplateName_txt=None
-    varActionType= None
+    varCurrentUrl=None
+    
+    
     var_action_type=None
     var_action_on=None
     var_control=None
@@ -34,17 +37,23 @@ class AddTemplate:
 
     def __init__(self,Container,config):
         self.config=config
-        #self.combostyle = ttk.Style()
         #self.combostyle.theme_create('combostyle', parent='alt',settings = {'TCombobox':{'configure':{'selectbackground': self.config.COLOR_TOP_BACKGROUND,'fieldbackground': self.config.COLOR_BACKGROUND,'background': self.config.COLOR_BACKGROUND}}})
         #self.combostyle.theme_use('combostyle') 
-        self.treeViewStyle= ttk.Style()
-        self.treeViewStyle.theme_use("default")
+        #self.treeViewStyle= ttk.Style()
+        #self.treeViewStyle=ThemedStyle(Container)
+        #self.treeViewStyle.set_theme("arc")
+        
+        #self.treeViewStyle.theme_use("default")
+        #self.treeViewStyle.theme_use("arc")
+        
+        #self.treeViewStyle.configure("TCombobox", background=[("readonly", self.config.COLOR_BACKGROUND)])
         
         #self.treeViewStyle.configure("TreeView","selectbackground": ,background= self.config.COLOR_BACKGROUND,foreground="black",rowheight=20, fieldbackground= self.config.COLOR_MENU_BACKGROUND)
         #self.treeViewStyle.configure("Combobox",background= self.config.COLOR_BACKGROUND,foreground="black",rowheight=30, fieldbackground= self.config.COLOR_MENU_BACKGROUND)
         
         self.varActionType= tk.StringVar()        
         self.varCurrentTemplateName= tk.StringVar()
+        self.varCurrentUrl= tk.StringVar()        
 
         self.var_action_type= tk.StringVar()
         self.var_action_on= tk.StringVar()
@@ -100,12 +109,12 @@ class AddTemplate:
     
     def clear_all_gridview(self):
         for item in self.treev.get_children():
-            self.delete(item)
+            self.treev.delete(item)
 
     def fncCreateItems(self):
         self.varActionType.set("Add Template")
-        self.frmHeader = tk.Frame(self.ContainerFrame,bg= self.config.COLOR_MENU_BACKGROUND)        
-        frmBody = tk.Frame(self.ContainerFrame,bg=self.config.COLOR_MENU_BACKGROUND)
+        self.frmHeader = ttk.Frame(self.ContainerFrame)        
+        frmBody = ttk.Frame(self.ContainerFrame)
         self.ContainerFrame.grid_columnconfigure(0, weight=100)
         self.ContainerFrame.grid_rowconfigure(0, weight=1)
         self.ContainerFrame.grid_rowconfigure(1, weight=100)
@@ -122,37 +131,33 @@ class AddTemplate:
         self.frmHeader.rowconfigure(2, weight=1)
         self.frmHeader.rowconfigure(3, weight=100)
 
-        tk.Label(self.frmHeader,text = "Type",font=self.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).grid(row=0,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)        
-        cmbType=ttk.Combobox(self.frmHeader,state="readonly", width = 24,font=self.displayFont, textvariable = self.varActionType, values=("Add Template","Update Template"))
+        ttk.Label(self.frmHeader,text = "Type").grid(row=0,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)        
+        cmbType=ttk.Combobox(self.frmHeader,state="readonly", width = 24, textvariable = self.varActionType, values=("Add Template","Update Template"))
         
         cmbType.grid(row=0,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
         cmbType.bind("<<ComboboxSelected>>", self.fncChangeTemplateType)
 
-        tk.Label(self.frmHeader,text = "Template Name",font=self.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)        
-        cmbAllTemplate=ttk.Combobox(self.frmHeader,name="cmbTemplateName",state="readonly", width = 24,font=self.displayFont, textvariable = self.varCurrentTemplateName)
-        #cmbAllTemplate.grid(row=1,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-
-        tk.Entry(self.frmHeader,name="txtTemplateName",bg=self.config.COLOR_BACKGROUND, width = 25,font=self.displayFont,textvariable = self.varCurrentTemplateName).grid(row=1,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-        tk.Label(self.frmHeader,text = "Url" ,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND).grid(row=2,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-        tk.Entry(self.frmHeader,name="txtUrl", width = 25,bg=self.config.COLOR_BACKGROUND,font=self.displayFont).grid(row=2,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        ttk.Label(self.frmHeader,text = "Template Name").grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)        
+        cmbAllTemplate=ttk.Combobox(self.frmHeader,name="cmbTemplateName",state="readonly", width = 24, textvariable = self.varCurrentTemplateName)
+        ttk.Entry(self.frmHeader,name="txtTemplateName",width = 26,textvariable = self.varCurrentTemplateName).grid(row=1,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        
+        ttk.Label(self.frmHeader,text = "Url" ,font=self.displayFont).grid(row=2,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        ttk.Entry(self.frmHeader,name="txtUrl",textvariable =self.varCurrentUrl, width = 26).grid(row=2,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
         self.BindDropDownTemplateName()
 
-        #tk.Label(frmHeader,text = "Status" ,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND).grid(row=3,column = 0,padx=(10, 10), pady=(5, 10), sticky=tk.N+tk.S+tk.E)
-        #tk.Label(frmHeader,text = "" ,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND).grid(row=3,column = 1,padx=(10, 10), pady=(5, 10), sticky=tk.N+tk.S+tk.W)
-
-        frmbtn = tk.Frame(self.frmHeader,bg=self.config.COLOR_MENU_BACKGROUND)        
-        frmbtn.grid(row=0,column = 2, rowspan=3, sticky=tk.N+tk.S+tk.W)
         
-        btnSave = tk.Button ( frmbtn, text ="Save", width=10,relief='raised', font=self.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND, command =lambda: self.fncAddAction(treev))
-        btnReset = tk.Button ( frmbtn, text ="Reset", width=10,relief='raised', font=self.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND, command =lambda: self.fncAddAction(treev))
+        frmbtn = ttk.Frame(self.frmHeader)        
+        frmbtn.grid(row=0,column = 2, rowspan=3, sticky=tk.N+tk.S+tk.W)
+        btnSave = ttk.Button( frmbtn, text ="Save", width=10,command =lambda: self.fncSaveData())
+        btnReset = ttk.Button ( frmbtn, text ="Reset", width=10,command =lambda: self.fncResetData())
         
         btnSave.grid(row=0,column = 0 , padx=(10,0),pady=(3,5))        
         btnReset.grid(row=1,column = 0, padx=(10,0),pady=(3,5))
 
 
-        frmbtn1 = tk.Frame(self.frmHeader,name="frmTreeviewhandler",bg=self.config.COLOR_MENU_BACKGROUND)        
+        frmbtn1 = ttk.Frame(self.frmHeader,name="frmTreeviewhandler")        
         frmbtn1.grid(row=3,column = 1, columnspan=3, sticky=tk.N+tk.W+tk.E)
-        btnAddAction = tk.Button ( frmbtn1,name="btnAddAction" ,text =fa.icons['plus'], relief='groove', width=3, font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda: self.fncOpenChildForm() )
+        btnAddAction = tk.Button ( frmbtn1,name="btnAddAction" ,text =fa.icons['plus'], relief='groove', width=3, font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda: self.fncOpenChildForm() )        
         btnRemoveAction = tk.Button ( frmbtn1,name="btnRemoveAction", text =fa.icons['trash'], relief='groove', width=3, state=tk.DISABLED,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda: self.fncRemove() )
         btnMoveUpAction = tk.Button ( frmbtn1,name="btnMoveUpAction", text =fa.icons['arrow-up'], relief='groove', width=3, state=tk.DISABLED,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda: self.fncMoveUp() )
         btnMoveDownAction = tk.Button ( frmbtn1,name="btnMoveDownAction", text =fa.icons['arrow-down'], relief='groove', width=3, state=tk.DISABLED,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda: self.fncMoveDown() )
@@ -226,13 +231,62 @@ class AddTemplate:
         selected_items = self.treev.selection()        
         for selected_item in selected_items:          
             self.treev.delete(selected_item)
-            
+
+    def fncResetData(self):
+        self.varActionType.set("Add Template")
+        self.varCurrentTemplateName.set("")        
+        self.varCurrentUrl.set("")
+        self.clear_all_gridview()
+        self.fncChangeTemplateType(None)
+                
+    def fncSaveData(self):
+        list_of_bool = [True for elem in  self.varAllTemlate["templateName"]
+                            if self.varCurrentTemplateName.get() in elem.values()]
+        if(self.varActionType=="Add Template"):
+            if any(list_of_bool):
+                messagebox.showerror("Already Exists", "Template Name already exists")
+                return
+        if(self.varActionType=="Update Template"):
+            if not any(list_of_bool):
+                messagebox.showerror("Not Exists", "Invalid template name")
+                return
+        if(self.varCurrentUrl==None or self.varCurrentUrl.get()==""):
+            messagebox.showerror("Required", "Required URL")
+            return
         
+        AllAction=[]
+        for item in self.treev.get_children():
+            aDict = {"action_type":item.values["action_type"], "action_on":item.values["action_on"],
+             "control":item.values["control"],"io_name":item.values["io_name"],"control_value":item.values["control_value"]}
+            AllAction.append(aDict)
+        if(len(AllAction)==0):
+            messagebox.showerror("Required", "Please add actions")
+            return
+        
+        AllData={"templateName":self.varCurrentTemplateName.get(),"url":self.varCurrentUrl.get(),"actions":AllAction}
+
+        if(self.varActionType=="Add Template"):
+            self.varAllTemlate.append(AllData)
+        elif (self.varActionType=="Update Template"): 
+            for i, item in enumerate(self.varAllTemlate):
+                if item["templateName"] == self.varCurrentTemplateName.get():
+                    self.varAllTemlate[i] = AllData
+        
+        with open(os.path.join(self.config.FilePath, self.config.TemplateFileName), 'w', encoding='utf-8') as f:
+            json.dump(self.varAllTemlate, f, ensure_ascii=False, indent=4,separators=(',',': '))            
+            tk.messagebox.showinfo("showinfo", "Save Successfully")
+
+            
+
 
     def fncOpenChildForm(self):    
-        chdFrm = tk.Toplevel(self.ContainerFrame, bg=self.config.COLOR_MENU_BACKGROUND)
-        chdFrm.title("Add Action")
-        chdFrm.geometry("400x250")
+        containter = tk.Toplevel(self.ContainerFrame)        
+        containter.title("Add Action")
+        containter.geometry("300x210")
+        #containter.eval('tk::PlaceWindow.center')
+
+        chdFrm=ttk.Frame(containter)        
+        chdFrm.pack(expand=tk.TRUE,fill=tk.BOTH)
         chdFrm.columnconfigure(0, weight=1)
         chdFrm.columnconfigure(1, weight=1)
         chdFrm.columnconfigure(2, weight=100)
@@ -243,17 +297,17 @@ class AddTemplate:
         chdFrm.rowconfigure(4, weight=1)
         chdFrm.rowconfigure(5, weight=1)
         chdFrm.rowconfigure(6, weight=100)
-        tk.Label(chdFrm,text = "Action Type :",font=self.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).grid(row=0,column = 0,padx=(10, 10), pady=(20, 2), sticky=tk.N+tk.S+tk.E)        
-        ttk.Combobox(chdFrm, width = 24,state="readonly" ,font=self.displayFont, textvariable = self.var_action_type, values=self.config.Action_Types).grid(row=0,column = 1,padx=(10, 10), pady=(20, 2), sticky=tk.N+tk.S+tk.W)
-        tk.Label(chdFrm,text = "Action On :",font=self.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)        
-        ttk.Combobox(chdFrm, width = 24,state="readonly",font=self.displayFont, textvariable = self.var_action_on, values=self.config.Action_On).grid(row=1,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-        tk.Label(chdFrm,text = "Control :",name="txtControl" ,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND).grid(row=2,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-        tk.Entry(chdFrm, width = 25,bg=self.config.COLOR_BACKGROUND,font=self.displayFont, textvariable = self.var_control).grid(row=2,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-        tk.Label(chdFrm,text = "IO Name :",font=self.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).grid(row=3,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-        ttk.Combobox(chdFrm, width = 24,state="readonly",font=self.displayFont, textvariable = self.var_io_name, values=self.config.IO_Name).grid(row=3,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-        tk.Label(chdFrm,text = "Default Value :" ,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND).grid(row=4,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-        tk.Entry(chdFrm, width = 25,bg=self.config.COLOR_BACKGROUND,font=self.displayFont, textvariable = self.var_control_value).grid(row=4,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-        tk.Button ( chdFrm, text ="Save", width=10,relief='raised', font=self.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND, command =lambda: self.fncAddAction(chdFrm)).grid(row=5,column = 1 , padx=(10,0),pady=(3,5))
+        ttk.Label(chdFrm,text = "Action Type :").grid(row=0,column = 0,padx=(10, 10), pady=(20, 2), sticky=tk.N+tk.S+tk.E)        
+        ttk.Combobox(chdFrm, width = 24,state="readonly" , textvariable = self.var_action_type, values=self.config.Action_Types).grid(row=0,column = 1,padx=(10, 10), pady=(20, 2), sticky=tk.N+tk.S+tk.W)
+        ttk.Label(chdFrm,text = "Action On :").grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)        
+        ttk.Combobox(chdFrm, width = 24,state="readonly", textvariable = self.var_action_on, values=self.config.Action_On).grid(row=1,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        ttk.Label(chdFrm,text = "Control :",name="txtControl" ).grid(row=2,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        ttk.Entry(chdFrm, width = 26, textvariable = self.var_control).grid(row=2,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        ttk.Label(chdFrm,text = "IO Name :",).grid(row=3,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        ttk.Combobox(chdFrm, width = 24,state="readonly", textvariable = self.var_io_name, values=self.config.IO_Name).grid(row=3,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        ttk.Label(chdFrm,text = "Default Value :" ).grid(row=4,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        ttk.Entry(chdFrm, width = 26, textvariable = self.var_control_value).grid(row=4,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        ttk.Button ( chdFrm, text ="Save", width=10, command =lambda: self.fncAddAction(chdFrm)).grid(row=5,column = 1 , padx=(10,0),pady=(3,5),sticky=tk.N+tk.W)
         chdFrm.grab_set()
     
     def fncAddAction(self,container):
@@ -271,7 +325,7 @@ class AddTemplate:
             messagebox.showerror("Required", "Required IO Name or Default Value")
             return
         
-        self.treev.insert("", 'end',values =(self.var_action_type.get(), self.var_action_on.get(),self.var_control.get(),self.var_io_name.get(),self.var_control.get()))
+        self.treev.insert("", 'end',values =(self.var_action_type.get(), self.var_action_on.get(),self.var_control.get(),self.var_io_name.get(),self.var_control_value.get()))
         self.var_io_name.set("")
         self.var_control_value.set("")
         self.var_control.set("")
@@ -283,13 +337,16 @@ class AddTemplate:
 
 if __name__ == '__main__':
     config= Gc.GenerateConfig()        
+    
     root = tk.Tk()
     sizex = 600
     sizey = 400
     posx  = 100
     posy  = 100
     root.wm_geometry("%dx%d+%d+%d" % (sizex, sizey, posx, posy))
+    config.set_theme(None,root)
     myframe=tk.Frame(root,relief=tk.GROOVE,width=500,height=600,bd=1)
     myframe.pack( fill="both" ,expand=tk.TRUE ,anchor=tk.N+tk.W)   
     AddTemplate(myframe,config)
+    root.eval('tk::PlaceWindow . center')
     root.mainloop()

@@ -1,4 +1,7 @@
 import configparser,os
+from msilib.schema import Font
+from ttkthemes import ThemedStyle
+
 
 class GenerateConfig:
     # CREATE OBJECT
@@ -12,9 +15,29 @@ class GenerateConfig:
     COLOR_TOP_BACKGROUND="#44a2d2"
     COLOR_BACKGROUND="#f2f5f7"
     COLOR_FOREGROUND="#343a40"
-    COLOR_MENU_BACKGROUND="#ffffff"
+    COLOR_MENU_BACKGROUND="#ffffff"    
     displayFont=( "Verdana", 10)
     ChromeDriver="chromedriver.exe"
+    themeName=None
+    customStyle=None
+
+    Action_Types=("Break","Check Checkbox","Click Button","Click Link","Click Submit","Click Reset","Fill Input","Select Option by Text","Select Option by Value" ,"Wait")
+    Action_On=("ByName","ById","BySelector")
+
+    def set_theme(self,event,frameData):
+        self.customStyle= ThemedStyle(frameData)
+        if(self.themeName=="arc"):
+            self.customStyle.theme_use('arc')
+            self.customStyle.configure('TButton', foreground = '#343a40', background = '#44a2d2', Font=("Verdana",10))
+            self.customStyle.configure('TreeViewAction.TButton', foreground = '#44a2d2', background = '#ffffff',Font=("Verdana",10))
+            self.customStyle.configure('TCombobox', background = '#f2f5f7',Font=("Verdana",10))
+            self.customStyle.configure('TFrame', background = '#ffffff')
+            self.customStyle.configure('Topframe.TFrame', background = '#44a2d2')
+            self.customStyle.configure('TEntry', background = '#f2f5f7',Font=("Verdana",10))
+        else :
+            self.customStyle.theme_use('default')
+        print (self.customStyle.theme_use())
+
 
 
     def on_enter_menu(self,e):
@@ -35,6 +58,8 @@ class GenerateConfig:
 
     def __init__(self):                
         self.LoadAllData()
+        
+        
     
     def LoadAllData(self):
         if not os.path.exists(self.ConfigFileName):
@@ -52,7 +77,9 @@ class GenerateConfig:
         self.Password = self.config_file['AFill_Users']['Password']
         self.IO_Name=self.config_file['InputTemplate']['IO_Name'].split(",")
         self.IO_Template=self.config_file['InputTemplate']['IO_Template'].split(",")
+        self.themeName= self.config_file['Themes']['Theme_Name']
 
+        
 
     def fnc_CreateDefaultFile(self):    
         # ADD SECTION
@@ -76,6 +103,10 @@ class GenerateConfig:
         self.config_file.add_section("InputTemplate")
         self.config_file.set("InputTemplate", "IO_Name", "Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Age,Gender,Country of Birth,Nationality,Address Line 1,Address Line 2,City,Country,Postcode,Address Type,Address Status,Date From,Date To,Telephone,Mobile,E Mail")
         self.config_file.set("InputTemplate", "IO_Template", "Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Age,Gender,Country of Birth,Nationality,Address Line 1,Address Line 2,City,Country,Postcode,Address Type,Address Status,Date From,Date To,Telephone,Mobile,E-Mail")
+
+        self.config_file.add_section("Themes")
+        self.config_file.set("Themes", "Theme_Name", "arc")
+        
 
         # SAVE CONFIG FILE
         with open(self.ConfigFileName, 'w') as configfileObj:
