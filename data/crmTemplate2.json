@@ -15,7 +15,7 @@
             "action_on": "ByName",
             "control_id": "Pwd",
 	    "io_name":"",
-            "control_value": "r@ndi420"
+            "control_value": "sdasd"
 	        },
                 {
             "action_type": "Button Click",

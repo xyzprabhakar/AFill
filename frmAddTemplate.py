@@ -36,32 +36,15 @@ class AddTemplate:
     treev=None;
 
     def __init__(self,Container,config):
-        self.config=config
-        #self.combostyle.theme_create('combostyle', parent='alt',settings = {'TCombobox':{'configure':{'selectbackground': self.config.COLOR_TOP_BACKGROUND,'fieldbackground': self.config.COLOR_BACKGROUND,'background': self.config.COLOR_BACKGROUND}}})
-        #self.combostyle.theme_use('combostyle') 
-        #self.treeViewStyle= ttk.Style()
-        #self.treeViewStyle=ThemedStyle(Container)
-        #self.treeViewStyle.set_theme("arc")
-        
-        #self.treeViewStyle.theme_use("default")
-        #self.treeViewStyle.theme_use("arc")
-        
-        #self.treeViewStyle.configure("TCombobox", background=[("readonly", self.config.COLOR_BACKGROUND)])
-        
-        #self.treeViewStyle.configure("TreeView","selectbackground": ,background= self.config.COLOR_BACKGROUND,foreground="black",rowheight=20, fieldbackground= self.config.COLOR_MENU_BACKGROUND)
-        #self.treeViewStyle.configure("Combobox",background= self.config.COLOR_BACKGROUND,foreground="black",rowheight=30, fieldbackground= self.config.COLOR_MENU_BACKGROUND)
-        
+        self.config=config        
         self.varActionType= tk.StringVar()        
         self.varCurrentTemplateName= tk.StringVar()
-        self.varCurrentUrl= tk.StringVar()        
-
+        self.varCurrentUrl= tk.StringVar() 
         self.var_action_type= tk.StringVar()
         self.var_action_on= tk.StringVar()
         self.var_control= tk.StringVar()
         self.var_io_name= tk.StringVar()
-        self.var_control_value= tk.StringVar()
-        #self.varCurrentTemplateName_txt= tk.StringVar()
-        #self.varCurrentTemplateName_cmb= tk.StringVar()
+        self.var_control_value= tk.StringVar()        
         self.Parent_Height=Container["height"]-20
         self.Parent_Width=Container["width"]-20
         self.ContainerFrame=Container        
@@ -78,17 +61,21 @@ class AddTemplate:
             self.frmHeader.children["cmbTemplateName"].grid(row=1,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
             
     def LoadAllJsonData(self):
-        if not os.path.exists(self.config.FilePath):
-            os.makedirs(self.config.FilePath)        
-        if os.path.isfile(os.path.join(self.config.FilePath, self.config.TemplateFileName)) is False:
-            with io.open(os.path.join(self.config.FilePath, self.config.TemplateFileName), 'w') as fp:
-                print('Empty File Created')
-        else:
-            with io.open(os.path.join(self.config.FilePath, self.config.TemplateFileName)) as fp:
-                self.varAllTemlate = json.load(fp)
-                self.varAllTemlateName=[]
-                for x in self.varAllTemlate:
-                    self.varAllTemlateName.append(x["templateName"])
+        try:
+            if not os.path.exists(self.config.FilePath):
+                os.makedirs(self.config.FilePath)        
+            if os.path.isfile(os.path.join(self.config.FilePath, self.config.TemplateFileName)) is False:
+                with io.open(os.path.join(self.config.FilePath, self.config.TemplateFileName), 'w') as fp:
+                    print('Empty File Created')
+            else:
+                with io.open(os.path.join(self.config.FilePath, self.config.TemplateFileName)) as fp:
+                    self.varAllTemlate = json.load(fp)
+                    self.varAllTemlateName=[]
+                    for x in self.varAllTemlate:
+                        self.varAllTemlateName.append(x["templateName"])
+        except Exception as ex:
+            messagebox.showerror("Error", ex)
+
     
     def BindDropDownTemplateName(self ):
         self.LoadAllJsonData()
@@ -97,14 +84,13 @@ class AddTemplate:
 
     def BindExistingTreeview(self,event):
         self.varCurrentTemplate=None        
-        self.clear_all_gridview()
-        #print (self.varCurrentTemplateName.get())
+        self.clear_all_gridview()        
         for template in self.varAllTemlate:
             if template["templateName"]==self.varCurrentTemplateName.get():
                 self.varCurrentTemplate=template
         if(self.varCurrentTemplate != None):
-            for actions in self.varCurrentTemplate["actions"]:
-                #print (actions)
+            self.varCurrentUrl.set(self.varCurrentTemplate["url"])
+            for actions in self.varCurrentTemplate["actions"]:                
                 self.treev.insert("", 'end',values =(actions["action_type"], actions["action_on"],actions["control"],actions["io_name"],actions["control_value"]))
     
     def clear_all_gridview(self):
@@ -240,13 +226,13 @@ class AddTemplate:
         self.fncChangeTemplateType(None)
                 
     def fncSaveData(self):
-        list_of_bool = [True for elem in  self.varAllTemlate["templateName"]
-                            if self.varCurrentTemplateName.get() in elem.values()]
-        if(self.varActionType=="Add Template"):
+        list_of_bool = [True for elem in  self.varAllTemlate
+                            if self.varCurrentTemplateName.get() in elem["templateName"]]
+        if(self.varActionType.get()=="Add Template"):
             if any(list_of_bool):
                 messagebox.showerror("Already Exists", "Template Name already exists")
                 return
-        if(self.varActionType=="Update Template"):
+        if(self.varActionType.get()=="Update Template"):
             if not any(list_of_bool):
                 messagebox.showerror("Not Exists", "Invalid template name")
                 return
@@ -255,9 +241,9 @@ class AddTemplate:
             return
         
         AllAction=[]
-        for item in self.treev.get_children():
-            aDict = {"action_type":item.values["action_type"], "action_on":item.values["action_on"],
-             "control":item.values["control"],"io_name":item.values["io_name"],"control_value":item.values["control_value"]}
+        for item in self.treev.get_children():            
+            aDict = {"action_type":self.treev.item(item)["values"][0] , "action_on":self.treev.item(item)["values"][1],
+             "control":self.treev.item(item)["values"][2],"io_name":self.treev.item(item)["values"][3],"control_value":self.treev.item(item)["values"][4]}
             AllAction.append(aDict)
         if(len(AllAction)==0):
             messagebox.showerror("Required", "Please add actions")
@@ -265,9 +251,9 @@ class AddTemplate:
         
         AllData={"templateName":self.varCurrentTemplateName.get(),"url":self.varCurrentUrl.get(),"actions":AllAction}
 
-        if(self.varActionType=="Add Template"):
+        if(self.varActionType.get()=="Add Template"):
             self.varAllTemlate.append(AllData)
-        elif (self.varActionType=="Update Template"): 
+        elif (self.varActionType.get()=="Update Template"): 
             for i, item in enumerate(self.varAllTemlate):
                 if item["templateName"] == self.varCurrentTemplateName.get():
                     self.varAllTemlate[i] = AllData
@@ -275,16 +261,13 @@ class AddTemplate:
         with open(os.path.join(self.config.FilePath, self.config.TemplateFileName), 'w', encoding='utf-8') as f:
             json.dump(self.varAllTemlate, f, ensure_ascii=False, indent=4,separators=(',',': '))            
             tk.messagebox.showinfo("showinfo", "Save Successfully")
+            self.fncResetData()
 
             
-
-
     def fncOpenChildForm(self):    
         containter = tk.Toplevel(self.ContainerFrame)        
         containter.title("Add Action")
         containter.geometry("300x210")
-        #containter.eval('tk::PlaceWindow.center')
-
         chdFrm=ttk.Frame(containter)        
         chdFrm.pack(expand=tk.TRUE,fill=tk.BOTH)
         chdFrm.columnconfigure(0, weight=1)

@@ -5,33 +5,52 @@
         "actions": [
             {
                 "action_type": "Wait",
-                "action_on": "ByName",                
+                "action_on": "ByName",
                 "control": "surname",
-                "io_name":"Last Name",
-                "control_value": "30"
-                },
-		{
-            "action_type": "Fill Input",
-            "action_on": "ByName",            
-            "control": "surname",
-	        "io_name":"Last Name",
-            "control_value": ""
-	        },
-	{
-            "action_type": "Fill Input",
-            "action_on": "ByName",            
-            "control": "membership",
-	        "io_name":"Mobile",
-            "control_value": ""
-	},{
-            "action_type": "Check Checkbox",
-            "action_on": "ByName",            
-            "control": "confirmation",
-	        "io_name":"",
-            "control_value": "Y"
-	 }
-
-	]        
+                "io_name": "Last Name",
+                "control_value": 30
+            },
+            {
+                "action_type": "Fill Input",
+                "action_on": "ByName",
+                "control": "surname",
+                "io_name": "Last Name",
+                "control_value": ""
+            },
+            {
+                "action_type": "Fill Input",
+                "action_on": "ByName",
+                "control": "membership",
+                "io_name": "Mobile",
+                "control_value": ""
+            },
+            {
+                "action_type": "Check Checkbox",
+                "action_on": "ByName",
+                "control": "confirmation",
+                "io_name": "",
+                "control_value": "Y"
+            },
+            {
+                "action_type": "Break",
+                "action_on": "ById",
+                "control": "sdf",
+                "io_name": "",
+                "control_value": ""
+            }
+        ]
+    },
+    {
+        "templateName": "HSBC",
+        "url": "https://www.hsbc.co.in/security/",
+        "actions": [
+            {
+                "action_type": "Fill Input",
+                "action_on": "ByName",
+                "control": "name",
+                "io_name": "First Name",
+                "control_value": ""
+            }
+        ]
     }
-   
 ]
