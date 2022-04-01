@@ -1,0 +1,4 @@
+Pages 1: "Does Applicant has existing relation ship" for this keyword sdoes we need to find the Bank Account details of each applicant.
+Pages 2: --> point 1, for point number  Inseated of giving the dropdown can we give the textbox so user can Enter the data
+Pages 2: --> point 3, Could not not fnd "Capital Repayment Amount" in Fact Find Template( only Find in IO Template)
+Pages 2: --> point 4, Could not not fnd "Capital Repayment Amount" in Fact Find Template( only Find in IO Template)
