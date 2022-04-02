@@ -106,14 +106,14 @@ class FillData(ttk.Frame):
             IoName=action["io_name"]
             controlValue=action["control_value"]
             
-            controlId=action["control_id"]
+            controlId=action["control"]
             actionOn=action["action_on"]            
             if(len(IoName)>0):
                 finalValue=self.varCurrentData["applicantData"][action["io_name"].strip().replace(' ', '_')]
-            if(len(controlValue)>0):
-                finalValue=controlValue
+            if(controlValue != None and len(str(controlValue))>0):
+                finalValue=str(controlValue)
 
-            if(actiontype=="Wait"):
+            if( actiontype=="Wait"):
                 timeout=int(controlValue)
                 self.driver.implicitly_wait(timeout) 
             if(actiontype=="Fill Input" or actiontype=="Select Option" ):
