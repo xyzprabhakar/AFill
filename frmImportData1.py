@@ -43,9 +43,6 @@ class MainWindow:
         self.varApplicantType = tk.StringVar()
         self.varId=tk.StringVar()
         
-        self.Parent_Height=Container["height"]-20
-        self.Parent_Width=Container["width"]-20
-
         self.ContainerCanvas=tk.Canvas(Container, bg=Container["bg"])
         self.ContainerFrame=tk.Frame(self.ContainerCanvas, bg=Container["bg"])
 
@@ -61,26 +58,6 @@ class MainWindow:
         self.fncCreateItems()
 
 
-
-    def __init__1(self,Container,config):
-        self.canvas=tk.Canvas(Container, bg="red")
-        self.frame=tk.Frame(self.canvas, bg="yellow")
-        myscrollbar=tk.Scrollbar(Container,orient="vertical",command=self.canvas.yview)
-        self.canvas.configure(yscrollcommand=myscrollbar.set)
-        myscrollbar.pack(side="right",fill="y")
-        self.canvas.pack(side="left", fill="both")
-        self.canvas.create_window((0,0),window=self.frame,anchor='nw')
-        self.frame.bind("<Configure>",self.myfunction)
-        
-
-        self.config=config
-        self.varTemplateType = tk.StringVar()
-        self.varApplicantType = tk.StringVar()
-        self.varId=tk.StringVar()
-        #self.data()
-        #self.pack(expand=True, fill=tk.BOTH)                
-        self.fncCreateItems()
-         
     
     def fnc_resizeScroll(self,event):
         #print('Hello World')
@@ -157,17 +134,17 @@ class MainWindow:
         
         
 
-if __name__ == '__main__':
-    config= Gc.GenerateConfig()        
-    root = tk.Tk()
-    sizex = 600
-    sizey = 400
-    posx  = 100
-    posy  = 100
-    root.wm_geometry("%dx%d+%d+%d" % (sizex, sizey, posx, posy))
-    myframe=tk.Frame(root,relief=tk.GROOVE,width=500,height=600,bd=1)
-    myframe.pack( fill="both" ,expand=tk.TRUE ,anchor=tk.N+tk.W)   
-    MainWindow(myframe,config)
-    root.mainloop()
+# if __name__ == '__main__':
+#     config= Gc.GenerateConfig()        
+#     root = tk.Tk()
+#     sizex = 600
+#     sizey = 400
+#     posx  = 100
+#     posy  = 100
+#     root.wm_geometry("%dx%d+%d+%d" % (sizex, sizey, posx, posy))
+#     myframe=tk.Frame(root,relief=tk.GROOVE,width=500,height=600,bd=1)
+#     myframe.pack( fill="both" ,expand=tk.TRUE ,anchor=tk.N+tk.W)   
+#     MainWindow(myframe,config)
+#     root.mainloop()
 
     

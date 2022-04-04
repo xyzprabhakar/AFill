@@ -105,10 +105,11 @@ class AutoFill(tk.Frame):
             #photo = tk.PhotoImage(file = os.path.join(script_dir, thisdict["icon"]) )  
             # Resizing image to fit on button
             #photoimage = photo.subsample(10, 10)
-            button = tk.Radiobutton(parent, name= thisdict["name"], text =thisdict["ficon"] +" "+thisdict["text"] , variable = self.varMenu,	value = thisdict["text"],
+            button = tk.Radiobutton(parent, name= thisdict["name"], text =thisdict["ficon"] +"  "+thisdict["text"] , variable = self.varMenu,	value = thisdict["text"],
              indicator = 0, fg=self.COLOR_FOREGROUND, bg=self.COLOR_MENU_BACKGROUND,selectcolor=self.COLOR_BACKGROUND,
              borderwidth=0,anchor=tk.W,padx=10,
-             command=lambda: self._create_inner_content(container)
+             command=lambda: self._create_inner_content(container),
+             
              #image = photo,compound = tk.LEFT
             )
             #button.image=photo
