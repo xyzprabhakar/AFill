@@ -15,7 +15,8 @@ class GenerateConfig:
     COLOR_TOP_BACKGROUND="#44a2d2"
     COLOR_BACKGROUND="#f2f5f7"
     COLOR_FOREGROUND="#343a40"
-    COLOR_MENU_BACKGROUND="#ffffff"    
+    COLOR_MENU_BACKGROUND="#ffffff"
+    COLOR_MENU_FOREGROUND="#44a2d2"    
     displayFont=( "Verdana", 10)
     ChromeDriver="chromedriver.exe"
     themeName=None

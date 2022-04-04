@@ -50,6 +50,13 @@
                 "control": "name",
                 "io_name": "First Name",
                 "control_value": ""
+            },
+            {
+                "action_type": "Check Checkbox",
+                "action_on": "ById",
+                "control": "zxc",
+                "io_name": "Title",
+                "control_value": "zsd"
             }
         ]
     }

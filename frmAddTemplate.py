@@ -318,18 +318,18 @@ class AddTemplate:
 
     
 
-if __name__ == '__main__':
-    config= Gc.GenerateConfig()        
+# if __name__ == '__main__':
+#     config= Gc.GenerateConfig()        
     
-    root = tk.Tk()
-    sizex = 600
-    sizey = 400
-    posx  = 100
-    posy  = 100
-    root.wm_geometry("%dx%d+%d+%d" % (sizex, sizey, posx, posy))
-    config.set_theme(None,root)
-    myframe=tk.Frame(root,relief=tk.GROOVE,width=500,height=600,bd=1)
-    myframe.pack( fill="both" ,expand=tk.TRUE ,anchor=tk.N+tk.W)   
-    AddTemplate(myframe,config)
-    root.eval('tk::PlaceWindow . center')
-    root.mainloop()
+#     root = tk.Tk()
+#     sizex = 600
+#     sizey = 400
+#     posx  = 100
+#     posy  = 100
+#     root.wm_geometry("%dx%d+%d+%d" % (sizex, sizey, posx, posy))
+#     config.set_theme(None,root)
+#     myframe=tk.Frame(root,relief=tk.GROOVE,width=500,height=600,bd=1)
+#     myframe.pack( fill="both" ,expand=tk.TRUE ,anchor=tk.N+tk.W)   
+#     AddTemplate(myframe,config)
+#     root.eval('tk::PlaceWindow . center')
+#     root.mainloop()
