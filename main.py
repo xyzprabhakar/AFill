@@ -78,7 +78,7 @@ class AutoFill(tk.Frame):
 
     def _create_Master(self):
         frmTopFrame = tk.Frame(self,height=48,width=768,bg=self.COLOR_TOP_BACKGROUND)
-        frmTopFrame.bind("<B1-Motion>",lambda e: self.move_app(e,self.master))        
+        frmTopFrame.bind("<B1-Motion>",lambda e: self.move_app(e,self.master))  
         btnClose = tk.Button(frmTopFrame, text = fa.icons['trash'],font= self.headerFonts,command =self.master.destroy,bg=self.COLOR_TOP_BACKGROUND,fg=self.COLOR_MENU_BACKGROUND,relief=tk.FLAT)
         btnClose.pack(side=tk.RIGHT, pady=7,padx=5)        
         btnClose.bind('<Enter>', self.on_enter_button)

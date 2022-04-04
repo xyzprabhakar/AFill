@@ -20,6 +20,7 @@ class GenerateConfig:
     ChromeDriver="chromedriver.exe"
     themeName=None
     customStyle=None
+    headerFonts =None 
 
     Action_Types=("Break","Check Checkbox","Click Button","Click Link","Click Submit","Click Reset","Fill Input","Select Option by Text","Select Option by Value" ,"Wait")
     Action_On=("ByName","ById","BySelector")
@@ -28,12 +29,14 @@ class GenerateConfig:
         self.customStyle= ThemedStyle(frameData)
         if(self.themeName=="arc"):
             self.customStyle.theme_use('arc')
-            self.customStyle.configure('TButton', foreground = '#343a40', background = '#44a2d2', Font=("Verdana",10))
-            self.customStyle.configure('TreeViewAction.TButton', foreground = '#44a2d2', background = '#ffffff',Font=("Verdana",10))
-            self.customStyle.configure('TCombobox', background = '#f2f5f7',Font=("Verdana",10))
+            self.customStyle.configure('TButton', foreground = '#343a40', background = '#44a2d2', font=("Verdana",10))
+            self.customStyle.configure('TreeViewAction.TButton', foreground = '#44a2d2', background = '#ffffff',font=("Verdana",10))
+            self.customStyle.configure('TCombobox', background = '#f2f5f7',font=("Verdana",10))
             self.customStyle.configure('TFrame', background = '#ffffff')
             self.customStyle.configure('Topframe.TFrame', background = '#44a2d2')
-            self.customStyle.configure('TEntry', background = '#f2f5f7',Font=("Verdana",10))
+            self.customStyle.configure('TEntry', background = '#f2f5f7',font=("Verdana",10))
+            self.customStyle.configure('Toplable.TLabel', background = '#44a2d2',font=("Verdana",15,'bold'),foreground="#ffffff")
+            self.customStyle.configure('Menu.TRadiobutton',indicator=0, background = '#ffffff',font=("Verdana",10,'bold'),foreground="#343a40",selectcolor="#f2f5f7")
         else :
             self.customStyle.theme_use('default')
         print (self.customStyle.theme_use())
@@ -56,7 +59,8 @@ class GenerateConfig:
         e.widget['background'] = self.COLOR_TOP_BACKGROUND
         e.widget['foreground'] = self.COLOR_FOREGROUND 
 
-    def __init__(self):                
+    def __init__(self):   
+        self.headerFonts= ("Verdana", 15, "bold")             
         self.LoadAllData()
         
         
