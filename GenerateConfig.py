@@ -106,8 +106,49 @@ class GenerateConfig:
         self.config_file.set("AFill_Register", "ContactNo", "")
 
         self.config_file.add_section("InputTemplate")
-        self.config_file.set("InputTemplate", "IO_Name", "Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Age,Gender,Country of Birth,Nationality,Address Line 1,Address Line 2,City,Country,Postcode,Address Type,Address Status,Date From,Date To,Telephone,Mobile,E Mail")
-        self.config_file.set("InputTemplate", "IO_Template", "Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Age,Gender,Country of Birth,Nationality,Address Line 1,Address Line 2,City,Country,Postcode,Address Type,Address Status,Date From,Date To,Telephone,Mobile,E-Mail")
+        self.config_file.set("InputTemplate", "IO_Name", "Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,Marital Status,"+
+        "Country of Birth,Nationality,National Insurance No.,Country Of Residence,Country of Birth,"+
+        "CurrentAddress[G],PreviousAddress[A],Mobile,E Mail, Home Telephone[M],Work Telephone[M],ProfessionalContact[A],BankAccount[A],"+                
+        "FamilyAndDependants[A],IDVerification[G],CurrentEmployment[G],Asset[A],Liabilities[A],Expenditure[A],Source of Deposit[M][D]," +
+        "ExistingMortgage[A],MortgageRequirements[A]"
+        )
+        self.config_file.set("InputTemplate", "IO_Name_CurrentAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,"+
+        "Country,Postcode,Residency Status,Date From")
+        self.config_file.set("InputTemplate", "IO_Name_PreviousAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,"+
+        "Country,Postcode,Residency Status,Date From,Date To")
+        self.config_file.set("InputTemplate", "IO_Name_ProfessionalContact","Contact Type,Contact Name,Company Name,Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,"+
+        "Country,Postcode,Telephone Number,Mobile Number,Email Address")
+        self.config_file.set("InputTemplate", "IO_Name_BankAccount","Owner,Bank Name,Account Holder(s),Account Number,Sort Code")
+        self.config_file.set("InputTemplate", "IO_Name_FamilyAndDependants","Full Name,Date of Birth,Age,Age,Relationship,Related To,Financially Dependant?,","Living with Client(s),")
+        self.config_file.set("InputTemplate", "IO_Name_IDVerification","Original Driving Licence Seen,Driving Licence Ref,Driving Licence Expiry Date,Original Passport Seen,Country of Origin,Passport ref,Passport Expiry Date,Mother's Maiden Name,Electricity Bill Ref,Bank Statement Seen,Mortgage Statement Seen,Council Tax Bill Seen,Utilities Bill Seen")
+        self.config_file.set("InputTemplate", "IO_Name_CurrentEmployment","Highest rate of income tax paid (%),Owner,Employment Status,Occupation,Shareholding percentage[M],Contractor[M],Inside IR35[M],Employer,Business Type,Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,Country,Post Code,Intended Retirement Age,Start Date,"+
+        "Most Recent Annual Accounts Net Profit,Most Recent Annual Accounts Net Dividend,Most Recent Annual Accounts Salary,Most Recent Annual Accounts Year End,"+
+        "Year 2 Annual Accounts Net Profit,Year 2 Annual Accounts Net Dividend,Year 2 Annual Accounts Salary,Year 2 Year End,"+
+        "Year 3 Annual Accounts Net Profit,Year 3 Annual Accounts Net Dividend,Year 3 Annual Accounts Salary,Year 3 Year End,"+
+        "Gross Basic Annual Income,Net Basic Monthly Income,Net Basic Monthly Income,Do you receive Overtime Income?,Gross Guaranteed Annual Overtime,"+
+        "Net Guaranteed Monthly Overtime,Gross Regular Annual Overtime,Net Regular Monthly Overtime,Do you receive Bonus Income?,Gross Guaranteed Annual Bonus,Net Guaranteed Annual Bonus,Gross Regular Annual Bonus,Net Regular Annual Bonus,"+
+        "Other Gross Income,Total Gross Annual Earnings,In Probation,"
+        )
+        self.config_file.set("InputTemplate", "IO_Name_Asset","Owner,Category,Related to Address,Original Value,Purchased On,Value,Valuation Date,"+
+        "Address Line 1[M],Address Line 2[M],Address Line 3[M],Address Line 4[M],City[M],Country[M],Postcode[M]")
+        self.config_file.set("InputTemplate", "IO_Name_Liabilities","Owner,Liability Account Number,Liability Category,Original Loan Amount,Repayment or Interest Only?,Rate Type,Interest Rate (%) ,"+
+        "Payment Amount (Monthly),Lender,Loan Term (years),Start Date[M],End Date,Early Redemption Charge,Whether liability is to be repaid?,How will liability be repaid")
+        self.config_file.set("InputTemplate", "IO_Name_Expenditure","Category[D],Owner,Net Amount,Frequency")
+        self.config_file.set("InputTemplate", "IO_Name_ExistingMortgage","Owner,Lender,Policy Number,Address Line 1,Rate Type,Mortage Type,Are you a First Time Buyer,"+
+        "Property Type,Repayment Method,Capital Repayment Amount,Interest Only Amount,Interest Only Repayment Vehicle,"
+        "Original Loan Amoun,Interest Rate %,Base Rate,Feature Expires,Original Mortgage Term,Start Date,End Date,Remaining Term,"+
+        "Current Balance,Account Number,Is the loan subject to Redemption Penalty?,Redemption End Date,Consent to Let?,Linked to Asset,Asset Value")
+        self.config_file.set("InputTemplate", "IO_Name_MortgageRequirements","Owner,RequirementType[M][D],")
+
+
+        self.config_file.set("InputTemplate", "IO_Name_D_Expenditure_Category","Council Tax,Gas,Electricity,Water,Telephone/Mobile,Food & Personal Care,Car/Travelling Expenses,Housekeeping,Building Insurance,"
+        "Combined Utilities,Maintenance/Alimony,Clothing,TV/Satellite/Internet/Basic Recreation,School Fee/Childcare,Life/General Assurance Premium,Other (Non-Essential)")
+        self.config_file.set("InputTemplate", "IO_Name_D_SourceofDeposit","Builder Gift,Customer’s Bank Account-UK/Savings,Equity,Gifted Deposit,Immediate Family Gift,Inheritance,Loan,Proceeds of house sale,Sale Of Other Property,Vendor Gifted")
+        self.config_file.set("InputTemplate", "IO_Name_D_MortgageRequirements_RequirementType","Builder Gift,Customer’s Bank Account-UK/Savings,Equity,Gifted Deposit,Immediate Family Gift,Inheritance,Loan,Proceeds of house sale,Sale Of Other Property,Vendor Gifted")
+
+
+        self.config_file.set("InputTemplate", "IO_Template", "Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,"+
+        "Country of Birth,Nationality,National Insurance No.,Country Of Residence,Country of Birth,Address Line 1,Address Line 2,City,Country,Postcode,Address Type,Address Status,Date From,Date To,Telephone,Mobile,E-Mail")
 
         self.config_file.add_section("Themes")
         self.config_file.set("Themes", "Theme_Name", "arc")
