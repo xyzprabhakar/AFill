@@ -10,11 +10,8 @@ from ttkthemes import ThemedStyle
 
 
 class AddTemplate:
-    config=None
-    ContainerCanvas=None
-    ContainerFrame=None
-    Parent_Height=500
-    Parent_Width=600
+    config=None    
+    ContainerFrame=None    
     displayFont = ( "Verdana", 10)
     combostyle=None
     treeViewStyle=None
@@ -25,8 +22,6 @@ class AddTemplate:
     varCurrentTemplate=None
     varCurrentTemplateName=None
     varCurrentUrl=None
-    
-    
     var_action_type=None
     var_action_on=None
     var_control=None
@@ -44,11 +39,8 @@ class AddTemplate:
         self.var_action_on= tk.StringVar()
         self.var_control= tk.StringVar()
         self.var_io_name= tk.StringVar()
-        self.var_control_value= tk.StringVar()        
-        self.Parent_Height=Container["height"]-20
-        self.Parent_Width=Container["width"]-20
+        self.var_control_value= tk.StringVar()                
         self.ContainerFrame=Container        
-        
         self.LoadAllJsonData()
         self.fncCreateItems()
     
