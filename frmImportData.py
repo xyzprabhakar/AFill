@@ -97,7 +97,7 @@ class ImportData(ttk.Frame):
             tables = tabula.read_pdf(open_file,pages="all") #address of pdf file
             ioindex=0
             dataFound=0
-            for x in self.config.IO_Name:                
+            for x in self.config.IO_Name_PersonalDetail:
                 dataFound=0
                 for table in tables:
                     for i, j in table.iterrows():
