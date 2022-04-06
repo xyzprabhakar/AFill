@@ -34,9 +34,11 @@ class GenerateConfig:
             self.customStyle.configure('TreeViewAction.TButton', foreground = '#44a2d2', background = '#ffffff',font=("Verdana",10))
             self.customStyle.configure('TCombobox', background = '#f2f5f7',font=("Verdana",10))
             self.customStyle.configure('TFrame', background = '#ffffff')
+            self.customStyle.configure('Separator.TFrame', background = '#44a2d2')
             self.customStyle.configure('Topframe.TFrame', background = '#44a2d2')
             self.customStyle.configure('TEntry', background = '#f2f5f7',font=("Verdana",10))
             self.customStyle.configure('Toplable.TLabel', background = '#44a2d2',font=("Verdana",15,'bold'),foreground="#ffffff")
+            self.customStyle.configure('H1.TLabel', background = '#ffffff',font=("Verdana",12,'bold'))
             self.customStyle.configure('Menu.TRadiobutton',indicator=0, background = '#ffffff',font=("Verdana",10,'bold'),foreground="#343a40",selectcolor="#f2f5f7")
         else :
             self.customStyle.theme_use('default')
@@ -69,7 +71,6 @@ class GenerateConfig:
     def LoadAllData(self):
         if not os.path.exists(self.ConfigFileName):
             self.fnc_CreateDefaultFile()
-
         self.config_file.read(self.ConfigFileName)
         self.Name = self.config_file['AFill_Register']['Name']
         self.Email = self.config_file['AFill_Register']['Email']
@@ -82,6 +83,11 @@ class GenerateConfig:
         self.Password = self.config_file['AFill_Users']['Password']
         self.IO_Name=self.config_file['InputTemplate']['IO_Name'].split(",")
         self.IO_Template=self.config_file['InputTemplate']['IO_Template'].split(",")
+        self.IO_Name_PersonalDetail=self.config_file['InputTemplate']['IO_Name_PersonalDetail'].split(",")
+        self.IO_Template_PersonalDetail=self.config_file['InputTemplate']['IO_Template_PersonalDetail'].split(",")
+        self.IO_Name_CurrentAddress=self.config_file['InputTemplate']['IO_Name_CurrentAddress'].split(",")
+        self.IO_Template_CurrentAddress=self.config_file['InputTemplate']['IO_Template_CurrentAddress'].split(",")
+        
         self.themeName= self.config_file['Themes']['Theme_Name']
 
         
@@ -112,8 +118,11 @@ class GenerateConfig:
         "FamilyAndDependants[A],IDVerification[G],CurrentEmployment[G],Asset[A],Liabilities[A],Expenditure[A],Source of Deposit[M][D]," +
         "ExistingMortgage[A],MortgageRequirements[A]"
         )
-        self.config_file.set("InputTemplate", "IO_Name_CurrentAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,"+
-        "Country,Postcode,Residency Status,Date From")
+        self.config_file.set("InputTemplate", "IO_Name_PersonalDetail","Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,Marital Status,Country of Birth,Nationality,National Insurance No.,Country Of Residence,Country of Birth")
+        self.config_file.set("InputTemplate", "IO_Template_PersonalDetail","Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,Marital Status,Country of Birth,Nationality,National Insurance No.,Country Of Residence,Country of Birth")
+        self.config_file.set("InputTemplate", "IO_Name_CurrentAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,Country,Postcode,Residency Status,Date From")
+        self.config_file.set("InputTemplate", "IO_Template_CurrentAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City / Town,Country,Postcode,Residency Status,Date From")
+
         self.config_file.set("InputTemplate", "IO_Name_PreviousAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,"+
         "Country,Postcode,Residency Status,Date From,Date To")
         self.config_file.set("InputTemplate", "IO_Name_ProfessionalContact","Contact Type,Contact Name,Company Name,Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,"+
@@ -138,8 +147,9 @@ class GenerateConfig:
         "Property Type,Repayment Method,Capital Repayment Amount,Interest Only Amount,Interest Only Repayment Vehicle,"
         "Original Loan Amoun,Interest Rate %,Base Rate,Feature Expires,Original Mortgage Term,Start Date,End Date,Remaining Term,"+
         "Current Balance,Account Number,Is the loan subject to Redemption Penalty?,Redemption End Date,Consent to Let?,Linked to Asset,Asset Value")
-        self.config_file.set("InputTemplate", "IO_Name_MortgageRequirements","Owner,RequirementType[M][D],")
-
+        self.config_file.set("InputTemplate", "IO_Name_MortgageRequirements","Owner,RequirementType[M][D],Mortage Type,Property,Number of Bedrooms,Number of living rooms,Number of kitchen,Number of Toilets,Number of bathrooms,Parking space,Garage,Is area > 2 acres"+
+        "Repayment Method,Tenure Type[M][D],Region[M],Year Built[M],Property Type[M],Property Description[M],Repayment Method,Capital Repayment Amount,Interest Only Amount,Price/Valuation,Deposit/Equity,Loan,LTV(%),Term,Source Of Deposit")
+        
 
         self.config_file.set("InputTemplate", "IO_Name_D_Expenditure_Category","Council Tax,Gas,Electricity,Water,Telephone/Mobile,Food & Personal Care,Car/Travelling Expenses,Housekeeping,Building Insurance,"
         "Combined Utilities,Maintenance/Alimony,Clothing,TV/Satellite/Internet/Basic Recreation,School Fee/Childcare,Life/General Assurance Premium,Other (Non-Essential)")
