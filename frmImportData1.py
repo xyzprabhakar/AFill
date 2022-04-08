@@ -193,15 +193,19 @@ class ImportData:
         FoundApplicant=False
         IsFound=False
         columnLength=len(DetailTable.columns)
+        if(PreviousColumnIndex>=columnLength-1):
+            PreviousColumnIndex=0
+            PreviousRowIndex=+1
+
         RowIndex=PreviousRowIndex
         ColumnIndex=PreviousColumnIndex+1
+        
+
         CurrentIndex={"row":RowIndex,"column":ColumnIndex,"IsFound":IsFound}        
         self.CurrentDepthCount+=1
         if(self.RecursionDepthCount<self.CurrentDepthCount):
             return CurrentIndex
         for i, row in DetailTable.iterrows():
-            if(i==17):
-                pass
             try:
                 if(i<PreviousRowIndex):
                     continue
@@ -219,7 +223,6 @@ class ImportData:
                         IsFound=True
                         break
                     if(row[0]=="Addressee" and i>RowIndex):
-                        RowIndex=i
                         break
             except Exception as ex:
                 print("Error", ex)
@@ -227,14 +230,17 @@ class ImportData:
             CurrentIndex["row"]=RowIndex 
             CurrentIndex["column"]=ColumnIndex
             CurrentIndex["IsFound"]=True
-        if(self.RecursionDepthCount>self.CurrentDepthCount):            
-            return self.fnc_Read_Address_GetRowColumnIndex(DetailTable,RowIndex,ColumnIndex,Adressee, IsCurrentAddress )
+        else:
+            if(self.RecursionDepthCount>self.CurrentDepthCount):            
+                if(ColumnIndex+1<=columnLength-1):
+                    return self.fnc_Read_Address_GetRowColumnIndex(DetailTable,PreviousRowIndex,ColumnIndex,Adressee, IsCurrentAddress )
+                else :
+                    return self.fnc_Read_Address_GetRowColumnIndex(DetailTable,PreviousRowIndex+1,0,Adressee, IsCurrentAddress )
         return CurrentIndex
             
          
 
-    def fnc_Read_PreviousAddress_IO_Template(self,ParentContainer,Applicantid):        
-        IsEvenColumn=False
+    def fnc_Read_PreviousAddress_IO_Template(self,ParentContainer,Applicantid):                
         gridrowindex,gridcolumnindex=-1,0        
         columnIndex,rowIndex =0,0
         DetailTable=None        
@@ -246,43 +252,20 @@ class ImportData:
                 foundTable=True
                 break
         if(foundTable):            
-            #columnLength=len(DetailTable.columns)            
+            columnLength=len(DetailTable.columns)            
             PreviousAddressCounter=0
             PreviousColumnIndex=0
             PreviousRowIndex=0
             Addressee= self.varApplicant1.get() if (Applicantid==1)  else self.varApplicant2.get() if (Applicantid==2) else ""
-            if PreviousAddressCounter < 4:
-                columnIndex=PreviousColumnIndex+1
+            while PreviousAddressCounter < 4:
+                IsEvenColumn=False
                 foundItem=False
                 tempData=self.fnc_Read_Address_GetRowColumnIndex(DetailTable,PreviousRowIndex,PreviousColumnIndex,Addressee,False )
-                foundItem=tempData["IsFound"]
-                
-
-                
-                # for i, row in DetailTable.iterrows():
-                #     if(row[0]=="Addressee"):
-                #         foundApplicant=False
-                #         rowIndex=i
-                #         while (columnIndex<columnLength):                        
-                #             if((Applicantid==1 and self.varApplicant1.get()==row[columnIndex]) or (Applicantid==2 and self.varApplicant2.get()==row[columnIndex])):
-                #                 foundApplicant=True
-                #                 break
-                #             columnIndex+=1    
-                #     if(foundApplicant):
-                #         if(rowIndex<i and row[0]=="Addressee"):
-                #             pass
-                #         elif(row[0]=="Address Status" and row[columnIndex]=="Previous Address"):
-                #             foundItem=True
-                #             PreviousColumnIndex=columnIndex
-                #             break
-                #     else:
-                #         columnIndex=1
-                #         PreviousColumnIndex=0
-
+                foundItem=tempData["IsFound"]                
                 if(foundItem):
                     PreviousColumnIndex=tempData["column"]
                     PreviousRowIndex=tempData["row"]
-                    rowIndex=PreviousColumnIndex
+                    rowIndex=PreviousRowIndex
                     columnIndex=PreviousColumnIndex
                     for ioindex,x in enumerate(self.config.IO_Name_CurrentAddress):                    
                         for i, j in DetailTable.iterrows():
@@ -309,10 +292,10 @@ class ImportData:
                                     break
                             #except Exception as ex:
                                 #print("Error", ex)
-                #add Seprator
-                gridrowindex=gridrowindex+1
-                ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(row=gridrowindex, column=0,columnspan=4, sticky=tk.E+tk.W, pady=(5,5))
-                PreviousAddressCounter+1
+                    #add Seprator
+                    gridrowindex=gridrowindex+1
+                    ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(row=gridrowindex, column=0,columnspan=4, sticky=tk.E+tk.W, pady=(5,5))
+                PreviousAddressCounter+=1
     
 
     def hide_unhide_applicant(self,event,ParentFrame):
