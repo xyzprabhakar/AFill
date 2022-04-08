@@ -1,30 +1,43 @@
+# Import the required library
 from tkinter import *
+from tkinter import ttk
+from tkinter import messagebox
+
+# Create an instance of tkinter frame
+win=Tk()
+
+# Set the geometry
+win.geometry("700x350")
+
+# Add a Scrollbar(horizontal)
+v=Scrollbar(win, orient='vertical')
+v.pack(side=RIGHT, fill='y')
+
+# Add a text widget
+tx=Text(win, font=("Georgia, 24"), yscrollcommand=v.set)
 
 
-top = Tk()
-top.geometry("450x300")
+
+for i in range(50):
+	# the label for user_name
+	user_name = Label(tx,
+					text = "Username" + str(i)).grid(row=(i*2)+1,
+											column=0)		
+	# the label for user_password
+	user_password = Label(tx,
+						text = "Password").grid(row=(i*2)+2,
+											column=0)
+	user_name_input_area = Entry(tx,
+							width = 30).grid(row=(i*2)+1,
+											column=1)
 	
-# the label for user_name
-user_name = Label(top,
-				text = "Username").place(x = 40,
-										y = 60)
+	user_password_entry_area = Entry(tx,
+								width = 30).grid(row=(i*2)+2,
+											column=1)
 	
-# the label for user_password
-user_password = Label(top,
-					text = "Password").place(x = 40,
-											y = 100)
-	
-submit_button = Button(top,
-					text = "Submit").place(x = 40,
-											y = 130)
-	
-user_name_input_area = Entry(top,name="txtUserName",
-							width = 30).place(x = 110,
-											y = 60)
-	
-user_password_entry_area = Entry(top,
-								width = 30).place(x = 110,
-												y = 100)
-print(top.children["txtUserName"].insert(0,"hello World")) 
-	
-top.mainloop()
+
+# Attach the scrollbar with the text widget
+v.config(command=tx.yview)
+tx.pack()
+
+win.mainloop()

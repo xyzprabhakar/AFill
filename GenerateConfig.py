@@ -121,8 +121,8 @@ class GenerateConfig:
         "FamilyAndDependants[A],IDVerification[G],CurrentEmployment[G],Asset[A],Liabilities[A],Expenditure[A],Source of Deposit[M][D]," +
         "ExistingMortgage[A],MortgageRequirements[A]"
         )
-        self.config_file.set("InputTemplate", "IO_Name_PersonalDetail","Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,Marital Status,Country of Birth,Nationality,National Insurance No.,Country Of Residence,Country of Birth")
-        self.config_file.set("InputTemplate", "IO_Template_PersonalDetail","Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,Marital Status,Country of Birth,Nationality,National Insurance No.,Country Of Residence,Country of Birth")
+        self.config_file.set("InputTemplate", "IO_Name_PersonalDetail","Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,Marital Status,Country of Birth,Nationality,National Insurance No.,Country Of Residence")
+        self.config_file.set("InputTemplate", "IO_Template_PersonalDetail","Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,Marital Status,Country of Birth,Nationality,National Insurance No.,Country Of Residence")
         self.config_file.set("InputTemplate", "IO_Name_CurrentAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,Country,Postcode,Residency Status,Date From")
         self.config_file.set("InputTemplate", "IO_Template_CurrentAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City / Town,Country,Postcode,Residency Status,Date From")
         self.config_file.set("InputTemplate", "IO_Name_PreviousAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,Country,Postcode,Residency Status,Date From,Date To")

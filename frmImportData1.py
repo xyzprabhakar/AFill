@@ -4,11 +4,12 @@
 #from pdfminer.layout import LAParams
 #from pdfminer.pdfpage import PDFPage
 
+import ctypes
 import os
 import tabula 
 #from tabula import read_pdf
 #from tabulate import tabulate
-
+import pandas as pd
 import io
 import tkinter as tk
 from tkinter.filedialog import askopenfile, askopenfilename
@@ -47,18 +48,20 @@ class ImportData:
         self.ContainerCanvas= tk.Canvas(Container,bg=self.config.COLOR_MENU_BACKGROUND, highlightthickness=0, relief='ridge')
         self.ContainerFrame=ttk.Frame(self.ContainerCanvas)
 
-        scrollbar_y=tk.Scrollbar(Container,orient= tk.VERTICAL,command=self.ContainerCanvas.yview)
+        self.scrollbar_y=tk.Scrollbar(Container,orient= tk.VERTICAL,command=self.ContainerCanvas.yview)
         scrollbar_x=tk.Scrollbar(Container,orient=tk.HORIZONTAL ,command=self.ContainerCanvas.xview)        
-        scrollbar_y.pack(side=tk.RIGHT ,fill="y")
+        self.scrollbar_y.pack(side=tk.RIGHT ,fill="y")
         scrollbar_x.pack(side=tk.BOTTOM,fill="x")
-        self.ContainerCanvas.configure(yscrollcommand=scrollbar_y.set,xscrollcommand=scrollbar_x.set)
+        self.ContainerCanvas.configure(yscrollcommand=self.scrollbar_y.set,xscrollcommand=scrollbar_x.set)
         self.ContainerCanvas.pack(expand=tk.TRUE, fill="both")
         self.ContainerCanvas.create_window((0,0),window=self.ContainerFrame,anchor='n')
         self.ContainerFrame.bind("<Configure>",self.fnc_resizeScroll)
+        self.ContainerCanvas.bind_all("<MouseWheel>", self.OnMouseWheel)
         self.fncCreateItems()
 
 
-
+    def OnMouseWheel(self,event):
+        self.ContainerCanvas.yview_scroll(int(-1*(event.delta/120)), "units")
     
     def fnc_resizeScroll(self,event):        
         self.ContainerCanvas.configure(scrollregion=self.ContainerCanvas.bbox("all"),width=self.Parent_Width,height=self.Parent_Height)
@@ -108,6 +111,36 @@ class ImportData:
         entrybox.insert(0,FindingValue)
         entrybox.grid(row=self.gridrowindex,column =(self.gridcolumnindex + 1) , sticky=tk.N+tk.S+tk.W,padx=(10,10),pady=(5,2))
                                 
+    def fun_mergetables(self,table,IsPrentTable):
+        currentColumnLength=len(table.columns) 
+        if(IsPrentTable):
+            self.tableData=[]
+            self.tableDataColumnLength=len(table.columns) 
+            self.tableDataColumnName=[]
+            for colindex in range(self.tableDataColumnLength):
+                self.tableDataColumnName.append("columns"+str(colindex))
+        else:
+            subrow1=[] 
+            for colindex in range(self.tableDataColumnLength):
+                if(colindex>=currentColumnLength):
+                   subrow1.append("") 
+                else:
+                   subrow1.append(table.columns[colindex]) 
+            self.tableData.append(subrow1)        
+              
+        for i, j in table.iterrows():
+            subrow2=[]
+            for colindex in range(self.tableDataColumnLength):
+                if(colindex>=currentColumnLength):
+                   subrow2.append("") 
+                else:
+                    try:
+                        subrow2.append(j[colindex])
+                    except:
+                        subrow2.append("")            
+            self.tableData.append(subrow2)
+            
+
 
     def fnc_Read_PersonalDetails_IO_Template(self,ParentContainer,Applicantid):        
         self.IsEvenColumn=False
@@ -131,109 +164,6 @@ class ImportData:
             
             for ioindex,x in enumerate(self.config.IO_Name_PersonalDetail):
                 self.fnc_GenrateControl(ParentContainer,PersonalDetailTable,Applicantid,0,x,self.config.IO_Template_PersonalDetail[ioindex],"txt_PersonalDetails_"+str(Applicantid))
-
-
-    def fnc_Read_PersonalDetails_IO_Template1(self,ParentContainer,Applicantid):        
-        IsEvenColumn=False
-        gridrowindex=-1
-        gridcolumnindex=0
-        PersonalDetailTable=None        
-        foundTable=False
-        for tableindex,table in enumerate(self.tables):
-            if(table.columns[0]=="ersonal Details"):
-                PersonalDetailTable=table
-                foundTable=True
-                break
-        if(foundTable):            
-            for i, j in PersonalDetailTable.iterrows():
-                if(i==0):
-                    if(Applicantid==1):
-                        self.varApplicant1.set(j[1]) 
-                    elif(Applicantid==2):
-                        self.varApplicant2.set(j[2]) 
-                for ioindex,x in enumerate(self.config.IO_Name_PersonalDetail):
-                    #try:
-                        if(j[0]==self.config.IO_Template_PersonalDetail[ioindex]):
-                            if(IsEvenColumn):
-                                IsEvenColumn=False
-                                gridcolumnindex=2
-                            else:
-                                IsEvenColumn=True
-                                gridcolumnindex=0
-                                gridrowindex=gridrowindex+1
-                            ttk.Label(ParentContainer,text = x).grid(row=gridrowindex,column = gridcolumnindex, sticky=tk.N+tk.S+tk.E,padx=(10,10),pady=(5,2))
-                            txtboxname="txt_PersonalDetails_"+str(Applicantid)+x.strip().replace(' ', '_')
-                            entrybox=ttk.Entry(ParentContainer, name=txtboxname)
-                            ResponseData=""
-                            if(Applicantid==1):
-                                ResponseData=j[1]
-                            elif(Applicantid==2):
-                                ResponseData=j[2]                            
-                            if(str(ResponseData) =="nan"):
-                                ResponseData=""
-                            entrybox.insert(0, ResponseData)                            
-                            entrybox.grid(row=gridrowindex,column =(gridcolumnindex + 1) , sticky=tk.N+tk.S+tk.W,padx=(10,10),pady=(5,2))
-                            break
-                    #except Exception as ex:
-                        #print("Error", ex)
-            
-
-    def fnc_Read_CurrentAddress_IO_Template(self,ParentContainer,Applicantid):                
-        gridrowindex,gridcolumnindex=-1,0        
-        columnIndex,rowIndex =0,0
-        DetailTable=None        
-        foundTable,foundItem=False ,False          
-        self.RecursionDepthCount,self.CurrentDepthCount=15,0              
-        for table in self.tables:
-            if(table.columns[0]=="ontact Address"):
-                DetailTable=table
-                foundTable=True
-                break
-        if(foundTable):            
-            columnLength=len(DetailTable.columns)            
-            PreviousAddressCounter=0
-            PreviousColumnIndex=0
-            PreviousRowIndex=0
-            Addressee= self.varApplicant1.get() if (Applicantid==1)  else self.varApplicant2.get() if (Applicantid==2) else ""
-            while PreviousAddressCounter < 1:
-                IsEvenColumn=False
-                foundItem=False
-                tempData=self.fnc_Read_Address_GetRowColumnIndex(DetailTable,PreviousRowIndex,PreviousColumnIndex,Addressee,True )
-                foundItem=tempData["IsFound"]                
-                if(foundItem):
-                    PreviousColumnIndex=tempData["column"]
-                    PreviousRowIndex=tempData["row"]
-                    rowIndex=PreviousRowIndex
-                    columnIndex=PreviousColumnIndex
-                    for ioindex,x in enumerate(self.config.IO_Name_CurrentAddress):                    
-                        for i, j in DetailTable.iterrows():
-                            if(i<=rowIndex):
-                                continue
-                            else:
-                            #try:
-                                if(j[0]==self.config.IO_Template_CurrentAddress[ioindex]):
-                                    if(IsEvenColumn):
-                                        IsEvenColumn=False
-                                        gridcolumnindex=2
-                                    else:
-                                        IsEvenColumn=True
-                                        gridcolumnindex=0
-                                        gridrowindex=gridrowindex+1
-                                    ttk.Label(ParentContainer,text = x).grid(row=gridrowindex,column = gridcolumnindex, sticky=tk.N+tk.S+tk.E,padx=(10,10),pady=(5,2))
-                                    txtboxname="txt_CurrentAddress_"+str(Applicantid)+x.strip().replace(' ', '_')
-                                    entrybox=ttk.Entry(ParentContainer, name=txtboxname)                            
-                                    ResponseData=j[columnIndex]
-                                    if(str(ResponseData) =="nan"):
-                                        ResponseData=""
-                                    entrybox.insert(0,ResponseData)
-                                    entrybox.grid(row=gridrowindex,column =(gridcolumnindex + 1) , sticky=tk.N+tk.S+tk.W,padx=(10,10),pady=(5,2))
-                                    break
-                            #except Exception as ex:
-                                #print("Error", ex)
-                    #add Seprator
-                    gridrowindex=gridrowindex+1
-                    ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(row=gridrowindex, column=0,columnspan=4, sticky=tk.E+tk.W, pady=(5,5))
-                PreviousAddressCounter+=1
 
     def fnc_Read_Address_GetRowColumnIndex(self,DetailTable,PreviousRowIndex,PreviousColumnIndex,Adressee, IsCurrentAddress ):        
         FoundApplicant=False
@@ -283,26 +213,87 @@ class ImportData:
                 else :
                     return self.fnc_Read_Address_GetRowColumnIndex(DetailTable,PreviousRowIndex+10,0,Adressee, IsCurrentAddress )
         return CurrentIndex
+    
+    def fnc_Read_CurrentAddress_IO_Template(self,ParentContainer,Applicantid):                
+        self.gridrowindex,self.gridcolumnindex=-1,0        
+        columnIndex,rowIndex =0,0
+        DetailTable=None        
+        foundTable,foundItem=False ,False          
+        self.RecursionDepthCount,self.CurrentDepthCount=15,0
+        if(self.CurrentAddressFound):
+            DetailTable=pd.DataFrame(self.tableData, columns = self.tableDataColumnName)
+            foundTable=True
+        else:            
+            for tableindex ,table in enumerate(self.tables) :
+                if(table.columns[0]=="ontact Address"):
+                    self.fun_mergetables(table,True)
+                    #check Next Table is on Next Page
+                    if (not (self.tables[tableindex+1].columns[0]=="ontact Details")):
+                        self.fun_mergetables(self.tables[tableindex+1],False)
+                        #check Next Table is on Next to Next Page
+                        if (not (self.tables[tableindex+2].columns[0]=="ontact Details")):
+                            self.fun_mergetables(self.tables[tableindex+2],False)                
+                    DetailTable=pd.DataFrame(self.tableData, columns = self.tableDataColumnName)
+                    foundTable=True
+                    self.CurrentAddressFound=True
+                    break
+                    
+                
+        if(foundTable):                
+            PreviousAddressCounter=0
+            PreviousColumnIndex=0
+            PreviousRowIndex=0
+            Addressee= self.varApplicant1.get() if (Applicantid==1)  else self.varApplicant2.get() if (Applicantid==2) else ""
+            while PreviousAddressCounter < 1:
+                self.IsEvenColumn=False
+                foundItem=False
+                tempData=self.fnc_Read_Address_GetRowColumnIndex(DetailTable,PreviousRowIndex,PreviousColumnIndex,Addressee,True )
+                foundItem=tempData["IsFound"]                
+                if(foundItem):
+                    PreviousColumnIndex=tempData["column"]
+                    PreviousRowIndex=tempData["row"]
+                    rowIndex=PreviousRowIndex
+                    columnIndex=PreviousColumnIndex
+
+                    for ioindex,x in enumerate(self.config.IO_Name_CurrentAddress):
+                        self.fnc_GenrateControl(ParentContainer,DetailTable,columnIndex,rowIndex,x,self.config.IO_Template_CurrentAddress[ioindex],"txt_CurrentAddress_"+str(Applicantid))
+
+                    self.gridrowindex=self.gridrowindex+1
+                    ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(row=self.gridrowindex, column=0,columnspan=4, sticky=tk.E+tk.W, pady=(5,5))
+                PreviousAddressCounter+=1
+
          
     def fnc_Read_PreviousAddress_IO_Template(self,ParentContainer,Applicantid):                
-        gridrowindex,gridcolumnindex=-1,0        
+        self.gridrowindex,self.gridcolumnindex=-1,0        
         columnIndex,rowIndex =0,0
         DetailTable=None        
         foundTable,foundItem=False ,False          
         self.RecursionDepthCount,self.CurrentDepthCount=15,0              
-        for table in self.tables:
-            if(table.columns[0]=="ontact Address"):
-                DetailTable=table
-                foundTable=True
-                break
-        if(foundTable):            
-            columnLength=len(DetailTable.columns)            
+        
+        if(self.CurrentAddressFound):
+            DetailTable=pd.DataFrame(self.tableData, columns = self.tableDataColumnName)
+            foundTable=True
+        else:            
+            for tableindex ,table in enumerate(self.tables) :
+                if(table.columns[0]=="ontact Address"):
+                    self.fun_mergetables(table,True)
+                    #check Next Table is on Next Page
+                    if (not (self.tables[tableindex+1].columns[0]=="ontact Details")):
+                        self.fun_mergetables(self.tables[tableindex+1],False)
+                        #check Next Table is on Next to Next Page
+                        if (not (self.tables[tableindex+2].columns[0]=="ontact Details")):
+                            self.fun_mergetables(self.tables[tableindex+2],False)                
+                    DetailTable=pd.DataFrame(self.tableData, columns = self.tableDataColumnName)
+                    foundTable=True
+                    self.CurrentAddressFound=True
+                    break
+        if(foundTable):                        
             PreviousAddressCounter=0
             PreviousColumnIndex=0
             PreviousRowIndex=0
             Addressee= self.varApplicant1.get() if (Applicantid==1)  else self.varApplicant2.get() if (Applicantid==2) else ""
             while PreviousAddressCounter < 4:
-                IsEvenColumn=False
+                self.IsEvenColumn=False
                 foundItem=False
                 tempData=self.fnc_Read_Address_GetRowColumnIndex(DetailTable,PreviousRowIndex,PreviousColumnIndex,Addressee,False )
                 foundItem=tempData["IsFound"]                
@@ -311,44 +302,11 @@ class ImportData:
                     PreviousRowIndex=tempData["row"]
                     rowIndex=PreviousRowIndex
                     columnIndex=PreviousColumnIndex
-                    for ioindex,x in enumerate(self.config.IO_Name_PreviousAddress):                    
-                        if("[M]" in  x):
-                            if(IsEvenColumn):
-                                IsEvenColumn=False
-                                gridcolumnindex=2
-                            else:
-                                IsEvenColumn=True
-                                gridcolumnindex=0
-                                gridrowindex=gridrowindex+1
-
-
-                        for i, j in DetailTable.iterrows():
-                            if(i<=rowIndex):
-                                continue
-                            else:
-                            #try:
-                                if(j[0]==self.config.IO_Template_PreviousAddress[ioindex]):
-                                    if(IsEvenColumn):
-                                        IsEvenColumn=False
-                                        gridcolumnindex=2
-                                    else:
-                                        IsEvenColumn=True
-                                        gridcolumnindex=0
-                                        gridrowindex=gridrowindex+1
-                                    ttk.Label(ParentContainer,text = x.replace('[M]','')).grid(row=gridrowindex,column = gridcolumnindex, sticky=tk.N+tk.S+tk.E,padx=(10,10),pady=(5,2))
-                                    txtboxname="txt_PreviousAddress_"+ str(PreviousAddressCounter+1)+"_" +str(Applicantid)+x.strip().replace(' ', '_').replace('[M]','')
-                                    entrybox=ttk.Entry(ParentContainer, name=txtboxname)                            
-                                    ResponseData=j[columnIndex]
-                                    if(str(ResponseData) =="nan"):
-                                        ResponseData=""
-                                    entrybox.insert(0,ResponseData)
-                                    entrybox.grid(row=gridrowindex,column =(gridcolumnindex + 1) , sticky=tk.N+tk.S+tk.W,padx=(10,10),pady=(5,2))
-                                    break
-                            #except Exception as ex:
-                                #print("Error", ex)
-                    #add Seprator
-                    gridrowindex=gridrowindex+1
-                    ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(row=gridrowindex, column=0,columnspan=4, sticky=tk.E+tk.W, pady=(5,5))
+                    for ioindex,x in enumerate(self.config.IO_Name_PreviousAddress):  
+                        self.fnc_GenrateControl(ParentContainer,DetailTable,columnIndex,rowIndex,x,self.config.IO_Template_PreviousAddress[ioindex],"txt_PreviousAddress_"+ str(PreviousAddressCounter+1)+"_" +str(Applicantid))
+                    
+                    self.gridrowindex=self.gridrowindex+1
+                    ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(row=self.gridrowindex, column=0,columnspan=4, sticky=tk.E+tk.W, pady=(5,5))
                 PreviousAddressCounter+=1
     
 
@@ -370,6 +328,7 @@ class ImportData:
         open_file = askopenfilename(initialdir="d:",title="Open Template" , filetypes =[('Pdf Files', '*.pdf')])
         if open_file: 
             self.tables = tabula.read_pdf(open_file,pages="all") 
+            self.CurrentAddressFound=False
             frm_Applicant1=None
             frm_Applicant2=None
             if "frm_Applicant1" in self.ContainerFrame.children.keys():
@@ -468,6 +427,7 @@ class ImportData:
 if __name__ == '__main__':
     config= Gc.GenerateConfig()        
     
+    ctypes.windll.shcore.SetProcessDpiAwareness(1)
     root = tk.Tk()
     sizex = 700
     sizey = 500
