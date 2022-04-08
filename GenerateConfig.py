@@ -88,6 +88,8 @@ class GenerateConfig:
         self.IO_Template_PersonalDetail=self.config_file['InputTemplate']['IO_Template_PersonalDetail'].split(",")
         self.IO_Name_CurrentAddress=self.config_file['InputTemplate']['IO_Name_CurrentAddress'].split(",")
         self.IO_Template_CurrentAddress=self.config_file['InputTemplate']['IO_Template_CurrentAddress'].split(",")
+        self.IO_Name_PreviousAddress=self.config_file['InputTemplate']['IO_Name_PreviousAddress'].split(",")
+        self.IO_Template_PreviousAddress=self.config_file['InputTemplate']['IO_Template_PreviousAddress'].split(",")
         
         self.themeName= self.config_file['Themes']['Theme_Name']
 
@@ -123,6 +125,10 @@ class GenerateConfig:
         self.config_file.set("InputTemplate", "IO_Template_PersonalDetail","Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,Marital Status,Country of Birth,Nationality,National Insurance No.,Country Of Residence,Country of Birth")
         self.config_file.set("InputTemplate", "IO_Name_CurrentAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,Country,Postcode,Residency Status,Date From")
         self.config_file.set("InputTemplate", "IO_Template_CurrentAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City / Town,Country,Postcode,Residency Status,Date From")
+        self.config_file.set("InputTemplate", "IO_Name_PreviousAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,Country,Postcode,Residency Status,Date From,Date To")
+        self.config_file.set("InputTemplate", "IO_Template_PreviousAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City / Town,Country,Postcode,Residency Status,Date From,Date To")
+        self.config_file.set("InputTemplate", "IO_Name_ContactDetails","Mobile,Email,Home Telephone[M],Work Telephone[M]")
+        self.config_file.set("InputTemplate", "IO_Template_ContactDetails","Mobile,Email,-,-")
 
         self.config_file.set("InputTemplate", "IO_Name_PreviousAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,"+
         "Country,Postcode,Residency Status,Date From,Date To")
