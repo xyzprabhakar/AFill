@@ -3,11 +3,11 @@ from cProfile import label
 from multiprocessing.sharedctypes import Value
 from tkinter import font
 from typing import Text
-import PyPDF2 as pdf
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
-from pdfminer.converter import TextConverter
-from pdfminer.layout import LAParams
-from pdfminer.pdfpage import PDFPage
+#import PyPDF2 as pdf
+#from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+#from pdfminer.converter import TextConverter
+#from pdfminer.layout import LAParams
+#from pdfminer.pdfpage import PDFPage
 from io import StringIO
 import os
 
@@ -193,39 +193,45 @@ class ImportData:
         FoundApplicant=False
         IsFound=False
         columnLength=len(DetailTable.columns)
-        RowIndex=PreviousRowIndex+1
+        RowIndex=PreviousRowIndex
         ColumnIndex=PreviousColumnIndex+1
         CurrentIndex={"row":RowIndex,"column":ColumnIndex,"IsFound":IsFound}        
         self.CurrentDepthCount+=1
         if(self.RecursionDepthCount<self.CurrentDepthCount):
             return CurrentIndex
         for i, row in DetailTable.iterrows():
-            if(i<PreviousRowIndex):
-                continue
-            if(row[0]=="Addressee"):
-                RowIndex=i
-                if( row[ColumnIndex]==Adressee):
-                    FoundApplicant=True
-                else:
-                    if(ColumnIndex+1<=columnLength-1):
-                        return self.fnc_Read_Address_GetRowColumnIndex(DetailTable,PreviousRowIndex,ColumnIndex+1,Adressee, IsCurrentAddress )
+            if(i==17):
+                pass
+            try:
+                if(i<PreviousRowIndex):
+                    continue
+                if(row[0]=="Addressee" and (not FoundApplicant)):
+                    RowIndex=i
+                    if( row[ColumnIndex]==Adressee):
+                        FoundApplicant=True
                     else:
-                        return self.fnc_Read_Address_GetRowColumnIndex(DetailTable,PreviousRowIndex+1,0,Adressee, IsCurrentAddress )
-            if(FoundApplicant):
-                if(row[0]=="Address Status" and ((IsCurrentAddress and  row[ColumnIndex]=="Current Address") or ( row[ColumnIndex]=="Previous Address") )):
-                    IsFound=True
-                    break
-                if(row[0]=="Addressee"):
-                    break        
+                        if(ColumnIndex+1<=columnLength-1):
+                            return self.fnc_Read_Address_GetRowColumnIndex(DetailTable,PreviousRowIndex,ColumnIndex,Adressee, IsCurrentAddress )
+                        else:
+                            return self.fnc_Read_Address_GetRowColumnIndex(DetailTable,PreviousRowIndex+1,0,Adressee, IsCurrentAddress )
+                if(FoundApplicant):
+                    if(row[0]=="Address Status" and ((IsCurrentAddress and  row[ColumnIndex]=="Current Address") or ( row[ColumnIndex]=="Previous Address") )):
+                        IsFound=True
+                        break
+                    if(row[0]=="Addressee" and i>RowIndex):
+                        RowIndex=i
+                        break
+            except Exception as ex:
+                print("Error", ex)
         if(IsFound):
             CurrentIndex["row"]=RowIndex 
             CurrentIndex["column"]=ColumnIndex
             CurrentIndex["IsFound"]=True
         if(self.RecursionDepthCount>self.CurrentDepthCount):            
-            return self.fnc_Read_Address_GetRowColumnIndex(DetailTable,PreviousRowIndex+1,PreviousColumnIndex,Adressee, IsCurrentAddress )
+            return self.fnc_Read_Address_GetRowColumnIndex(DetailTable,RowIndex,ColumnIndex,Adressee, IsCurrentAddress )
         return CurrentIndex
             
-        
+         
 
     def fnc_Read_PreviousAddress_IO_Template(self,ParentContainer,Applicantid):        
         IsEvenColumn=False

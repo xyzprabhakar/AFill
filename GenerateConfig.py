@@ -1,5 +1,4 @@
 import configparser,os
-from msilib.schema import Font
 from ttkthemes import ThemedStyle
 
 
