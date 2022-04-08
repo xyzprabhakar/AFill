@@ -1,6 +1,8 @@
+from ast import Break
 from cProfile import label
 from multiprocessing.sharedctypes import Value
 from tkinter import font
+from typing import Text
 import PyPDF2 as pdf
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
@@ -48,7 +50,7 @@ class ImportData:
         self.varApplicant2 = tk.StringVar()
         self.varId=tk.StringVar()        
         
-        self.ContainerCanvas=tk.Canvas(Container,bg=self.config.COLOR_MENU_BACKGROUND)
+        self.ContainerCanvas= tk.Canvas(Container,bg=self.config.COLOR_MENU_BACKGROUND, highlightthickness=0, relief='ridge')
         self.ContainerFrame=ttk.Frame(self.ContainerCanvas)
 
         scrollbar_y=tk.Scrollbar(Container,orient= tk.VERTICAL,command=self.ContainerCanvas.yview)
@@ -57,7 +59,7 @@ class ImportData:
         scrollbar_x.pack(side=tk.BOTTOM,fill="x")
         self.ContainerCanvas.configure(yscrollcommand=scrollbar_y.set,xscrollcommand=scrollbar_x.set)
         self.ContainerCanvas.pack(expand=tk.TRUE, fill="both")
-        self.ContainerCanvas.create_window((0,0),window=self.ContainerFrame,anchor='nw')
+        self.ContainerCanvas.create_window((0,0),window=self.ContainerFrame,anchor='n')
         self.ContainerFrame.bind("<Configure>",self.fnc_resizeScroll)
         self.fncCreateItems()
 
@@ -72,9 +74,14 @@ class ImportData:
         frmTopFrame.grid(row=0, column=0, sticky=tk.N+tk.W+tk.E)             
         if(self.varTemplateType.get()=="IO Template"):
             self.fnc_Read_PersonalDetails_IO_Template(frmTopFrame,Applicantid)
-            frmCurrentAddressFrame = ttk.LabelFrame(ParentContainer)        
-            frmCurrentAddressFrame.grid(row=1, column=0, sticky=tk.N+tk.W+tk.E)             
+            #Add Current Address
+            frmCurrentAddressFrame = ttk.LabelFrame(ParentContainer,text="Current Address",style="Details.TLabelframe")
+            frmCurrentAddressFrame.grid(row=1, column=0, sticky=tk.N+tk.W+tk.E, pady=(10,10),padx=(10,10))             
             self.fnc_Read_CurrentAddress_IO_Template(frmCurrentAddressFrame ,Applicantid)
+            #Add Previous Address
+            frmPreviousAddressFrame = ttk.LabelFrame(ParentContainer,text="Previous Address",style="Details.TLabelframe")
+            frmPreviousAddressFrame.grid(row=2, column=0, sticky=tk.N+tk.W+tk.E, pady=(10,10),padx=(10,10))
+            self.fnc_Read_PreviousAddress_IO_Template(frmPreviousAddressFrame,Applicantid)
             
     def fnc_Read_PersonalDetails_IO_Template(self,ParentContainer,Applicantid):        
         IsEvenColumn=False
@@ -119,54 +126,189 @@ class ImportData:
                             break
                     #except Exception as ex:
                         #print("Error", ex)
-   
 
     def fnc_Read_CurrentAddress_IO_Template(self,ParentContainer,Applicantid):        
         IsEvenColumn=False
         gridrowindex=-1
         gridcolumnindex=0
-        PersonalDetailTable=None        
+        DetailTable=None        
         foundTable=False
+        foundApplicant=False
+        foundItem=False
         columnLength=0
         columnIndex=1
-        for tableindex,table in enumerate(self.tables):
+        rowIndex=0
+        for table in self.tables:
             if(table.columns[0]=="ontact Address"):
-                PersonalDetailTable=table
+                DetailTable=table
                 foundTable=True
                 break
         if(foundTable):
-            
-            columnLength=len(PersonalDetailTable.columns)
-            for i, row in PersonalDetailTable.iterrows():
+            columnLength=len(DetailTable.columns)            
+            for i, row in DetailTable.iterrows():
                 if(row[0]=="Addressee"):
-                    if(Applicantid=1 and self.varApplicant1.get()==row[])
-            
-            for i, j in PersonalDetailTable.iterrows():
-                for ioindex,x in enumerate(self.config.IO_Name_PersonalDetail):
-                    #try:
-                        if(j[0]==self.config.IO_Template_PersonalDetail[ioindex]):
-                            if(IsEvenColumn):
-                                IsEvenColumn=False
-                                gridcolumnindex=2
-                            else:
-                                IsEvenColumn=True
-                                gridcolumnindex=0
-                                gridrowindex=gridrowindex+1
-                            ttk.Label(ParentContainer,text = x).grid(row=gridrowindex,column = gridcolumnindex, sticky=tk.N+tk.S+tk.E,padx=(10,10),pady=(5,2))
-                            txtboxname="txt_PersonalDetails_"+str(Applicantid)+x.strip().replace(' ', '_')
-                            entrybox=ttk.Entry(ParentContainer, name=txtboxname)
-                            ResponseData=""
-                            if(Applicantid==1):
-                                ResponseData=j[1]
-                            elif(Applicantid==2):
-                                ResponseData=j[2]                            
-                            if(str(ResponseData) =="nan"):
-                                ResponseData=""
-                            entrybox.insert(0, ResponseData)                            
-                            entrybox.grid(row=gridrowindex,column =(gridcolumnindex + 1) , sticky=tk.N+tk.S+tk.W,padx=(10,10),pady=(5,2))
+                    foundApplicant=False
+                    rowIndex=i
+                    while (columnIndex<columnLength):                        
+                        if((Applicantid==1 and self.varApplicant1.get()==row[columnIndex]) or (Applicantid==2 and self.varApplicant2.get()==row[columnIndex])):
+                            foundApplicant=True
                             break
-                    #except Exception as ex:
-                        #print("Error", ex)
+                        columnIndex+=1    
+                if(foundApplicant):
+                    if(rowIndex<i and row[0]=="Addressee"):
+                        pass
+                    elif(row[0]=="Address Status" and row[columnIndex]=="Current Address"):
+                        foundItem=True
+                        break
+                else:
+                    columnIndex=1
+            if(foundItem):   
+                for ioindex,x in enumerate(self.config.IO_Name_CurrentAddress):
+                    for i, j in DetailTable.iterrows():                    
+                        if(i<=rowIndex):
+                            continue
+                        else:
+                        #try:
+                            if(j[0]==self.config.IO_Template_CurrentAddress[ioindex]):
+                                if(IsEvenColumn):
+                                    IsEvenColumn=False
+                                    gridcolumnindex=2
+                                else:
+                                    IsEvenColumn=True
+                                    gridcolumnindex=0
+                                    gridrowindex=gridrowindex+1
+                                ttk.Label(ParentContainer,text = x).grid(row=gridrowindex,column = gridcolumnindex, sticky=tk.N+tk.S+tk.E,padx=(10,10),pady=(5,2))
+                                txtboxname="txt_CurrentAddress_"+str(Applicantid)+x.strip().replace(' ', '_')
+                                entrybox=ttk.Entry(ParentContainer, name=txtboxname)                            
+                                ResponseData=j[columnIndex]
+                                if(str(ResponseData) =="nan"):
+                                    ResponseData=""
+                                entrybox.insert(0,ResponseData)
+                                entrybox.grid(row=gridrowindex,column =(gridcolumnindex + 1) , sticky=tk.N+tk.S+tk.W,padx=(10,10),pady=(5,2))
+                                break
+                        #except Exception as ex:
+                            #print("Error", ex)
+
+    def fnc_Read_Address_GetRowColumnIndex(self,DetailTable,PreviousRowIndex,PreviousColumnIndex,Adressee, IsCurrentAddress ):        
+        FoundApplicant=False
+        IsFound=False
+        columnLength=len(DetailTable.columns)
+        RowIndex=PreviousRowIndex+1
+        ColumnIndex=PreviousColumnIndex+1
+        CurrentIndex={"row":RowIndex,"column":ColumnIndex,"IsFound":IsFound}        
+        self.CurrentDepthCount+=1
+        if(self.RecursionDepthCount<self.CurrentDepthCount):
+            return CurrentIndex
+        for i, row in DetailTable.iterrows():
+            if(i<PreviousRowIndex):
+                continue
+            if(row[0]=="Addressee"):
+                RowIndex=i
+                if( row[ColumnIndex]==Adressee):
+                    FoundApplicant=True
+                else:
+                    if(ColumnIndex+1<=columnLength-1):
+                        return self.fnc_Read_Address_GetRowColumnIndex(DetailTable,PreviousRowIndex,ColumnIndex+1,Adressee, IsCurrentAddress )
+                    else:
+                        return self.fnc_Read_Address_GetRowColumnIndex(DetailTable,PreviousRowIndex+1,0,Adressee, IsCurrentAddress )
+            if(FoundApplicant):
+                if(row[0]=="Address Status" and ((IsCurrentAddress and  row[ColumnIndex]=="Current Address") or ( row[ColumnIndex]=="Previous Address") )):
+                    IsFound=True
+                    break
+                if(row[0]=="Addressee"):
+                    break        
+        if(IsFound):
+            CurrentIndex["row"]=RowIndex 
+            CurrentIndex["column"]=ColumnIndex
+            CurrentIndex["IsFound"]=True
+        if(self.RecursionDepthCount>self.CurrentDepthCount):            
+            return self.fnc_Read_Address_GetRowColumnIndex(DetailTable,PreviousRowIndex+1,PreviousColumnIndex,Adressee, IsCurrentAddress )
+        return CurrentIndex
+            
+        
+
+    def fnc_Read_PreviousAddress_IO_Template(self,ParentContainer,Applicantid):        
+        IsEvenColumn=False
+        gridrowindex,gridcolumnindex=-1,0        
+        columnIndex,rowIndex =0,0
+        DetailTable=None        
+        foundTable,foundItem=False ,False          
+        self.RecursionDepthCount,self.CurrentDepthCount=15,0              
+        for table in self.tables:
+            if(table.columns[0]=="ontact Address"):
+                DetailTable=table
+                foundTable=True
+                break
+        if(foundTable):            
+            #columnLength=len(DetailTable.columns)            
+            PreviousAddressCounter=0
+            PreviousColumnIndex=0
+            PreviousRowIndex=0
+            Addressee= self.varApplicant1.get() if (Applicantid==1)  else self.varApplicant2.get() if (Applicantid==2) else ""
+            if PreviousAddressCounter < 4:
+                columnIndex=PreviousColumnIndex+1
+                foundItem=False
+                tempData=self.fnc_Read_Address_GetRowColumnIndex(DetailTable,PreviousRowIndex,PreviousColumnIndex,Addressee,False )
+                foundItem=tempData["IsFound"]
+                
+
+                
+                # for i, row in DetailTable.iterrows():
+                #     if(row[0]=="Addressee"):
+                #         foundApplicant=False
+                #         rowIndex=i
+                #         while (columnIndex<columnLength):                        
+                #             if((Applicantid==1 and self.varApplicant1.get()==row[columnIndex]) or (Applicantid==2 and self.varApplicant2.get()==row[columnIndex])):
+                #                 foundApplicant=True
+                #                 break
+                #             columnIndex+=1    
+                #     if(foundApplicant):
+                #         if(rowIndex<i and row[0]=="Addressee"):
+                #             pass
+                #         elif(row[0]=="Address Status" and row[columnIndex]=="Previous Address"):
+                #             foundItem=True
+                #             PreviousColumnIndex=columnIndex
+                #             break
+                #     else:
+                #         columnIndex=1
+                #         PreviousColumnIndex=0
+
+                if(foundItem):
+                    PreviousColumnIndex=tempData["column"]
+                    PreviousRowIndex=tempData["row"]
+                    rowIndex=PreviousColumnIndex
+                    columnIndex=PreviousColumnIndex
+                    for ioindex,x in enumerate(self.config.IO_Name_CurrentAddress):                    
+                        for i, j in DetailTable.iterrows():
+                            if(i<=rowIndex):
+                                continue
+                            else:
+                            #try:
+                                if(j[0]==self.config.IO_Template_CurrentAddress[ioindex]):
+                                    if(IsEvenColumn):
+                                        IsEvenColumn=False
+                                        gridcolumnindex=2
+                                    else:
+                                        IsEvenColumn=True
+                                        gridcolumnindex=0
+                                        gridrowindex=gridrowindex+1
+                                    ttk.Label(ParentContainer,text = x).grid(row=gridrowindex,column = gridcolumnindex, sticky=tk.N+tk.S+tk.E,padx=(10,10),pady=(5,2))
+                                    txtboxname="txt_PreviousAddress_"+ str(PreviousAddressCounter+1)+"_" +str(Applicantid)+x.strip().replace(' ', '_')
+                                    entrybox=ttk.Entry(ParentContainer, name=txtboxname)                            
+                                    ResponseData=j[columnIndex]
+                                    if(str(ResponseData) =="nan"):
+                                        ResponseData=""
+                                    entrybox.insert(0,ResponseData)
+                                    entrybox.grid(row=gridrowindex,column =(gridcolumnindex + 1) , sticky=tk.N+tk.S+tk.W,padx=(10,10),pady=(5,2))
+                                    break
+                            #except Exception as ex:
+                                #print("Error", ex)
+                #add Seprator
+                gridrowindex=gridrowindex+1
+                ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(row=gridrowindex, column=0,columnspan=4, sticky=tk.E+tk.W, pady=(5,5))
+                PreviousAddressCounter+1
+    
+
     def hide_unhide_applicant(self,event,ParentFrame):
         yaxis= self.varStarttingPoint
         if(self.varApplicantType.get()=="Single"):
@@ -280,14 +422,12 @@ class ImportData:
         btnReset.grid(row=1,column = 1, sticky=tk.N+tk.S+tk.W, padx=(5,5), pady=(5,5))	
         
         
-        
-
 if __name__ == '__main__':
     config= Gc.GenerateConfig()        
     
     root = tk.Tk()
-    sizex = 600
-    sizey = 400
+    sizex = 700
+    sizey = 500
     posx  = 100
     posy  = 100
     root.wm_geometry("%dx%d+%d+%d" % (sizex, sizey, posx, posy))
