@@ -82,6 +82,21 @@ class ImportData:
             frmPreviousAddressFrame = ttk.LabelFrame(ParentContainer,text="Previous Address",style="Details.TLabelframe")
             frmPreviousAddressFrame.grid(row=2, column=0, sticky=tk.N+tk.W+tk.E, pady=(10,10),padx=(10,10))
             self.fnc_Read_PreviousAddress_IO_Template(frmPreviousAddressFrame,Applicantid)
+            #Contact Details
+            frmContactDetailFrame = ttk.LabelFrame(ParentContainer,text="Contact Details",style="Details.TLabelframe")
+            frmContactDetailFrame.grid(row=3, column=0, sticky=tk.N+tk.W+tk.E, pady=(10,10),padx=(10,10))
+            self.fnc_Read_ContactDetails_IO_Template(frmContactDetailFrame,Applicantid)
+            #Bank Details
+            frmBankDetailFrame = ttk.LabelFrame(ParentContainer,text="Bank Details",style="Details.TLabelframe")
+            frmBankDetailFrame.grid(row=4, column=0, sticky=tk.N+tk.W+tk.E, pady=(10,10),padx=(10,10))
+            self.fnc_Read_BankAccountDetails_IO_Template(frmBankDetailFrame,Applicantid)
+
+            #Bank Details
+            frmIDVerificationFrame = ttk.LabelFrame(ParentContainer,text="ID Verification",style="Details.TLabelframe")
+            frmIDVerificationFrame.grid(row=6, column=0, sticky=tk.N+tk.W+tk.E, pady=(10,10),padx=(10,10))
+            self.fnc_Read_IDVerification_IO_Template(frmIDVerificationFrame,Applicantid)
+
+            
 
     def fnc_GenrateControl(self,ParentContainer,DetailTable,FindingColumnIndex,FromPosition,IO_Name,IO_Template_Name,Suffix):
         if(self.IsEvenColumn):
@@ -110,6 +125,33 @@ class ImportData:
         entrybox=ttk.Entry(ParentContainer, name=txtboxname)                            
         entrybox.insert(0,FindingValue)
         entrybox.grid(row=self.gridrowindex,column =(self.gridcolumnindex + 1) , sticky=tk.N+tk.S+tk.W,padx=(10,10),pady=(5,2))
+
+    def fnc_GenrateControl_Vertical(self,ParentContainer,DetailTable,FindingColumnIndex,FindingRowIndex,IO_Name,IO_Template_Name,Suffix):
+        if(self.IsEvenColumn):
+            self.IsEvenColumn=False
+            self.gridcolumnindex=2
+        else:
+            self.IsEvenColumn=True
+            self.gridcolumnindex=0
+            self.gridrowindex=self.gridrowindex+1
+        FindingValue=""
+        if (not("[M]" in IO_Name) and FindingRowIndex>0):            
+            for i, j in DetailTable.iterrows():
+                if(i<FindingRowIndex):
+                    continue
+                try:
+                    FindingValue=j[FindingColumnIndex]                    
+                    if(str(FindingValue) =="nan"):
+                        FindingValue=""
+                    break
+                except Exception as ex:
+                    print("Error", ex)
+        ttk.Label(ParentContainer,text = IO_Name.replace('[M]','')).grid(row=self.gridrowindex,column = self.gridcolumnindex, sticky=tk.N+tk.S+tk.E,padx=(10,10),pady=(5,2))
+        txtboxname=Suffix+IO_Name.strip().replace(' ', '_').replace('[M]','')
+        entrybox=ttk.Entry(ParentContainer, name=txtboxname)                            
+        entrybox.insert(0,FindingValue)
+        entrybox.grid(row=self.gridrowindex,column =(self.gridcolumnindex + 1) , sticky=tk.N+tk.S+tk.W,padx=(10,10),pady=(5,2))
+                                
                                 
     def fun_mergetables(self,table,IsPrentTable):
         currentColumnLength=len(table.columns) 
@@ -140,8 +182,6 @@ class ImportData:
                         subrow2.append("")            
             self.tableData.append(subrow2)
             
-
-
     def fnc_Read_PersonalDetails_IO_Template(self,ParentContainer,Applicantid):        
         self.IsEvenColumn=False
         self.gridrowindex=-1
@@ -214,29 +254,92 @@ class ImportData:
                     return self.fnc_Read_Address_GetRowColumnIndex(DetailTable,PreviousRowIndex+10,0,Adressee, IsCurrentAddress )
         return CurrentIndex
     
+    def fnc_Read_Bank_GetRowColumnIndex(self,DetailTable,PreviousRowIndex,PreviousColumnIndex,Adressee,ApplicantId ):        
+        FoundApplicant=False
+        IsFound=False
+        columnLength=len(DetailTable.columns)
+        if(PreviousColumnIndex>=columnLength-1):
+            PreviousColumnIndex=0
+            PreviousRowIndex=PreviousRowIndex+10
+
+        RowIndex=PreviousRowIndex
+        ColumnIndex=PreviousColumnIndex+1
+        
+
+        CurrentIndex={"row":RowIndex,"column":ColumnIndex,"IsFound":IsFound}        
+        self.CurrentDepthCount+=1
+        if(self.RecursionDepthCount<self.CurrentDepthCount):
+            return CurrentIndex
+        for i, row in DetailTable.iterrows():
+            try:
+                if(i<PreviousRowIndex):
+                    continue
+                if(row[0]=="Owner"):
+                    RowIndex=i
+                    if( row[ColumnIndex]==Adressee or (ApplicantId==1 and row[ColumnIndex]=="Joint")):                        
+                        IsFound=True
+                        break
+                    else:
+                        if(ColumnIndex+1<=columnLength-1):
+                            return self.fnc_Read_Bank_GetRowColumnIndex(DetailTable,PreviousRowIndex,ColumnIndex,Adressee,ApplicantId )
+                        else:
+                            return self.fnc_Read_Bank_GetRowColumnIndex(DetailTable,PreviousRowIndex+10,0,Adressee, ApplicantId )                
+            except Exception as ex:
+                print("Error", ex)
+        if(IsFound):
+            CurrentIndex["row"]=RowIndex 
+            CurrentIndex["column"]=ColumnIndex
+            CurrentIndex["IsFound"]=True
+        else:
+            if(self.RecursionDepthCount>self.CurrentDepthCount):            
+                if(ColumnIndex+1<=columnLength-1):
+                    return self.fnc_Read_Bank_GetRowColumnIndex(DetailTable,PreviousRowIndex,ColumnIndex,Adressee, ApplicantId )
+                else :
+                    return self.fnc_Read_Bank_GetRowColumnIndex(DetailTable,PreviousRowIndex+10,0,Adressee, ApplicantId )
+        return CurrentIndex
+    
+
+    def fnc_Read_Vertical_GetRowColumnIndex(self,DetailTable,PreviousRowIndex,PreviousColumnIndex,Adressee, KeyData,KeyColumn ):        
+        IsFound=False        
+        RowIndex=PreviousRowIndex
+        ColumnIndex=PreviousColumnIndex
+        CurrentIndex={"row":RowIndex,"column":ColumnIndex,"IsFound":IsFound}        
+        for i, row in DetailTable.iterrows():
+            try:
+                if(i<PreviousRowIndex):
+                    continue
+                if((row[ColumnIndex]==Adressee or row[ColumnIndex]=="Joint") and  row[KeyColumn]==KeyData):
+                    RowIndex=i
+                    IsFound=True
+                    break
+            except Exception as ex:
+                print("Error", ex)
+        if(IsFound):
+            CurrentIndex["row"]=RowIndex 
+            CurrentIndex["column"]=ColumnIndex
+            CurrentIndex["IsFound"]=True        
+        return CurrentIndex
+    
+
     def fnc_Read_CurrentAddress_IO_Template(self,ParentContainer,Applicantid):                
         self.gridrowindex,self.gridcolumnindex=-1,0        
         columnIndex,rowIndex =0,0
         DetailTable=None        
         foundTable,foundItem=False ,False          
-        self.RecursionDepthCount,self.CurrentDepthCount=15,0
-        if(self.CurrentAddressFound):
-            DetailTable=pd.DataFrame(self.tableData, columns = self.tableDataColumnName)
-            foundTable=True
-        else:            
-            for tableindex ,table in enumerate(self.tables) :
-                if(table.columns[0]=="ontact Address"):
-                    self.fun_mergetables(table,True)
-                    #check Next Table is on Next Page
-                    if (not (self.tables[tableindex+1].columns[0]=="ontact Details")):
-                        self.fun_mergetables(self.tables[tableindex+1],False)
-                        #check Next Table is on Next to Next Page
-                        if (not (self.tables[tableindex+2].columns[0]=="ontact Details")):
-                            self.fun_mergetables(self.tables[tableindex+2],False)                
-                    DetailTable=pd.DataFrame(self.tableData, columns = self.tableDataColumnName)
-                    foundTable=True
-                    self.CurrentAddressFound=True
-                    break
+        self.RecursionDepthCount,self.CurrentDepthCount=15,0                 
+        for tableindex ,table in enumerate(self.tables) :
+            if(table.columns[0]=="ontact Address"):
+                self.fun_mergetables(table,True)
+                #check Next Table is on Next Page
+                if (not (self.tables[tableindex+1].columns[0]=="ontact Details")):
+                    self.fun_mergetables(self.tables[tableindex+1],False)
+                    #check Next Table is on Next to Next Page
+                    if (not (self.tables[tableindex+2].columns[0]=="ontact Details")):
+                        self.fun_mergetables(self.tables[tableindex+2],False)                
+                DetailTable=pd.DataFrame(self.tableData, columns = self.tableDataColumnName)
+                foundTable=True
+                self.CurrentAddressFound=True
+                break
                     
                 
         if(foundTable):                
@@ -261,7 +364,6 @@ class ImportData:
                     self.gridrowindex=self.gridrowindex+1
                     ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(row=self.gridrowindex, column=0,columnspan=4, sticky=tk.E+tk.W, pady=(5,5))
                 PreviousAddressCounter+=1
-
          
     def fnc_Read_PreviousAddress_IO_Template(self,ParentContainer,Applicantid):                
         self.gridrowindex,self.gridcolumnindex=-1,0        
@@ -304,6 +406,120 @@ class ImportData:
                     columnIndex=PreviousColumnIndex
                     for ioindex,x in enumerate(self.config.IO_Name_PreviousAddress):  
                         self.fnc_GenrateControl(ParentContainer,DetailTable,columnIndex,rowIndex,x,self.config.IO_Template_PreviousAddress[ioindex],"txt_PreviousAddress_"+ str(PreviousAddressCounter+1)+"_" +str(Applicantid))
+                    
+                    self.gridrowindex=self.gridrowindex+1
+                    ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(row=self.gridrowindex, column=0,columnspan=4, sticky=tk.E+tk.W, pady=(5,5))
+                PreviousAddressCounter+=1
+    
+    def fnc_Read_ContactDetails_IO_Template(self,ParentContainer,Applicantid):                
+        self.gridrowindex,self.gridcolumnindex=-1,0                
+        DetailTable=None        
+        foundTable,foundItem=False ,False          
+        self.RecursionDepthCount,self.CurrentDepthCount=15,0              
+        for tableindex ,table in enumerate(self.tables) :
+            if(table.columns[0]=="ontact Details"):
+                self.fun_mergetables(table,True)
+                #check Next Table is on Next Page
+                if (not (self.tables[tableindex+1].columns[0]=="rofessional Contacts")):
+                    self.fun_mergetables(self.tables[tableindex+1],False)
+                    #check Next Table is on Next to Next Page
+                    if (not (self.tables[tableindex+2].columns[0]=="rofessional Contacts")):
+                        self.fun_mergetables(self.tables[tableindex+2],False)                
+                DetailTable=pd.DataFrame(self.tableData, columns = self.tableDataColumnName)
+                foundTable=True
+                self.CurrentAddressFound=True
+                break
+        if(foundTable):                                    
+            
+            Addressee= self.varApplicant1.get() if (Applicantid==1)  else self.varApplicant2.get() if (Applicantid==2) else ""            
+            for ioindex,x in enumerate(self.config.IO_Name_ContactDetails):  
+                foundItem=False
+                PreviousRowIndex=0
+                if (not("[M]" in x)):            
+                    tempData=self.fnc_Read_Vertical_GetRowColumnIndex(DetailTable,0,0,Addressee,self.config.IO_Template_ContactDetails[ioindex],1)
+                    foundItem=tempData["IsFound"]
+                    if(foundItem):                        
+                        PreviousRowIndex=tempData["row"]
+                self.fnc_GenrateControl_Vertical(ParentContainer,DetailTable,2,PreviousRowIndex,x,self.config.IO_Template_ContactDetails[ioindex],"txt_ContactDetails_"+str(Applicantid))
+
+    def fnc_Read_BankAccountDetails_IO_Template(self,ParentContainer,Applicantid):                
+        self.gridrowindex,self.gridcolumnindex=-1,0        
+        columnIndex,rowIndex =0,0
+        DetailTable=None        
+        foundTable,foundItem=False ,False          
+        self.RecursionDepthCount,self.CurrentDepthCount=15,0              
+        for tableindex ,table in enumerate(self.tables) :
+            if(table.columns[0]=="ank Account Details"):
+                self.fun_mergetables(table,True)
+                #check Next Table is on Next Page
+                if (not (self.tables[tableindex+1].columns[0]=="amily And Dependants")):
+                    self.fun_mergetables(self.tables[tableindex+1],False)
+                    #check Next Table is on Next to Next Page
+                    if (not (self.tables[tableindex+2].columns[0]=="amily And Dependants")):
+                        self.fun_mergetables(self.tables[tableindex+2],False)                
+                DetailTable=pd.DataFrame(self.tableData, columns = self.tableDataColumnName)
+                foundTable=True
+                self.CurrentAddressFound=True
+                break
+        if(foundTable):                        
+            PreviousAddressCounter=0
+            PreviousColumnIndex=0
+            PreviousRowIndex=0
+            Addressee= self.varApplicant1.get() if (Applicantid==1)  else self.varApplicant2.get() if (Applicantid==2) else ""
+            while PreviousAddressCounter < 4:
+                self.IsEvenColumn=False
+                foundItem=False
+                tempData=self.fnc_Read_Bank_GetRowColumnIndex(DetailTable,PreviousRowIndex,PreviousColumnIndex,Addressee,Applicantid )
+                foundItem=tempData["IsFound"]                
+                if(foundItem):
+                    PreviousColumnIndex=tempData["column"]
+                    PreviousRowIndex=tempData["row"]
+                    rowIndex=PreviousRowIndex
+                    columnIndex=PreviousColumnIndex
+                    for ioindex,x in enumerate(self.config.IO_Name_BankAccountDetails):  
+                        self.fnc_GenrateControl(ParentContainer,DetailTable,columnIndex,rowIndex,x,self.config.IO_Template_BankAccountDetails[ioindex],"txt_BankAccountDetails_"+ str(PreviousAddressCounter+1)+"_" +str(Applicantid))
+                    
+                    self.gridrowindex=self.gridrowindex+1
+                    ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(row=self.gridrowindex, column=0,columnspan=4, sticky=tk.E+tk.W, pady=(5,5))
+                PreviousAddressCounter+=1
+    
+
+    def fnc_Read_IDVerification_IO_Template(self,ParentContainer,Applicantid):                
+        self.gridrowindex,self.gridcolumnindex=-1,0        
+        columnIndex,rowIndex =0,0
+        DetailTable=None        
+        foundTable,foundItem=False ,False          
+        self.RecursionDepthCount,self.CurrentDepthCount=15,0              
+        for tableindex ,table in enumerate(self.tables) :
+            if(table.columns[0]=="D Verification"):
+                self.fun_mergetables(table,True)
+                #check Next Table is on Next Page
+                if (not (self.tables[tableindex+1].columns[0]=="lectronic ID Verification")):
+                    self.fun_mergetables(self.tables[tableindex+1],False)
+                    #check Next Table is on Next to Next Page
+                    if (not (self.tables[tableindex+2].columns[0]=="lectronic ID Verification")):
+                        self.fun_mergetables(self.tables[tableindex+2],False)                
+                DetailTable=pd.DataFrame(self.tableData, columns = self.tableDataColumnName)
+                foundTable=True
+                self.CurrentAddressFound=True
+                break
+        if(foundTable):                        
+            PreviousAddressCounter=0
+            PreviousColumnIndex=0
+            PreviousRowIndex=0
+            Addressee= self.varApplicant1.get() if (Applicantid==1)  else self.varApplicant2.get() if (Applicantid==2) else ""
+            while PreviousAddressCounter < 1:
+                self.IsEvenColumn=False
+                foundItem=False
+                tempData=self.fnc_Read_Bank_GetRowColumnIndex(DetailTable,PreviousRowIndex,PreviousColumnIndex,Addressee,Applicantid )
+                foundItem=tempData["IsFound"]                
+                if(foundItem):
+                    PreviousColumnIndex=tempData["column"]
+                    PreviousRowIndex=tempData["row"]
+                    rowIndex=PreviousRowIndex
+                    columnIndex=PreviousColumnIndex
+                    for ioindex,x in enumerate(self.config.IO_Name_IDVerification):  
+                        self.fnc_GenrateControl(ParentContainer,DetailTable,columnIndex,rowIndex,x,self.config.IO_Template_IDVerification[ioindex],"txt_IDVerification_"+ str(PreviousAddressCounter+1)+"_" +str(Applicantid))
                     
                     self.gridrowindex=self.gridrowindex+1
                     ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(row=self.gridrowindex, column=0,columnspan=4, sticky=tk.E+tk.W, pady=(5,5))

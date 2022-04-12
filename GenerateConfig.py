@@ -90,6 +90,12 @@ class GenerateConfig:
         self.IO_Template_CurrentAddress=self.config_file['InputTemplate']['IO_Template_CurrentAddress'].split(",")
         self.IO_Name_PreviousAddress=self.config_file['InputTemplate']['IO_Name_PreviousAddress'].split(",")
         self.IO_Template_PreviousAddress=self.config_file['InputTemplate']['IO_Template_PreviousAddress'].split(",")
+        self.IO_Name_ContactDetails=self.config_file['InputTemplate']['IO_Name_ContactDetails'].split(",")
+        self.IO_Template_ContactDetails=self.config_file['InputTemplate']['IO_Template_ContactDetails'].split(",")
+        self.IO_Name_BankAccountDetails=self.config_file['InputTemplate']['IO_Name_BankAccountDetails'].split(",")
+        self.IO_Template_BankAccountDetails=self.config_file['InputTemplate']['IO_Template_BankAccountDetails'].split(",")
+        self.IO_Name_IDVerification=self.config_file['InputTemplate']['IO_Name_IDVerification'].split(",")
+        self.IO_Template_IDVerification=self.config_file['InputTemplate']['IO_Template_IDVerification'].split(",")
         
         self.themeName= self.config_file['Themes']['Theme_Name']
 
@@ -128,7 +134,11 @@ class GenerateConfig:
         self.config_file.set("InputTemplate", "IO_Name_PreviousAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,Country,Postcode,Residency Status,Date From,Date To")
         self.config_file.set("InputTemplate", "IO_Template_PreviousAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City / Town,Country,Postcode,Residency Status,Date From,Date To")
         self.config_file.set("InputTemplate", "IO_Name_ContactDetails","Mobile,Email,Home Telephone[M],Work Telephone[M]")
-        self.config_file.set("InputTemplate", "IO_Template_ContactDetails","Mobile,Email,-,-")
+        self.config_file.set("InputTemplate", "IO_Template_ContactDetails","Mobile,E-Mail,-,-")
+        self.config_file.set("InputTemplate", "IO_Name_BankAccountDetails","Owner,Bank Name,Account Holder(s),Account Number,Sort Code")
+        self.config_file.set("InputTemplate", "IO_Template_BankAccountDetails","Owner,Bank Name,Account Holder(s),Account Number,Sort Code")
+        self.config_file.set("InputTemplate", "IO_Name_IDVerification","Original Driving Licence Seen,Driving Licence Ref,Driving Licence Expiry Date,Original Passport Seen,Country of Origin,Passport ref,Passport Expiry Date,Mother Maiden Name,Electricity Bill Ref,Bank Statement Seen,Mortgage Statement Seen,Council Tax Bill Seen,Utilities Bill Seen")
+        self.config_file.set("InputTemplate", "IO_Template_IDVerification","Original Driving Licence Seen,Driving Licence Ref,Driving Licence Expiry Date,Original Passport Seen,Country of Origin,Passport ref,Passport Expiry Date,Mother's Maiden Name,Electricity Bill Ref,Bank Statement Seen,Mortgage Statement Seen,Council Tax Bill Seen,Utilities Bill Seen")
 
         self.config_file.set("InputTemplate", "IO_Name_PreviousAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,"+
         "Country,Postcode,Residency Status,Date From,Date To")
