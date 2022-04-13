@@ -5,6 +5,7 @@
 #from pdfminer.pdfpage import PDFPage
 
 import ctypes
+from email.headerregistry import Address
 import os
 import tabula 
 #from tabula import read_pdf
@@ -91,7 +92,7 @@ class ImportData:
             frmBankDetailFrame.grid(row=4, column=0, sticky=tk.N+tk.W+tk.E, pady=(10,10),padx=(10,10))
             self.fnc_Read_BankAccountDetails_IO_Template(frmBankDetailFrame,Applicantid)
 
-            #Bank Details
+            #ID Verfication
             frmIDVerificationFrame = ttk.LabelFrame(ParentContainer,text="ID Verification",style="Details.TLabelframe")
             frmIDVerificationFrame.grid(row=6, column=0, sticky=tk.N+tk.W+tk.E, pady=(10,10),padx=(10,10))
             self.fnc_Read_IDVerification_IO_Template(frmIDVerificationFrame,Applicantid)
@@ -194,14 +195,20 @@ class ImportData:
                 foundTable=True
                 break
         if(foundTable):            
-            for i, j in PersonalDetailTable.iterrows():
-                if(i==0):
-                    if(Applicantid==1):
-                        self.varApplicant1.set(j[1]) 
-                    elif(Applicantid==2):
-                        self.varApplicant2.set(j[2]) 
-                break
-            
+            addressee=""
+            try:
+                for i, j in PersonalDetailTable.iterrows():                
+                        if(j[0]=="First Name"):
+                            addressee= j[1] if(Applicantid==1) else j[2] 
+                        elif( j[0]=="Last Name") :
+                            addressee=addressee+" " +(j[1] if(Applicantid==1) else j[2] )
+                            break                    
+            except:
+                print ('Some Error')
+            if(Applicantid==1):
+                self.varApplicant1.set(addressee) 
+            elif(Applicantid==2):
+                self.varApplicant2.set(addressee) 
             for ioindex,x in enumerate(self.config.IO_Name_PersonalDetail):
                 self.fnc_GenrateControl(ParentContainer,PersonalDetailTable,Applicantid,0,x,self.config.IO_Template_PersonalDetail[ioindex],"txt_PersonalDetails_"+str(Applicantid))
 
@@ -452,10 +459,10 @@ class ImportData:
             if(table.columns[0]=="ank Account Details"):
                 self.fun_mergetables(table,True)
                 #check Next Table is on Next Page
-                if (not (self.tables[tableindex+1].columns[0]=="amily And Dependants")):
+                if (not (self.fnc_IsTable_Found(self.tables[tableindex+1],"Family And Dependants") or self.fnc_IsTable_Found(self.tables[tableindex+1],"ID Verification"))):
                     self.fun_mergetables(self.tables[tableindex+1],False)
                     #check Next Table is on Next to Next Page
-                    if (not (self.tables[tableindex+2].columns[0]=="amily And Dependants")):
+                    if (not (self.fnc_IsTable_Found(self.tables[tableindex+2],"Family And Dependants") or self.fnc_IsTable_Found(self.tables[tableindex+2],"ID Verification"))):
                         self.fun_mergetables(self.tables[tableindex+2],False)                
                 DetailTable=pd.DataFrame(self.tableData, columns = self.tableDataColumnName)
                 foundTable=True
@@ -484,20 +491,45 @@ class ImportData:
                 PreviousAddressCounter+=1
     
 
+    def fnc_IsTable_Found(self,DetailTable,tableName):
+        if(tableName=="Family And Dependants"):
+            if(DetailTable.columns[0]=="amily And Dependants"):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0]=="Full Name" and row[1]=="Date of Birth" and row[2]=="Age" ):
+                    return True
+        if(tableName=="ID Verification"):
+            if(DetailTable.columns[0]=="D Verification"):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0]=="Original Driving Licence Seen" or row[0]=="Driving Licence Ref"):
+                    return True
+        if(tableName=="Electronic ID Verification"):
+            if(DetailTable.columns[0]=="lectronic ID Verification"):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0]=="ID Check Completed Date" or row[0]=="ID Check Expiry Date"):
+                    return True
+        return False
+            
+
+
     def fnc_Read_IDVerification_IO_Template(self,ParentContainer,Applicantid):                
         self.gridrowindex,self.gridcolumnindex=-1,0        
         columnIndex,rowIndex =0,0
         DetailTable=None        
         foundTable,foundItem=False ,False          
         self.RecursionDepthCount,self.CurrentDepthCount=15,0              
-        for tableindex ,table in enumerate(self.tables) :
-            if(table.columns[0]=="D Verification"):
+        for tableindex ,table in enumerate(self.tables) :            
+            if(tableindex<7):
+                continue;            
+            if(self.fnc_IsTable_Found(table,"ID Verification")):
                 self.fun_mergetables(table,True)
                 #check Next Table is on Next Page
-                if (not (self.tables[tableindex+1].columns[0]=="lectronic ID Verification")):
+                if (not (self.fnc_IsTable_Found(self.tables[tableindex+1],"Electronic ID Verification") )):
                     self.fun_mergetables(self.tables[tableindex+1],False)
                     #check Next Table is on Next to Next Page
-                    if (not (self.tables[tableindex+2].columns[0]=="lectronic ID Verification")):
+                    if (not (self.fnc_IsTable_Found(self.tables[tableindex+2],"Electronic ID Verification") )):
                         self.fun_mergetables(self.tables[tableindex+2],False)                
                 DetailTable=pd.DataFrame(self.tableData, columns = self.tableDataColumnName)
                 foundTable=True
@@ -511,7 +543,7 @@ class ImportData:
             while PreviousAddressCounter < 1:
                 self.IsEvenColumn=False
                 foundItem=False
-                tempData=self.fnc_Read_Bank_GetRowColumnIndex(DetailTable,PreviousRowIndex,PreviousColumnIndex,Addressee,Applicantid )
+                tempData={"column":1,"row":0,"IsFound":True} if(Applicantid==1) else {"column":2,"row":0,"IsFound":True} 
                 foundItem=tempData["IsFound"]                
                 if(foundItem):
                     PreviousColumnIndex=tempData["column"]
@@ -526,14 +558,14 @@ class ImportData:
                 PreviousAddressCounter+=1
     
 
-    def hide_unhide_applicant(self,event,ParentFrame):
+    def hide_unhide_applicant(self):        
         yaxis= self.varStarttingPoint
         if(self.varApplicantType.get()=="Single"):
             for x in self.config.IO_Name:
-               ParentFrame.children["txtCoApplicant"+ x.strip().replace(' ', '_')].place_forget() 
+               self.ContainerFrame.children["txtCoApplicant"+ x.strip().replace(' ', '_')].place_forget() 
         else:
             for x in self.config.IO_Name:
-               ParentFrame.children["txtCoApplicant"+ x.strip().replace(' ', '_')].place(x = 400,y = (10+yaxis), anchor=tk.NW)
+               self.ContainerFrame.children["txtCoApplicant"+ x.strip().replace(' ', '_')].place(x = 400,y = (10+yaxis), anchor=tk.NW)
                yaxis=yaxis+40
     
     def clear_frame(self,frame):
@@ -610,7 +642,7 @@ class ImportData:
         cmbApplicantType = ttk.Combobox(self.ContainerFrame, width = 23, textvariable = self.varApplicantType)
         cmbApplicantType['values'] = ('Single', 'Co Applicant')
         cmbApplicantType.grid(row=2,column = 1, sticky=tk.N+tk.S+tk.W,pady=(5, 2),padx=(10, 10))	
-        cmbApplicantType.bind("<<ComboboxSelected>>", lambda:self.hide_unhide_applicant(self.ContainerFrame))
+        cmbApplicantType.bind("<<ComboboxSelected>>", lambda:self.hide_unhide_applicant())
         
         btnFrame=ttk.Frame(self.ContainerFrame)
         btnFrame.grid(row=0,rowspan=3,column=2,sticky=tk.N+tk.S+tk.W)
