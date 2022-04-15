@@ -4,7 +4,7 @@ from ttkthemes import ThemedStyle
 
 class GenerateConfig:
     # CREATE OBJECT
-    config_file = configparser.ConfigParser()
+    config_file = configparser.ConfigParser(interpolation=None)
     ConfigFileName="configurations.ini"
     Name=None
     Email=None
@@ -91,12 +91,25 @@ class GenerateConfig:
         self.IO_Name_PreviousAddress=self.config_file['InputTemplate']['IO_Name_PreviousAddress'].split(",")
         self.IO_Template_PreviousAddress=self.config_file['InputTemplate']['IO_Template_PreviousAddress'].split(",")
         self.IO_Name_ContactDetails=self.config_file['InputTemplate']['IO_Name_ContactDetails'].split(",")
-        self.IO_Template_ContactDetails=self.config_file['InputTemplate']['IO_Template_ContactDetails'].split(",")
+        self.IO_Template_ContactDetails=self.config_file['InputTemplate']['IO_Template_ContactDetails'].split(",")        
+        self.IO_Name_ProfessionalContacts=self.config_file['InputTemplate']['IO_Name_ProfessionalContacts'].split(",")
+        self.IO_Template_ProfessionalContacts=self.config_file['InputTemplate']['IO_Template_ProfessionalContacts'].split(",")
         self.IO_Name_BankAccountDetails=self.config_file['InputTemplate']['IO_Name_BankAccountDetails'].split(",")
         self.IO_Template_BankAccountDetails=self.config_file['InputTemplate']['IO_Template_BankAccountDetails'].split(",")
+        self.IO_Name_FamilyAndDependants=self.config_file['InputTemplate']['IO_Name_FamilyAndDependants'].split(",")
+        self.IO_Template_FamilyAndDependants=self.config_file['InputTemplate']['IO_Template_FamilyAndDependants'].split(",")
         self.IO_Name_IDVerification=self.config_file['InputTemplate']['IO_Name_IDVerification'].split(",")
         self.IO_Template_IDVerification=self.config_file['InputTemplate']['IO_Template_IDVerification'].split(",")
-        
+        self.IO_Name_CurrentEmploymentDetails=self.config_file['InputTemplate']['IO_Name_CurrentEmploymentDetails'].split(",")
+        self.IO_Template_CurrentEmploymentDetails=self.config_file['InputTemplate']['IO_Template_CurrentEmploymentDetails'].split(",")
+        self.IO_Name_Liabilities=self.config_file['InputTemplate']['IO_Name_Liabilities'].split(",")
+        self.IO_Template_Liabilities=self.config_file['InputTemplate']['IO_Template_Liabilities'].split(",")
+        self.IO_Name_ExistingMortgage=self.config_file['InputTemplate']['IO_Name_ExistingMortgage'].split(",")
+        self.IO_Template_ExistingMortgage=self.config_file['InputTemplate']['IO_Template_ExistingMortgage'].split(",")
+        self.IO_Name_MortgageRequirements=self.config_file['InputTemplate']['IO_Name_MortgageRequirements'].split(",")
+        self.IO_Template_MortgageRequirements=self.config_file['InputTemplate']['IO_Template_MortgageRequirements'].split(",")
+
+
         self.themeName= self.config_file['Themes']['Theme_Name']
 
         
@@ -135,19 +148,23 @@ class GenerateConfig:
         self.config_file.set("InputTemplate", "IO_Template_PreviousAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City / Town,Country,Postcode,Residency Status,Date From,Date To")
         self.config_file.set("InputTemplate", "IO_Name_ContactDetails","Mobile,Email,Home Telephone[M],Work Telephone[M]")
         self.config_file.set("InputTemplate", "IO_Template_ContactDetails","Mobile,E-Mail,-,-")
+        self.config_file.set("InputTemplate", "IO_Name_ProfessionalContacts","Contact Type,Contact Name,Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,Postcode,Telephone Number,Mobile Number,Email Address")
+        self.config_file.set("InputTemplate", "IO_Template_ProfessionalContacts","Contact Type,Contact Name,Address Line 1,Address Line 2,Address Line 3,Address Line 4,City Town,Postcode,Telephone Number,Mobile Number,Email Address")
         self.config_file.set("InputTemplate", "IO_Name_BankAccountDetails","Owner,Bank Name,Account Holder(s),Account Number,Sort Code")
         self.config_file.set("InputTemplate", "IO_Template_BankAccountDetails","Owner,Bank Name,Account Holder(s),Account Number,Sort Code")
+        self.config_file.set("InputTemplate", "IO_Name_FamilyAndDependants","Full Name,Date of Birth,Age,Relationship,Related To,Financially Dependant,Dependant Living with Client")
+        self.config_file.set("InputTemplate", "IO_Template_FamilyAndDependants","Full Name,Date of Birth,Age,Relationship,Related To,Financially Dependant,Dependant Living with Client")
         self.config_file.set("InputTemplate", "IO_Name_IDVerification","Original Driving Licence Seen,Driving Licence Ref,Driving Licence Expiry Date,Original Passport Seen,Country of Origin,Passport ref,Passport Expiry Date,Mother Maiden Name,Electricity Bill Ref,Bank Statement Seen,Mortgage Statement Seen,Council Tax Bill Seen,Utilities Bill Seen")
         self.config_file.set("InputTemplate", "IO_Template_IDVerification","Original Driving Licence Seen,Driving Licence Ref,Driving Licence Expiry Date,Original Passport Seen,Country of Origin,Passport ref,Passport Expiry Date,Mother's Maiden Name,Electricity Bill Ref,Bank Statement Seen,Mortgage Statement Seen,Council Tax Bill Seen,Utilities Bill Seen")
-
-        self.config_file.set("InputTemplate", "IO_Name_PreviousAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,"+
-        "Country,Postcode,Residency Status,Date From,Date To")
-        self.config_file.set("InputTemplate", "IO_Name_ProfessionalContact","Contact Type,Contact Name,Company Name,Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,"+
-        "Country,Postcode,Telephone Number,Mobile Number,Email Address")
-        self.config_file.set("InputTemplate", "IO_Name_BankAccount","Owner,Bank Name,Account Holder(s),Account Number,Sort Code")
-        self.config_file.set("InputTemplate", "IO_Name_FamilyAndDependants","Full Name,Date of Birth,Age,Age,Relationship,Related To,Financially Dependant?,","Living with Client(s),")
-        self.config_file.set("InputTemplate", "IO_Name_IDVerification","Original Driving Licence Seen,Driving Licence Ref,Driving Licence Expiry Date,Original Passport Seen,Country of Origin,Passport ref,Passport Expiry Date,Mother's Maiden Name,Electricity Bill Ref,Bank Statement Seen,Mortgage Statement Seen,Council Tax Bill Seen,Utilities Bill Seen")
-        self.config_file.set("InputTemplate", "IO_Name_CurrentEmployment","Highest rate of income tax paid (%),Owner,Employment Status,Occupation,Shareholding percentage[M],Contractor[M],Inside IR35[M],Employer,Business Type,Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,Country,Post Code,Intended Retirement Age,Start Date,"+
+        self.config_file.set("InputTemplate", "IO_Name_CurrentEmploymentDetails","Highest rate of income tax paid,Owner,Employment Status,Occupation,Shareholding percentage[M],Contractor[M],Inside IR35[M],Employer,Business Type,Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,Country,Post Code,Intended Retirement Age,Start Date,"+
+        "Most Recent Annual Accounts Net Profit,Most Recent Annual Accounts Net Dividend,Most Recent Annual Accounts Salary,Most Recent Annual Accounts Year End,"+
+        "Year 2 Annual Accounts Net Profit,Year 2 Annual Accounts Net Dividend,Year 2 Annual Accounts Salary,Year 2 Year End,"+
+        "Year 3 Annual Accounts Net Profit,Year 3 Annual Accounts Net Dividend,Year 3 Annual Accounts Salary,Year 3 Year End,"+
+        "Gross Basic Annual Income,Net Basic Monthly Income,Net Basic Monthly Income,Do you receive Overtime Income,Gross Guaranteed Annual Overtime,"+
+        "Net Guaranteed Monthly Overtime,Gross Regular Annual Overtime,Net Regular Monthly Overtime,Do you receive Bonus Income,Gross Guaranteed Annual Bonus,Net Guaranteed Annual Bonus,Gross Regular Annual Bonus,Net Regular Annual Bonus,"+
+        "Other Gross Income,Total Gross Annual Earnings,In Probation"
+        )
+        self.config_file.set("InputTemplate", "IO_Template_CurrentEmploymentDetails","Highest rate of income tax paid (%),Owner,Employment Status,Occupation,Shareholding percentage[M],Contractor[M],Inside IR35[M],Employer,Business Type,Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,Country,Post Code,Intended Retirement Age,Start Date,"+
         "Most Recent Annual Accounts Net Profit,Most Recent Annual Accounts Net Dividend,Most Recent Annual Accounts Salary,Most Recent Annual Accounts Year End,"+
         "Year 2 Annual Accounts Net Profit,Year 2 Annual Accounts Net Dividend,Year 2 Annual Accounts Salary,Year 2 Year End,"+
         "Year 3 Annual Accounts Net Profit,Year 3 Annual Accounts Net Dividend,Year 3 Annual Accounts Salary,Year 3 Year End,"+
@@ -155,24 +172,39 @@ class GenerateConfig:
         "Net Guaranteed Monthly Overtime,Gross Regular Annual Overtime,Net Regular Monthly Overtime,Do you receive Bonus Income?,Gross Guaranteed Annual Bonus,Net Guaranteed Annual Bonus,Gross Regular Annual Bonus,Net Regular Annual Bonus,"+
         "Other Gross Income,Total Gross Annual Earnings,In Probation,"
         )
-        self.config_file.set("InputTemplate", "IO_Name_Asset","Owner,Category,Related to Address,Original Value,Purchased On,Value,Valuation Date,"+
-        "Address Line 1[M],Address Line 2[M],Address Line 3[M],Address Line 4[M],City[M],Country[M],Postcode[M]")
-        self.config_file.set("InputTemplate", "IO_Name_Liabilities","Owner,Liability Account Number,Liability Category,Original Loan Amount,Repayment or Interest Only?,Rate Type,Interest Rate (%) ,"+
+        self.config_file.set("InputTemplate", "IO_Name_Liabilities","Owner,Liability Account Number,Liability Category,Original Loan Amount,Repayment or Interest Only,Rate Type,Amount Outstanding,Credit Limit,Interest Rate,"+
+        "Payment Amount Monthly,Lender,Loan Term years,Start Date[M],End Date,Early Redemption Charge,Whether liability is to be repaid,How will liability be repaid")
+        self.config_file.set("InputTemplate", "IO_Template_Liabilities","Owner,Liability Account Number,Liability Category,Original Loan Amount,Repayment or Interest Only?,Rate Type,Amount Outstanding,Credit Limit,Interest Rate (%),"+
         "Payment Amount (Monthly),Lender,Loan Term (years),Start Date[M],End Date,Early Redemption Charge,Whether liability is to be repaid?,How will liability be repaid")
-        self.config_file.set("InputTemplate", "IO_Name_Expenditure","Category[D],Owner,Net Amount,Frequency")
+
         self.config_file.set("InputTemplate", "IO_Name_ExistingMortgage","Owner,Lender,Policy Number,Address Line 1,Rate Type,Mortage Type,Are you a First Time Buyer,"+
         "Property Type,Repayment Method,Capital Repayment Amount,Interest Only Amount,Interest Only Repayment Vehicle,"
-        "Original Loan Amoun,Interest Rate %,Base Rate,Feature Expires,Original Mortgage Term,Start Date,End Date,Remaining Term,"+
+        "Original Loan Amount,Interest Rate,Base Rate,Feature Expires,Original Mortgage Term,Start Date,End Date,Remaining Term,"+
+        "Current Balance,Account Number,Is the loan subject to Redemption Penalty,Redemption End Date,Consent to Let,Linked to Asset,Asset Value")
+        self.config_file.set("InputTemplate", "IO_Template_ExistingMortgage","Owner,Lender,Policy Number,Address Line 1,Rate Type,Mortage Type,Are you a First Time Buyer,"+
+        "Property Type,Repayment Method,Capital Repayment Amount,Interest Only Amount,Interest Only Repayment Vehicle,"
+        "Original Loan Amount,Interest Rate %,Base Rate,Feature Expires,Original Mortgage Term,Start Date,End Date,Remaining Term,"+
         "Current Balance,Account Number,Is the loan subject to Redemption Penalty?,Redemption End Date,Consent to Let?,Linked to Asset,Asset Value")
-        self.config_file.set("InputTemplate", "IO_Name_MortgageRequirements","Owner,RequirementType[M][D],Mortage Type,Property,Number of Bedrooms,Number of living rooms,Number of kitchen,Number of Toilets,Number of bathrooms,Parking space,Garage,Is area > 2 acres"+
-        "Repayment Method,Tenure Type[M][D],Region[M],Year Built[M],Property Type[M],Property Description[M],Repayment Method,Capital Repayment Amount,Interest Only Amount,Price/Valuation,Deposit/Equity,Loan,LTV(%),Term,Source Of Deposit")
+
+        self.config_file.set("InputTemplate", "IO_Name_MortgageRequirements","Owner,RequirementType[M][D],Mortage Type,Property,Number of Bedrooms,Number of living rooms,Number of kitchen,Number of Toilets,Number of bathrooms,Parking space,Garage,Is area gt 2 acres,"+
+        "Repayment Method,Tenure Type[M][D],Region[M],Year Built[M],Property Type[M][D],Property Description[M],Floor[M],Total floors in the block[M],Lift[M],Lease Years Remaining[M],Is above commercial[M],Ground rent[M],Service charge[M],EWS1 Form available[M],Capital Repayment Amount,Interest Only Amount,Price/Valuation,Deposit/Equity,Loan,LTV,Term,Source Of Deposit")
+        self.config_file.set("InputTemplate", "IO_Template_MortgageRequirements","Owner,[Purchase][Re-mortgage][Product Transfer][Additional Borrow],Mortage Type,Property,Number of Bedrooms,Number of living rooms,Number of kitchen,Number of Toilets,Number of bathrooms,[on-site parking][off-street parking],[Yes][No],[Yes][No],"+
+        "Repayment Method,[Freehold][Leasehold],Region[M],Year Built[M],[House][Bungalow][Flat][Maisonette],Property Description[M],Floor,Total floors in the block,Lift,Lease Years Remaining,Is above commercial,Ground rent,Service charge,EWS1 Form available,Capital Repayment Amount,Interest Only Amount,Price/Valuation,Deposit/Equity,Loan,LTV(%),Term,Source Of Deposit")
+
+
+        
+        self.config_file.set("InputTemplate", "IO_Name_Asset","Owner,Category,Related to Address,Original Value,Purchased On,Value,Valuation Date,"+
+        "Address Line 1[M],Address Line 2[M],Address Line 3[M],Address Line 4[M],City[M],Country[M],Postcode[M]")
+        
+        self.config_file.set("InputTemplate", "IO_Name_Expenditure","Category[D],Owner,Net Amount,Frequency")
+        
+        
         
 
         self.config_file.set("InputTemplate", "IO_Name_D_Expenditure_Category","Council Tax,Gas,Electricity,Water,Telephone/Mobile,Food & Personal Care,Car/Travelling Expenses,Housekeeping,Building Insurance,"
         "Combined Utilities,Maintenance/Alimony,Clothing,TV/Satellite/Internet/Basic Recreation,School Fee/Childcare,Life/General Assurance Premium,Other (Non-Essential)")
         self.config_file.set("InputTemplate", "IO_Name_D_SourceofDeposit","Builder Gift,Customer’s Bank Account-UK/Savings,Equity,Gifted Deposit,Immediate Family Gift,Inheritance,Loan,Proceeds of house sale,Sale Of Other Property,Vendor Gifted")
         self.config_file.set("InputTemplate", "IO_Name_D_MortgageRequirements_RequirementType","Builder Gift,Customer’s Bank Account-UK/Savings,Equity,Gifted Deposit,Immediate Family Gift,Inheritance,Loan,Proceeds of house sale,Sale Of Other Property,Vendor Gifted")
-
 
         self.config_file.set("InputTemplate", "IO_Template", "Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,"+
         "Country of Birth,Nationality,National Insurance No.,Country Of Residence,Country of Birth,Address Line 1,Address Line 2,City,Country,Postcode,Address Type,Address Status,Date From,Date To,Telephone,Mobile,E-Mail")
