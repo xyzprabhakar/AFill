@@ -108,6 +108,10 @@ class GenerateConfig:
         self.IO_Template_ExistingMortgage=self.config_file['InputTemplate']['IO_Template_ExistingMortgage'].split(",")
         self.IO_Name_MortgageRequirements=self.config_file['InputTemplate']['IO_Name_MortgageRequirements'].split(",")
         self.IO_Template_MortgageRequirements=self.config_file['InputTemplate']['IO_Template_MortgageRequirements'].split(",")
+        self.IO_Name_Expenditure=self.config_file['InputTemplate']['IO_Name_Expenditure'].split(",")
+        self.IO_Template_Expenditure=self.config_file['InputTemplate']['IO_Template_Expenditure'].split(",")
+        self.IO_Name_Whichofthefollowingareimportant=self.config_file['InputTemplate']['IO_Name_Whichofthefollowingareimportant'].split(",")
+        self.IO_Template_Whichofthefollowingareimportant=self.config_file['InputTemplate']['IO_Template_Whichofthefollowingareimportant'].split(",")
 
 
         self.themeName= self.config_file['Themes']['Theme_Name']
@@ -186,21 +190,17 @@ class GenerateConfig:
         "Original Loan Amount,Interest Rate %,Base Rate,Feature Expires,Original Mortgage Term,Start Date,End Date,Remaining Term,"+
         "Current Balance,Account Number,Is the loan subject to Redemption Penalty?,Redemption End Date,Consent to Let?,Linked to Asset,Asset Value")
 
-        self.config_file.set("InputTemplate", "IO_Name_MortgageRequirements","Owner,RequirementType[M][D],Mortage Type,Property,Number of Bedrooms,Number of living rooms,Number of kitchen,Number of Toilets,Number of bathrooms,Parking space,Garage,Is area gt 2 acres,"+
+        self.config_file.set("InputTemplate", "IO_Name_MortgageRequirements","Source of Deposit[M],Owner,RequirementType[M][D],Mortage Type,Property,Number of Bedrooms,Number of living rooms,Number of kitchen,Number of Toilets,Number of bathrooms,Parking space,Garage,Is area gt 2 acres,"+
         "Repayment Method,Tenure Type[M][D],Region[M],Year Built[M],Property Type[M][D],Property Description[M],Floor[M],Total floors in the block[M],Lift[M],Lease Years Remaining[M],Is above commercial[M],Ground rent[M],Service charge[M],EWS1 Form available[M],Capital Repayment Amount,Interest Only Amount,Price/Valuation,Deposit/Equity,Loan,LTV,Term,Source Of Deposit")
-        self.config_file.set("InputTemplate", "IO_Template_MortgageRequirements","Owner,[Purchase][Re-mortgage][Product Transfer][Additional Borrow],Mortage Type,Property,Number of Bedrooms,Number of living rooms,Number of kitchen,Number of Toilets,Number of bathrooms,[on-site parking][off-street parking],[Yes][No],[Yes][No],"+
+        self.config_file.set("InputTemplate", "IO_Template_MortgageRequirements","[Builder Gift][Customer’s Bank][Equity][Gifted Deposit][Immediate Family Gift][Inheritance][Loan],[Proceeds of house sale][Sale Of Other Property][Vendor Gifted],Owner,[Purchase][Re-mortgage][Product Transfer][Additional Borrow],Mortage Type,Property,Number of Bedrooms,Number of living rooms,Number of kitchen,Number of Toilets,Number of bathrooms,[on-site parking][off-street parking],[Yes][No],[Yes][No],"+
         "Repayment Method,[Freehold][Leasehold],Region[M],Year Built[M],[House][Bungalow][Flat][Maisonette],Property Description[M],Floor,Total floors in the block,Lift,Lease Years Remaining,Is above commercial,Ground rent,Service charge,EWS1 Form available,Capital Repayment Amount,Interest Only Amount,Price/Valuation,Deposit/Equity,Loan,LTV(%),Term,Source Of Deposit")
 
-
-        
         self.config_file.set("InputTemplate", "IO_Name_Asset","Owner,Category,Related to Address,Original Value,Purchased On,Value,Valuation Date,"+
         "Address Line 1[M],Address Line 2[M],Address Line 3[M],Address Line 4[M],City[M],Country[M],Postcode[M]")
         
-        self.config_file.set("InputTemplate", "IO_Name_Expenditure","Category[D],Owner,Net Amount,Frequency")
+        self.config_file.set("InputTemplate", "IO_Name_Expenditure","Council Tax,Gas,Electricity,Water,Telephone Mobile,Food Personal Care,Car Travelling Expenses,Housekeeping,Building Insurance,Combined Utilities,Maintenance Alimony,Clothing,Basic Recreation,School Fee Childcare,Life General Assurance,Other")
+        self.config_file.set("InputTemplate", "IO_Template_Expenditure","Council Tax,Gas,Electricity,Water,Telephone/Mobile,Food & Personal Care,Car/Travelling Expenses,Housekeeping,Building Insurance,Combined Utilities,Maintenance/Alimony,Clothing,TV/Satellite/Internet/Basic,School Fee/Childcare,Life/General Assurance,Other (Non-Essential)")
         
-        
-        
-
         self.config_file.set("InputTemplate", "IO_Name_D_Expenditure_Category","Council Tax,Gas,Electricity,Water,Telephone/Mobile,Food & Personal Care,Car/Travelling Expenses,Housekeeping,Building Insurance,"
         "Combined Utilities,Maintenance/Alimony,Clothing,TV/Satellite/Internet/Basic Recreation,School Fee/Childcare,Life/General Assurance Premium,Other (Non-Essential)")
         self.config_file.set("InputTemplate", "IO_Name_D_SourceofDeposit","Builder Gift,Customer’s Bank Account-UK/Savings,Equity,Gifted Deposit,Immediate Family Gift,Inheritance,Loan,Proceeds of house sale,Sale Of Other Property,Vendor Gifted")
@@ -208,6 +208,9 @@ class GenerateConfig:
 
         self.config_file.set("InputTemplate", "IO_Template", "Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,"+
         "Country of Birth,Nationality,National Insurance No.,Country Of Residence,Country of Birth,Address Line 1,Address Line 2,City,Country,Postcode,Address Type,Address Status,Date From,Date To,Telephone,Mobile,E-Mail")
+
+        self.config_file.set("InputTemplate", "IO_Name_Whichofthefollowingareimportant","The maximum early redemption period I would accept is,Ability to add fees to the loan")
+        self.config_file.set("InputTemplate", "IO_Template_Whichofthefollowingareimportant","The maximum early redemption period I would accept is,Ability to add fees to the loan")
 
         self.config_file.add_section("Themes")
         self.config_file.set("Themes", "Theme_Name", "arc")

@@ -91,17 +91,18 @@ class AutoFill(tk.Frame):
         frmInnerContentFrame.pack(side=tk.LEFT,fill=tk.BOTH,anchor=tk.NW ,pady = 20,padx=20,expand=tk.TRUE )
         frmInnerContentFrame.columnconfigure(0, weight=1)
         frmInnerContentFrame.rowconfigure(0, weight=1)
-        frmInnerContentFrame.rowconfigure(1, weight=1)
-        frmInnerContentFrame.rowconfigure(2, weight=100)
+        frmInnerContentFrame.rowconfigure(1, weight=2)
+        frmInnerContentFrame.rowconfigure(2, weight=1)
+        frmInnerContentFrame.rowconfigure(3, weight=100)
 
         lblHeader= tk.Label(frmInnerContentFrame,textvariable=self.varMenu,font= self.config.headerFonts,bg=self.config.COLOR_MENU_BACKGROUND, padx=10)
-        lblHeader.grid(row=0, column=0, sticky=tk.N+tk.W, pady=(5,3))
+        lblHeader.grid(row=0, column=0, sticky=tk.N+tk.W, pady=(5,0))
         
-        separator = tk.Frame(frmInnerContentFrame, bg=self.config.COLOR_TOP_BACKGROUND, height=1, bd=0)
-        separator.grid(row=1, column=0, sticky=tk.E+tk.W, pady=(5,5))
+        separator = tk.Frame(frmInnerContentFrame, bg=self.config.COLOR_TOP_BACKGROUND, height=2, bd=0,pady=10)
+        separator.grid(row=1, column=0, sticky=tk.E+tk.W)
         
-        self.frmInnerDisplayContentFrame = tk.Frame(frmInnerContentFrame,bg=self.config.COLOR_MENU_BACKGROUND,padx=10)
-        self.frmInnerDisplayContentFrame.grid(row=2, column=0, sticky=tk.N+tk.S+tk.E+tk.W,pady=(5,5))
+        self.frmInnerDisplayContentFrame = tk.Frame(frmInnerContentFrame,bg=self.config.COLOR_MENU_BACKGROUND)
+        self.frmInnerDisplayContentFrame.grid(row=3, column=0, sticky=tk.N+tk.S+tk.E+tk.W)
         self._draw_menu(self.frmLeftFrame)
     
     def move_app(self,event,parent):
@@ -145,10 +146,10 @@ class AutoFill(tk.Frame):
         elif(self.varMenu.get()=="Import Data"):
             if(self.frmImportData==None):
                 self.frmImportData=ttk.Frame(self.frmInnerDisplayContentFrame)
-                self.frmImportData.pack(fill=tk.BOTH,expand=tk.TRUE,pady=10)
+                self.frmImportData.pack(fill=tk.BOTH,expand=tk.TRUE)
                 ImpData.ImportData(self.frmImportData,self.config)
             else:
-                self.frmImportData.pack(fill=tk.BOTH,expand=tk.TRUE,pady=10)
+                self.frmImportData.pack(fill=tk.BOTH,expand=tk.TRUE)
         elif(self.varMenu.get()=="Template"):
             if(self.frmTemplate==None):
                 self.frmTemplate=ttk.Frame(self.frmInnerDisplayContentFrame)
