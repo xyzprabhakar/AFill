@@ -1,213 +1,1479 @@
-from multiprocessing.sharedctypes import Value
-from tkinter import font
-from io import StringIO
+
+import ctypes
+from email.headerregistry import Address
 import os
-
-import tabula 
-#from tabula import read_pdf
-#from tabulate import tabulate
-
+from cv2 import merge
+from numpy import pad
+import tabula
+import pandas as pd
 import io
 import tkinter as tk
 from tkinter.filedialog import askopenfile, askopenfilename
 from tkinter import RAISED, ttk
 import GenerateConfig as Gc
 import json
+import tkinter as tk
 
 
-class ImportData(ttk.Frame):
-    config=None
-    varTemplateType = None
-    varApplicantType = None
-    varStarttingPoint=0
-    varAllJsonData=[]
-    varId=None
+class ImportData1:
+    config = None
+    varApplicant1,varApplicant2 = None,None     
+    varTemplateType,varApplicantType,varFileName = None,None  ,None   
+    varStarttingPoint = 0
+    varAllJsonData = []     
+    ContainerCanvas,ContainerFrame,ApplicantTab,frm_Applicant1,frm_Applicant2 = None,None,None,None,None     
+    Parent_Height = 500
+    Parent_Width = 600
+    tables = None
 
-    def __init__(self,config):
-        tk.Frame.__init__(self)        
-        self.config=config
-        self["background"]=self.config.COLOR_MENU_BACKGROUND
-        self["height"]=600
-        self["width"]=768
 
-        canvas = tk.Canvas(self)
-        scrollbar = ttk.Scrollbar(self, orient="vertical", command=canvas.yview)
-        scrollable_frame = ttk.Frame(canvas)
-        scrollable_frame.bind("<Configure>",lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-
+    def __init__(self, Container, config):
+        self.config = config
         self.varTemplateType = tk.StringVar()
         self.varApplicantType = tk.StringVar()
-        self.varId=tk.StringVar()
-        self.pack(expand=True, fill=tk.BOTH)        
-        self.LoadAllJsonData()
+        self.varApplicant1 = tk.StringVar()
+        self.varApplicant2 = tk.StringVar()
+        self.varFileName = tk.StringVar()
+
+        #self.ContainerCanvas = tk.Canvas(Container, bg=self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge',width=Container["width"], height=Container["height"])
+        ContainerCanvas = tk.Canvas(Container, bg="RED",highlightthickness=0, relief='ridge',width=Container["width"], height=Container["height"])
+        ContainerCanvas.pack(side=tk.LEFT,expand=tk.TRUE, fill="both")
+        #add Scroll bar
+        scrollbar_y = tk.Scrollbar(Container, orient=tk.VERTICAL, command=ContainerCanvas.yview)
+        scrollbar_x = tk.Scrollbar(Container, orient=tk.HORIZONTAL, command=ContainerCanvas.xview)
+        scrollbar_y.pack(side=tk.RIGHT, fill="y")
+        scrollbar_x.pack(side=tk.BOTTOM, fill="x")
+        #configure canvas
+        ContainerCanvas.configure(yscrollcommand=scrollbar_y,xscrollcommand=scrollbar_x,)
+        ContainerCanvas.bind("<Configure>", lambda e: ContainerCanvas.configure(scrollregion=ContainerCanvas.bbox("all")))
+        #ContainerCanvas.bind("<Configure>",  lambda : self.fnc_resizeScroll(e,ContainerCanvas))
+        
+        self.ContainerFrame = ttk.Frame(ContainerCanvas)
+        ContainerCanvas.create_window((0, 0), window=self.ContainerFrame, anchor='nw')
+        # self.ContainerCanvas.configure(yscrollcommand=self.scrollbar_y.set, xscrollcommand=scrollbar_x.set)      
+        
+        #self.ContainerFrame.bind("<Configure>", self.fnc_resizeScroll)
+        #self.ContainerCanvas.bind_all("<MouseWheel>", self.OnMouseWheel)
         self.fncCreateItems()
         
-    
-    def LoadAllJsonData(self):
-        if not os.path.exists(self.config.FilePath):
-            os.makedirs(self.config.FilePath)
-        if os.path.isfile(os.path.join(self.config.FilePath, self.config.DataFileName)) is False:
-            with io.open(os.path.join(self.config.FilePath, self.config.DataFileName), 'w') as fp:
-                print('Empty File Created')
-        else:
-            with io.open(os.path.join(self.config.FilePath, self.config.DataFileName)) as fp:
-                self.varAllJsonData = json.load(fp)
-                if(len(self.varAllJsonData)>0):
-                    last_element = self.varAllJsonData[-1]
-                    try:
-                        self.varId.set(int(last_element["id"])+1) 
-                    except:
-                        print('lat Id is not a number')
+        # for  thing in range(1,100):
+        #     ttk.Button(self.ContainerFrame,text=f'Button {thing} hi').grid(row=thing,columns=1,pady=10,padx=10)
+        
+        
+    def OnMouseWheel(self, event):
+        self.ContainerCanvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
-    def convert_pdf_to_txt(self,path):
-        rsrcmgr = PDFResourceManager()
-        retstr = StringIO()
-        codec = 'utf-8'
-        laparams = LAParams()
-        device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
-        fp = open(path, 'rb')
-        interpreter = PDFPageInterpreter(rsrcmgr, device)
-        password = ""
-        maxpages = 0
-        caching = True
-        pagenos=set()
-        for page in PDFPage.get_pages(fp, pagenos, maxpages=maxpages, password=password,caching=caching, check_extractable=True):
-            interpreter.process_page(page)
-        text = retstr.getvalue()
+    def fnc_resizeScroll(self, e,canvas):
+        canvas.configure(scrollregion=canvas.bbox("all"))
+    # def fnc_resizeScroll(self, event):
+    #     self.ContainerCanvas.configure(scrollregion=self.ContainerCanvas.bbox(
+    #         "all"), width=self.Parent_Width, height=self.Parent_Height)
 
-        fp.close()
-        device.close()
-        retstr.close()
-        return text
+    def fnc_Read_PersonalDetails(self, ParentContainer, Applicantid):
+        
+        
+        
+        frmTopFrame = ttk.Notebook(ParentContainer,name="tab_Section_"+str(Applicantid))
+        frmTopFrame.pack(fill="both",anchor="nw")        
 
-    def open_file1(self):
-        open_file = askopenfilename(initialdir="d:",title="Open Template" , filetypes =[('Pdf Files', '*.pdf')])
-        if open_file: 
-            txtbox=self.children["txtremarks"]
-            txtbox.delete(1.0,"end")             
-            txtbox.insert("end",self.convert_pdf_to_txt(open_file))
-            # closing the pdf file object
-            #pdfFileObj.close()
+        if(self.varTemplateType.get() == "IO Template"): 
+            frmDetailFrame = ttk.Frame(frmTopFrame) 
+            frmPersonalDetailsFrame = ttk.LabelFrame(frmDetailFrame, text="Personal Details", style="Details.TLabelframe")
+            frmPersonalDetailsFrame.grid(row=0, column=0, sticky=tk.N+tk.W, pady=(10, 10), padx=(10, 10))
+            self.fnc_Read_PersonalDetails_IO_Template(frmPersonalDetailsFrame, Applicantid)            
+            frmAddressFrame = ttk.Notebook(frmDetailFrame,name="tab_Section_Address_"+str(Applicantid))
+            # Add Current Address
+            frmCurrentAddressFrame = ttk.Frame(frmAddressFrame)            
+            self.fnc_Read_CurrentAddress_IO_Template(frmCurrentAddressFrame, Applicantid)
+            frmAddressFrame.add(frmCurrentAddressFrame, text ='Current Address')            
 
-    def open_file(self):
-        open_file = askopenfilename(initialdir="d:",title="Open Template" , filetypes =[('Pdf Files', '*.pdf')])
-        if open_file: 
-            tables = tabula.read_pdf(open_file,pages="all") #address of pdf file
-            ioindex=0
-            dataFound=0
-            for x in self.config.IO_Name_PersonalDetail:
-                dataFound=0
-                for table in tables:
-                    for i, j in table.iterrows():
-                        #print(j[0],j[1])                        
-                        if(j[0]==self.config.IO_Template[ioindex]):
-                            try:
-                                self.children["txtApplicant"+ x.strip().replace(' ', '_')].delete(0,tk.END)
-                                self.children["txtApplicant"+ x.strip().replace(' ', '_')].insert(0,j[1]) 
-                                if(self.varApplicantType.get()=="Co Applicant"):
-                                    self.children["txtCoApplicant"+ x.strip().replace(' ', '_')].delete(0,tk.END)
-                                    self.children["txtCoApplicant"+ x.strip().replace(' ', '_')].insert(0,j[2]) 
-                            except:
-                                print("Something went wrong")
-                            dataFound=1
-                        if(dataFound==1):
-                            break
-                    if(dataFound==1):
-                        break
-                ioindex=ioindex+1
+            # Add Previous Address
+            frmPreviousAddressFrame = ttk.Frame(frmAddressFrame)
+            self.fnc_Read_PreviousAddress_IO_Template(frmPreviousAddressFrame, Applicantid)
+            frmAddressFrame.add(frmPreviousAddressFrame, text ='Previous Address')
+            # Contact Details
+            frmContactDetailFrame = ttk.LabelFrame(frmDetailFrame, text="Contact Details", style="Details.TLabelframe")            
+            self.fnc_Read_ContactDetails_IO_Template(frmContactDetailFrame, Applicantid)
+            frmContactDetailFrame.grid(row=1, column=0, sticky=tk.N+tk.W, pady=(10, 10), padx=(10, 10))
 
             
-    def save_data(self):
-        applicantDic={}
-        CoapplicantDic={}
-        for x in self.config.IO_Name:
-            applicantDic[x.strip().replace(' ', '_')]= self.children["txtApplicant"+ x.strip().replace(' ', '_')].get()            
-            if(self.varApplicantType.get()=="Co Applicant"):                
-                CoapplicantDic[x.strip().replace(' ', '_')]=self.children["txtCoApplicant"+ x.strip().replace(' ', '_')].get()
-        aDict = {"id":self.varId.get(), "applicantType":self.varApplicantType.get(), "applicantData":applicantDic,"coApplicantData":CoapplicantDic}
-        self.varAllJsonData.append(aDict)
-        with open(os.path.join(self.config.FilePath, self.config.DataFileName), 'w', encoding='utf-8') as f:
-            json.dump(self.varAllJsonData, f, ensure_ascii=False, indent=4,separators=(',',': '))            
-            tk.messagebox.showinfo("showinfo", "Save Successfully")
+            # ProfessionalContacts
+            frmProfessionalContactsFrame = ttk.Frame(frmAddressFrame)
+            self.fnc_Read_ProfessionalContact_IO_Template(frmProfessionalContactsFrame, Applicantid)
+            frmAddressFrame.add(frmProfessionalContactsFrame, text ='Professional Contacts')
+            # Bank Details
+            frmBankDetailFrame = ttk.Frame(frmAddressFrame)
+            self.fnc_Read_BankAccountDetails_IO_Template(frmBankDetailFrame, Applicantid)
+            frmAddressFrame.add(frmBankDetailFrame, text ='Bank Details')
 
-    def reset_data(self):
-        for x in self.config.IO_Name:
-            self.children["txtApplicant"+ x.strip().replace(' ', '_')].delete(0,"end")
-            if(self.varApplicantType.get()=="Co Applicant"):                
-                self.children["txtCoApplicant"+ x.strip().replace(' ', '_')].delete(0,"end")
-        try:
-            self.varId.set(int(self.varId.get()) +1)
-        except:
-            print('Id is not a number')
+            frmAddressFrame.grid(row=2, column=0, sticky=tk.N+tk.W+tk.E)
+            frmTopFrame.add(frmDetailFrame, text ='Details')
+
+            
+
+            
+            # Family And Dependants
+            frmFamilyAndDependantsrame = ttk.LabelFrame(frmTopFrame, text="Family And Dependants", style="Details.TLabelframe")
+            self.fnc_Read_FamilyAndDependants_IO_Template(frmFamilyAndDependantsrame, Applicantid)
+            frmTopFrame.add(frmFamilyAndDependantsrame, text ='Family')
+            # ID Verfication
+            frmIDVerificationFrame = ttk.Frame(frmTopFrame)
+            self.fnc_Read_IDVerification_IO_Template(frmIDVerificationFrame, Applicantid)
+            frmTopFrame.add(frmIDVerificationFrame, text ='ID Verification')
+
+            # Current Employement Details
+            frmCurrentEmployementDetailsFrame = ttk.LabelFrame(frmTopFrame,text="Current Employement Details",style="Details.TLabelframe")
+            self.fnc_Read_CurrentEmployementDetails_IO_Template(frmCurrentEmployementDetailsFrame, Applicantid)           
+            frmTopFrame.add(frmCurrentEmployementDetailsFrame, text ='Employement')
+
+
+            frmAssetsLiabilitiesFrame=ttk.Notebook(frmTopFrame)            
+            
+            # Assets Details            
+            frmAssetsFrame = ttk.Frame(frmAssetsLiabilitiesFrame)            
+            self.fnc_Read_Assets_IO_Template(frmAssetsFrame, Applicantid)            
+            frmAssetsLiabilitiesFrame.add(frmAssetsFrame, text ='Assets')
+
+            # Liabilities
+            frmLiabilitiesFrame = ttk.Frame(frmAssetsLiabilitiesFrame)            
+            self.fnc_Read_Liabilities_IO_Template(frmLiabilitiesFrame, Applicantid)
+            frmAssetsLiabilitiesFrame.add(frmLiabilitiesFrame, text ='Liabilities')
+            # Expenditure
+            frmExpenditureFrame = ttk.Frame(frmAssetsLiabilitiesFrame)            
+            self.fnc_Read_Expenditure_IO_Template(frmExpenditureFrame, Applicantid)
+            frmAssetsLiabilitiesFrame.add(frmExpenditureFrame, text ='Expenditure')
+            frmTopFrame.add(frmAssetsLiabilitiesFrame, text ='Assets/Liabilities')
+
+            frmMortgageFrame = ttk.Notebook(frmTopFrame)
+            # ExistingMortgage
+            frmExistingMortgageFrame = ttk.Frame(frmMortgageFrame)
+            self.fnc_Read_ExistingMortgageDetails_IO_Template(frmExistingMortgageFrame, Applicantid)
+            frmMortgageFrame.add(frmExistingMortgageFrame, text ='Existing Mortgage')
+            #Mortage Requirement
+            frmMortgageRequirementsFrame = ttk.Frame(frmMortgageFrame)            
+            self.fnc_Read_MortgageRequirements_IO_Template(frmMortgageRequirementsFrame, Applicantid)
+            frmMortgageFrame.add(frmMortgageRequirementsFrame, text ='Mortgage Requirements')
+            frmTopFrame.add(frmMortgageFrame, text ='Mortgage')
+
+            
                 
-
-    def hide_unhide_applicant(self,event):
-        yaxis= self.varStarttingPoint
-        if(self.varApplicantType.get()=="Single"):
-            for x in self.config.IO_Name:
-               self.children["txtCoApplicant"+ x.strip().replace(' ', '_')].place_forget() 
+    def fnc_GenrateControl(self, ParentContainer, DetailTable, FindingColumnIndex, FromPosition, IO_Name, IO_Template_Name, Suffix):
+        if(IO_Name=="Repayment Method"):
+            pass
+        if(self.IsEvenColumn):
+            self.IsEvenColumn = False
+            self.gridcolumnindex = 2
         else:
-            for x in self.config.IO_Name:
-               self.children["txtCoApplicant"+ x.strip().replace(' ', '_')].place(x = 400,y = (10+yaxis), anchor=tk.NW)
-               yaxis=yaxis+40
+            self.IsEvenColumn = True
+            self.gridcolumnindex = 0
+            self.gridrowindex = self.gridrowindex+1
+        FindingValue = ""
+        if (not("[M]" in IO_Name)):
+            for i, j in DetailTable.iterrows():
+                if(i < FromPosition):
+                    continue
+                try:
+                    if(j[0] == IO_Template_Name):
+                        FindingValue = j[FindingColumnIndex]
+                        if(str(FindingValue) == "nan"):
+                            FindingValue = ""
+                        break
+
+                except Exception as ex:
+                    print("Error", ex)
+        ttk.Label(ParentContainer, text=IO_Name.replace('[M]', '').replace('[D]', '')).grid(
+            row=self.gridrowindex, column=self.gridcolumnindex, sticky=tk.N+tk.S+tk.E, padx=(10, 10), pady=(5, 2))
+        txtboxname = Suffix+IO_Name.strip().replace(' ',
+                                                    '_').replace('[M]', '').replace('[D]', '')
+        entrybox = ttk.Entry(ParentContainer, name=txtboxname)
+        entrybox.insert(0, FindingValue)
+        entrybox.grid(row=self.gridrowindex, column=(
+            self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
+
+    def fnc_GenrateControl_Vertical(self, ParentContainer, DetailTable, FindingColumnIndex, FindingRowIndex, IO_Name, IO_Template_Name, Suffix):
+        if(self.IsEvenColumn):
+            self.IsEvenColumn = False
+            self.gridcolumnindex = 2
+        else:
+            self.IsEvenColumn = True
+            self.gridcolumnindex = 0
+            self.gridrowindex = self.gridrowindex+1
+        FindingValue = ""
+        if (not("[M]" in IO_Name) and FindingRowIndex > 0):
+            for i, j in DetailTable.iterrows():
+                if(i < FindingRowIndex):
+                    continue
+                try:
+                    FindingValue = j[FindingColumnIndex]
+                    if(str(FindingValue) == "nan"):
+                        FindingValue = ""
+                    break
+                except Exception as ex:
+                    print("Error", ex)
+        ttk.Label(ParentContainer, text=IO_Name.replace('[M]', '').replace('[D]', '')).grid(
+            row=self.gridrowindex, column=self.gridcolumnindex, sticky=tk.N+tk.S+tk.E, padx=(10, 10), pady=(5, 2))
+        txtboxname = Suffix+IO_Name.strip().replace(' ',
+                                                    '_').replace('[M]', '').replace('[D]', '')
+        entrybox = ttk.Entry(ParentContainer, name=txtboxname)
+        entrybox.insert(0, FindingValue)
+        entrybox.grid(row=self.gridrowindex, column=(
+            self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
+
+    def fnc_GenrateControl_Vertical_asset(self, ParentContainer, FindingValue, IO_Name, Suffix):
+        if(self.IsEvenColumn):
+            self.IsEvenColumn = False
+            self.gridcolumnindex = 2
+        else:
+            self.IsEvenColumn = True
+            self.gridcolumnindex = 0
+            self.gridrowindex = self.gridrowindex+1          
+        ttk.Label(ParentContainer, text=IO_Name.replace('[M]', '').replace('[D]', '')).grid(
+            row=self.gridrowindex, column=self.gridcolumnindex, sticky=tk.N+tk.S+tk.E, padx=(10, 10), pady=(5, 2))
+        txtboxname = Suffix+IO_Name.strip().replace(' ',
+                                                    '_').replace('[M]', '').replace('[D]', '')
+        entrybox = ttk.Entry(ParentContainer, name=txtboxname)
+        entrybox.insert(0, FindingValue)
+        entrybox.grid(row=self.gridrowindex, column=(
+            self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
+
+
+    def fun_mergetables(self, table, IsPrentTable, IncludeHeader=False):
+        currentColumnLength = len(table.columns)
+        if(IsPrentTable):
+            self.tableData = []
+            self.tableDataColumnLength = len(table.columns)
+            self.tableDataColumnName = []
+            for colindex in range(self.tableDataColumnLength):
+                self.tableDataColumnName.append("columns"+str(colindex))
+        if(IncludeHeader):
+            subrow1 = []
+            for colindex in range(self.tableDataColumnLength):
+                if(colindex >= currentColumnLength):
+                    subrow1.append("")
+                else:
+                    subrow1.append(table.columns[colindex])
+            self.tableData.append(subrow1)
+
+        for i, j in table.iterrows():
+            subrow2 = []
+            for colindex in range(self.tableDataColumnLength):
+                if(colindex >= currentColumnLength):
+                    subrow2.append("")
+                else:
+                    try:
+                        subrow2.append(j[colindex])
+                    except:
+                        subrow2.append("")
+            self.tableData.append(subrow2)
+
+    def fnc_IsTable_Found(self, DetailTable, tableName):
+        if(tableName == "Professional Contacts"):
+            if(DetailTable.columns[0] == "rofessional Contacts"):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Company Name"):
+                    return True
+        elif(tableName == "Bank Account Details"):
+            if(DetailTable.columns[0] == "ank Account Details"):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Bank Name" and row[0] =="Account Holder(s)"):
+                    return True
+        elif(tableName == "Family And Dependants"):
+            if(DetailTable.columns[0] == "amily And Dependants"):
+                return True
+            if(DetailTable.columns[0] == "Full Name" and DetailTable.columns[1] == "Date of Birth" and DetailTable.columns[2] == "Age"):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Full Name" and row[1] == "Date of Birth" and row[2] == "Age"):
+                    return True
+        elif(tableName == "ID Verification"):
+            if(DetailTable.columns[0] == "D Verification"):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Original Driving Licence Seen" or row[0] == "Driving Licence Ref"):
+                    return True
+        elif(tableName == "Electronic ID Verification"):
+            if(DetailTable.columns[0] == "lectronic ID Verification"):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "ID Check Completed Date" or row[0] == "ID Check Expiry Date"):
+                    return True
+        elif(tableName == "Current Employment Details"):
+            if(DetailTable.columns[0] == "urrent Employment Details"):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Highest rate of income tax paid (%)" or row[0] == "Employment Status" or row[0] == "Most Recent Annual Accounts Net Profit"):
+                    return True
+        elif(tableName == "Assets"):
+            if(DetailTable.columns[0] == "ssets" or DetailTable.columns[0] == "Do you have any assets?" ):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Do you have any assets?" ):
+                    return True
+        elif(tableName == "Assets1"):
+            if(DetailTable.columns[0] == "Owner" or DetailTable.columns[1] == "Category" ):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Owner" or row[1] == "Category"):
+                    return True
+        elif(tableName == "Liabilities"):
+            if(DetailTable.columns[0] == "iabilities" or DetailTable.columns[0] == "Do you have any liabilities?" ):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Do you have any liabilities?"):
+                    return True
+        elif(tableName == "Liabilities1"):            
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Owner" or row[0] == "Client does not wish to disclose"):
+                    return True
+        elif(tableName == "Income"):            
+            if(DetailTable.columns[0] == "ncome" or DetailTable.columns[0] == "Do you have any liabilities?" ):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Total Gross Annual Earnings or Net Relevant Earnings"):
+                    return True
+        elif(tableName == "Expenditure"):
+            if(DetailTable.columns[0] == "xpenditure" or DetailTable.columns[0] == "Do you wish to carry out a detailed expenditure analysis? If 'no' then please" ):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Do you wish to carry out a detailed expenditure analysis? If 'no' then please" ):
+                    return True
+        elif(tableName == "Expenditure1"):
+            if(DetailTable.columns[0] == "Category" or DetailTable.columns[1] == "Owner" ):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Category" or row[1] == "Owner"):
+                    return True
+        elif(tableName == "Expenditure Details"):
+            if(DetailTable.columns[0] == "xpenditure Details"):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Calculated Total Monthly Household Expenditure" ):
+                    return True
+        elif(tableName == "Current Monthly Cash Flow"):
+            if(DetailTable.columns[0] == "urrent Monthly Cash Flow"):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Total Net Monthly Income" ):
+                    return True
+        elif(tableName == "Existing Mortgage Details"):            
+            if(DetailTable.columns[0] == "xisting Mortgage Details" or DetailTable.columns[0] == "Do you have an existing mortgage?" ):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Do you have an existing mortgage?"):
+                    return True
+        elif(tableName == "Existing Mortgage Details1"):
+            if(DetailTable.columns[0] == "Owner"):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Owner"):
+                    return True
+        elif(tableName == "Mortgage Requirements"):            
+            if(DetailTable.columns[0] == "ortgage Requirements"):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Unique Identifier"):                    
+                    return True
+        elif(tableName == "Property Details"):            
+            if(DetailTable.columns[0] == "roperty Details"):
+                return True    
+        elif(tableName == "Mortgage Preferences & Attitude to Risk"):            
+            if(DetailTable.columns[0] == "ortgage Preferences & Attitude to Risk"):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Do you want the certainty of the mortgage being repaid at the end of the term?"):
+                    return True        
+        elif(tableName == "Which of the following are important to you?"):            
+            if(DetailTable.columns[0] == "hich of the following are important to you?"):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "The maximum early redemption period I would accept is"):
+                    return True        
+        elif(tableName == "Final Salary Pension Schemes"):            
+            if(DetailTable.columns[0] == "inal Salary Pension Schemes" or DetailTable.columns[0]=="Do you have any existing final salary schemes?"):
+                return True
+            for i, row in DetailTable.iterrows():
+                if(row[0] == "Do you have any existing final salary schemes?"):
+                    return True        
+        return False
+
+    def fnc_Read_PersonalDetails_IO_Template(self, ParentContainer, Applicantid):
+        self.IsEvenColumn = False
+        self.gridrowindex = -1
+        self.gridcolumnindex = 0
+        PersonalDetailTable = None
+        foundTable = False
+        for tableindex, table in enumerate(self.tables):
+            if(tableindex<self.SkipTable):
+                continue
+            if(table.columns[0] == "ersonal Details"):
+                PersonalDetailTable = table
+                foundTable = True
+                self.SkipTable=tableindex
+                break
+        if(foundTable):
+            addressee = ""
+            try:
+                for i, j in PersonalDetailTable.iterrows():
+                    if(j[0] == "First Name"):
+                        addressee = j[1] if(Applicantid == 1) else j[2]
+                    elif(j[0] == "Last Name"):
+                        addressee = addressee+" " + \
+                            (j[1] if(Applicantid == 1) else j[2])
+                        break
+            except:
+                print('Some Error')
+            if(Applicantid == 1):
+                self.varApplicant1.set(addressee)
+            elif(Applicantid == 2):
+                self.varApplicant2.set(addressee)
+            for ioindex, x in enumerate(self.config.IO_Name_PersonalDetail):
+                self.fnc_GenrateControl(ParentContainer, PersonalDetailTable, Applicantid, 0, x,
+                                        self.config.IO_Template_PersonalDetail[ioindex], "txt_PersonalDetails_"+str(Applicantid))
+
+    def fnc_Read_Address_GetRowColumnIndex(self, DetailTable, PreviousRowIndex, PreviousColumnIndex, Adressee, IsCurrentAddress):
+        FoundApplicant = False
+        IsFound = False
+        columnLength = len(DetailTable.columns)
+        if(PreviousColumnIndex >= columnLength-1):
+            PreviousColumnIndex = 0
+            PreviousRowIndex = PreviousRowIndex+10
+
+        RowIndex = PreviousRowIndex
+        ColumnIndex = PreviousColumnIndex+1
+
+        CurrentIndex = {"row": RowIndex,
+                        "column": ColumnIndex, "IsFound": IsFound}
+        self.CurrentDepthCount += 1
+        if(self.RecursionDepthCount < self.CurrentDepthCount):
+            return CurrentIndex
+        for i, row in DetailTable.iterrows():
+            try:
+                if(i < PreviousRowIndex):
+                    continue
+                if(row[0] == "Addressee" and (not FoundApplicant)):
+                    RowIndex = i
+                    if(row[ColumnIndex] == Adressee):
+                        FoundApplicant = True
+                    else:
+                        if(ColumnIndex+1 <= columnLength-1):
+                            return self.fnc_Read_Address_GetRowColumnIndex(DetailTable, PreviousRowIndex, ColumnIndex, Adressee, IsCurrentAddress)
+                        else:
+                            return self.fnc_Read_Address_GetRowColumnIndex(DetailTable, PreviousRowIndex+10, 0, Adressee, IsCurrentAddress)
+                if(FoundApplicant):
+                    if(row[0] == "Address Status" and ((IsCurrentAddress and row[ColumnIndex] == "Current Address") or (row[ColumnIndex] == "Previous Address"))):
+                        IsFound = True
+                        break
+                    if(row[0] == "Addressee" and i > RowIndex):
+                        break
+            except Exception as ex:
+                print("Error", ex)
+        if(IsFound):
+            CurrentIndex["row"] = RowIndex
+            CurrentIndex["column"] = ColumnIndex
+            CurrentIndex["IsFound"] = True
+        else:
+            if(self.RecursionDepthCount > self.CurrentDepthCount):
+                if(ColumnIndex+1 <= columnLength-1):
+                    return self.fnc_Read_Address_GetRowColumnIndex(DetailTable, PreviousRowIndex, ColumnIndex, Adressee, IsCurrentAddress)
+                else:
+                    return self.fnc_Read_Address_GetRowColumnIndex(DetailTable, PreviousRowIndex+10, 0, Adressee, IsCurrentAddress)
+        return CurrentIndex
+
+    def fnc_Read_Bank_GetRowColumnIndex(self, DetailTable, PreviousRowIndex, PreviousColumnIndex, Adressee, ApplicantId):
+        FoundApplicant = False
+        IsFound = False
+        columnLength = len(DetailTable.columns)
+        if(PreviousColumnIndex >= columnLength-1):
+            PreviousColumnIndex = 0
+            PreviousRowIndex = PreviousRowIndex+10
+
+        RowIndex = PreviousRowIndex
+        ColumnIndex = PreviousColumnIndex+1
+
+        CurrentIndex = {"row": RowIndex,
+                        "column": ColumnIndex, "IsFound": IsFound}
+        self.CurrentDepthCount += 1
+        if(self.RecursionDepthCount < self.CurrentDepthCount):
+            return CurrentIndex
+        for i, row in DetailTable.iterrows():
+            try:
+                if(i < PreviousRowIndex):
+                    continue
+                if(row[0] == "Owner"):
+                    RowIndex = i
+                    if(row[ColumnIndex] == Adressee or row[ColumnIndex] == Adressee+".1" or row[ColumnIndex] == Adressee+".2" or row[ColumnIndex] == Adressee+".3" or (ApplicantId == 1 and row[ColumnIndex] == "Joint")):
+                        IsFound = True
+                        break
+                    else:
+                        if(ColumnIndex+1 <= columnLength-1):
+                            return self.fnc_Read_Bank_GetRowColumnIndex(DetailTable, PreviousRowIndex, ColumnIndex, Adressee, ApplicantId)
+                        else:
+                            return self.fnc_Read_Bank_GetRowColumnIndex(DetailTable, PreviousRowIndex+10, 0, Adressee, ApplicantId)
+            except Exception as ex:
+                print("Error", ex)
+        if(IsFound):
+            CurrentIndex["row"] = RowIndex
+            CurrentIndex["column"] = ColumnIndex
+            CurrentIndex["IsFound"] = True
+        else:
+            if(self.RecursionDepthCount > self.CurrentDepthCount):
+                if(ColumnIndex+1 <= columnLength-1):
+                    return self.fnc_Read_Bank_GetRowColumnIndex(DetailTable, PreviousRowIndex, ColumnIndex, Adressee, ApplicantId)
+                else:
+                    return self.fnc_Read_Bank_GetRowColumnIndex(DetailTable, PreviousRowIndex+10, 0, Adressee, ApplicantId)
+        return CurrentIndex
+
+    def fnc_Read_Vertical_GetRowColumnIndex(self, DetailTable, PreviousRowIndex, PreviousColumnIndex, Adressee, KeyData, KeyColumn):
+        IsFound = False
+        RowIndex = PreviousRowIndex
+        ColumnIndex = PreviousColumnIndex
+        CurrentIndex = {"row": RowIndex,
+                        "column": ColumnIndex, "IsFound": IsFound}
+        for i, row in DetailTable.iterrows():
+            try:
+                if(i < PreviousRowIndex):
+                    continue
+                if((row[ColumnIndex] == Adressee or row[ColumnIndex] == "Joint") and row[KeyColumn] == KeyData):
+                    RowIndex = i
+                    IsFound = True
+                    break
+            except Exception as ex:
+                print("Error", ex)
+        if(IsFound):
+            CurrentIndex["row"] = RowIndex
+            CurrentIndex["column"] = ColumnIndex
+            CurrentIndex["IsFound"] = True
+        return CurrentIndex
+
+    def fnc_Read_CurrentAddress_IO_Template(self, ParentContainer, Applicantid):
+        self.gridrowindex, self.gridcolumnindex = -1, 0
+        columnIndex, rowIndex = 0, 0
+        DetailTable = None
+        foundTable, foundItem = False, False
+        self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
+        for tableindex, table in enumerate(self.tables):
+            if(tableindex<self.SkipTable):
+                continue
+            if(table.columns[0] == "ontact Address"):
+                self.SkipTable=tableindex
+                self.fun_mergetables(table, True,True)
+                # check Next Table is on Next Page
+                if (not (self.tables[tableindex+1].columns[0] == "ontact Details")):
+                    self.fun_mergetables(self.tables[tableindex+1], False,False)
+                    # check Next Table is on Next to Next Page
+                    if (not (self.tables[tableindex+2].columns[0] == "ontact Details")):
+                        self.fun_mergetables(self.tables[tableindex+2], False,False)
+                DetailTable = pd.DataFrame(
+                    self.tableData, columns=self.tableDataColumnName)
+                foundTable = True
+                self.CurrentAddressFound = True
+                break
+
+        if(foundTable):
+            PreviousAddressCounter = 0
+            PreviousColumnIndex = 0
+            PreviousRowIndex = 0
+            Addressee = self.varApplicant1.get() if (
+                Applicantid == 1) else self.varApplicant2.get() if (Applicantid == 2) else ""
+            while PreviousAddressCounter < 1:
+                self.IsEvenColumn = False
+                foundItem = False
+                tempData = self.fnc_Read_Address_GetRowColumnIndex(
+                    DetailTable, PreviousRowIndex, PreviousColumnIndex, Addressee, True)
+                foundItem = tempData["IsFound"]
+                if(foundItem):
+                    PreviousColumnIndex = tempData["column"]
+                    PreviousRowIndex = tempData["row"]
+                    rowIndex = PreviousRowIndex
+                    columnIndex = PreviousColumnIndex
+
+                    for ioindex, x in enumerate(self.config.IO_Name_CurrentAddress):
+                        self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x,
+                                                self.config.IO_Template_CurrentAddress[ioindex], "txt_CurrentAddress_"+str(Applicantid))
+
+                    self.gridrowindex = self.gridrowindex+1
+                    #ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
+                PreviousAddressCounter += 1
+
+    def fnc_Read_PreviousAddress_IO_Template(self, ParentContainer, Applicantid):
+        self.gridrowindex, self.gridcolumnindex = -1, 0
+        columnIndex, rowIndex = 0, 0
+        DetailTable = None
+        foundTable, foundItem = False, False
+        self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
+
+        if(self.CurrentAddressFound):
+            DetailTable = pd.DataFrame(
+                self.tableData, columns=self.tableDataColumnName)
+            foundTable = True
+        else:
+            for tableindex, table in enumerate(self.tables):
+                if(tableindex<self.SkipTable):
+                    continue
+                if(table.columns[0] == "ontact Address"):
+                    self.SkipTable=tableindex
+                    self.fun_mergetables(table, True,True)
+                    # check Next Table is on Next Page
+                    if (not (self.tables[tableindex+1].columns[0] == "ontact Details")):
+                        self.fun_mergetables(self.tables[tableindex+1], False,False)
+                        # check Next Table is on Next to Next Page
+                        if (not (self.tables[tableindex+2].columns[0] == "ontact Details")):
+                            self.fun_mergetables(
+                                self.tables[tableindex+2], False,False)
+                    DetailTable = pd.DataFrame(
+                        self.tableData, columns=self.tableDataColumnName)
+                    foundTable = True
+                    self.CurrentAddressFound = True
+                    break
+        if(foundTable):
+            PreviousAddressCounter = 0
+            PreviousColumnIndex = 0
+            PreviousRowIndex = 0
+            Addressee = self.varApplicant1.get() if (
+                Applicantid == 1) else self.varApplicant2.get() if (Applicantid == 2) else ""
+            while PreviousAddressCounter < 4:
+                self.IsEvenColumn = False
+                foundItem = False
+                tempData = self.fnc_Read_Address_GetRowColumnIndex(
+                    DetailTable, PreviousRowIndex, PreviousColumnIndex, Addressee, False)
+                foundItem = tempData["IsFound"]
+                if(foundItem):
+                    PreviousColumnIndex = tempData["column"]
+                    PreviousRowIndex = tempData["row"]
+                    rowIndex = PreviousRowIndex
+                    columnIndex = PreviousColumnIndex
+                    for ioindex, x in enumerate(self.config.IO_Name_PreviousAddress):
+                        self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x,
+                                                self.config.IO_Template_PreviousAddress[ioindex], "txt_PreviousAddress_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid))
+
+                    self.gridrowindex = self.gridrowindex+1
+                    ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
+                        row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
+                PreviousAddressCounter += 1
+
+    def fnc_Read_ContactDetails_IO_Template(self, ParentContainer, Applicantid):
+        self.gridrowindex, self.gridcolumnindex = -1, 0
+        DetailTable = None
+        foundTable, foundItem = False, False
+        self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
+        for tableindex, table in enumerate(self.tables):
+            if(tableindex<self.SkipTable):
+                continue
+            if(table.columns[0] == "ontact Details"):
+                self.SkipTable=tableindex
+                self.fun_mergetables(table, True,True)
+                # check Next Table is on Next Page
+                if (not (self.tables[tableindex+1].columns[0] == "rofessional Contacts")):
+                    self.fun_mergetables(self.tables[tableindex+1], False,False)
+                    # check Next Table is on Next to Next Page
+                    if (not (self.tables[tableindex+2].columns[0] == "rofessional Contacts")):
+                        self.fun_mergetables(self.tables[tableindex+2], False,False)
+                DetailTable = pd.DataFrame(
+                    self.tableData, columns=self.tableDataColumnName)
+                foundTable = True
+                self.CurrentAddressFound = True
+                break
+        if(foundTable):
+            Addressee = self.varApplicant1.get() if (
+                Applicantid == 1) else self.varApplicant2.get() if (Applicantid == 2) else ""
+            for ioindex, x in enumerate(self.config.IO_Name_ContactDetails):
+                foundItem = False
+                PreviousRowIndex = 0
+                if (not("[M]" in x)):
+                    tempData = self.fnc_Read_Vertical_GetRowColumnIndex(
+                        DetailTable, 0, 0, Addressee, self.config.IO_Template_ContactDetails[ioindex], 1)
+                    foundItem = tempData["IsFound"]
+                    if(foundItem):
+                        PreviousRowIndex = tempData["row"]
+                self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 2, PreviousRowIndex, x,
+                                                 self.config.IO_Template_ContactDetails[ioindex], "txt_ContactDetails_"+str(Applicantid))
+
+    def fnc_Read_ProfessionalContact_IO_Template(self, ParentContainer, Applicantid):
+        if(Applicantid!=1):
+            return
+        self.gridrowindex, self.gridcolumnindex = -1, 0
+        columnIndex, rowIndex, columnLength = 0, 0,0
+        DetailTable = None
+        foundTable, foundItem = False, False
+        self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
+        
+        for tableindex, table in enumerate(self.tables):
+            if(tableindex<self.SkipTable):
+                continue
+            if(self.fnc_IsTable_Found(table, "Professional Contacts")):
+                self.SkipTable=tableindex
+                self.fun_mergetables(table, True,True)
+                # check Next Table is on Next Page
+                if (not (self.fnc_IsTable_Found(self.tables[tableindex+1], "Bank Account Details"))):
+                    self.fun_mergetables(self.tables[tableindex+1], False,False)
+                    # check Next Table is on Next to Next Page
+                    if (not (self.fnc_IsTable_Found(self.tables[tableindex+2], "Bank Account Details"))):
+                        self.fun_mergetables(self.tables[tableindex+2], False,False)
+                DetailTable = pd.DataFrame(self.tableData, columns=self.tableDataColumnName)
+                foundTable = True
+                self.CurrentAddressFound = True
+                columnLength=len(DetailTable.columns)
+                break
+        if(foundTable):
+            PreviousAddressCounter = 0
+            PreviousColumnIndex = 0
+            PreviousRowIndex = 0
+            Addressee = self.varApplicant1.get() if (
+                Applicantid == 1) else self.varApplicant2.get() if (Applicantid == 2) else ""
+            while PreviousAddressCounter < 4 and columnLength>PreviousColumnIndex+1:
+                self.IsEvenColumn = False
+                foundItem = False
+                tempData = {"IsFound":True,"column":PreviousColumnIndex+1,"row":0} 
+                foundItem = tempData["IsFound"]
+                if(foundItem):
+                    PreviousColumnIndex = tempData["column"]
+                    PreviousRowIndex = tempData["row"]
+                    rowIndex = PreviousRowIndex
+                    columnIndex = PreviousColumnIndex
+                    for ioindex, x in enumerate(self.config.IO_Name_ProfessionalContacts):
+                        self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x,
+                                                self.config.IO_Template_ProfessionalContacts[ioindex], "txt_ProfessionalContacts_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid))
+
+                    self.gridrowindex = self.gridrowindex+1
+                    ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
+                        row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
+                    PreviousColumnIndex+1
+                PreviousAddressCounter += 1
+
+    def fnc_Read_BankAccountDetails_IO_Template(self, ParentContainer, Applicantid):
+        self.gridrowindex, self.gridcolumnindex = -1, 0
+        columnIndex, rowIndex = 0, 0
+        DetailTable = None
+        foundTable, foundItem = False, False
+        self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
+        for tableindex, table in enumerate(self.tables):
+            if(tableindex<self.SkipTable):
+                continue
+            if(table.columns[0] == "ank Account Details"):
+                self.SkipTable=tableindex
+                self.fun_mergetables(table, True,True)
+                # check Next Table is on Next Page
+                if (not (self.fnc_IsTable_Found(self.tables[tableindex+1], "Family And Dependants") or self.fnc_IsTable_Found(self.tables[tableindex+1], "ID Verification"))):
+                    self.fun_mergetables(self.tables[tableindex+1], False,False)
+                    # check Next Table is on Next to Next Page
+                    if (not (self.fnc_IsTable_Found(self.tables[tableindex+2], "Family And Dependants") or self.fnc_IsTable_Found(self.tables[tableindex+2], "ID Verification"))):
+                        self.fun_mergetables(self.tables[tableindex+2], False,False)
+                DetailTable = pd.DataFrame(
+                    self.tableData, columns=self.tableDataColumnName)
+                foundTable = True
+                self.CurrentAddressFound = True
+                break
+        if(foundTable):
+            PreviousAddressCounter = 0
+            PreviousColumnIndex = 0
+            PreviousRowIndex = 0
+            Addressee = self.varApplicant1.get() if (
+                Applicantid == 1) else self.varApplicant2.get() if (Applicantid == 2) else ""
+            while PreviousAddressCounter < 6:
+                self.IsEvenColumn = False
+                foundItem = False
+                tempData = self.fnc_Read_Bank_GetRowColumnIndex(
+                    DetailTable, PreviousRowIndex, PreviousColumnIndex, Addressee, Applicantid)
+                foundItem = tempData["IsFound"]
+                if(foundItem):
+                    PreviousColumnIndex = tempData["column"]
+                    PreviousRowIndex = tempData["row"]
+                    rowIndex = PreviousRowIndex
+                    columnIndex = PreviousColumnIndex
+                    for ioindex, x in enumerate(self.config.IO_Name_BankAccountDetails):
+                        self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x, self.config.IO_Template_BankAccountDetails[
+                                                ioindex], "txt_BankAccountDetails_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid))
+
+                    self.gridrowindex = self.gridrowindex+1
+                    ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
+                        row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
+                PreviousAddressCounter += 1
+    
+    def fnc_Read_FamilyAndDependants_IO_Template(self, ParentContainer, Applicantid):
+        self.gridrowindex, self.gridcolumnindex = -1, 0
+        DetailTable = None
+        foundTable, foundItem = False, False
+        membercounter=0
+        self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
+        for tableindex, table in enumerate(self.tables):
+            if(tableindex<self.SkipTable):
+                continue
+            if(self.fnc_IsTable_Found(table, "Family And Dependants")):
+                self.SkipTable=tableindex
+                self.fun_mergetables(table, True,True)
+                # check Next Table is on Next Page
+                if (not (self.tables[tableindex+1].columns[0] == "ID Verification")):
+                    self.fun_mergetables(self.tables[tableindex+1], False,False)
+                    # check Next Table is on Next to Next Page
+                    if (not (self.tables[tableindex+2].columns[0] == "ID Verification")):
+                        self.fun_mergetables(self.tables[tableindex+2], False,False)
+                DetailTable = pd.DataFrame(
+                    self.tableData, columns=self.tableDataColumnName)
+                foundTable = True
+                self.CurrentAddressFound = True
+                break
+        if(foundTable):
+            Addressee = self.varApplicant1.get() if (
+                Applicantid == 1) else self.varApplicant2.get() if (Applicantid == 2) else ""
+            for i, row in DetailTable.iterrows():
+                try:
+                    if(row[4] == Addressee or  (row[4] == "Joint" and Applicantid== 1)):
+                        membercounter=membercounter+1
+                        self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 0,i, "Full Name",
+                                                 "Full Name", "txt_FamilyAndDependants_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 1,i, "Date of Birth",
+                                                 "Date of Birth", "txt_FamilyAndDependants_"+str(Applicantid)+"_"+str(membercounter))                        
+                        self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 2,i, "Age",
+                                                 "Age", "txt_FamilyAndDependants_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 3,i, "Relationship",
+                                                 "Relationship", "txt_FamilyAndDependants_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 4,i, "Related To",
+                                                 "Related To", "txt_FamilyAndDependants_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 5,i, "Financially Dependant",
+                                                 "Financially Dependant", "txt_FamilyAndDependants_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 7,i, "Dependant Living with Client",
+                                                 "Dependant Living with Client", "txt_FamilyAndDependants_"+str(Applicantid)+"_"+str(membercounter))
+                        self.gridrowindex = self.gridrowindex+1
+                        ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
+                        row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
+                        self.gridrowindex = self.gridrowindex+1
+                        self.IsEvenColumn = False
+                except Exception as ex:
+                    print("Error", ex) 
+            
+    def fnc_Read_IDVerification_IO_Template(self, ParentContainer, Applicantid):
+        self.gridrowindex, self.gridcolumnindex = -1, 0
+        columnIndex, rowIndex = 0, 0
+        DetailTable = None
+        foundTable, foundItem = False, False
+        self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
+        for tableindex, table in enumerate(self.tables):
+            if(tableindex<self.SkipTable):
+                continue
+            if(self.fnc_IsTable_Found(table, "ID Verification")):
+                self.SkipTable=tableindex
+                self.fun_mergetables(table, True,True)
+                # check Next Table is on Next Page
+                if (not (self.fnc_IsTable_Found(self.tables[tableindex+1], "Electronic ID Verification"))):
+                    self.fun_mergetables(self.tables[tableindex+1], False,False)
+                    # check Next Table is on Next to Next Page
+                    if (not (self.fnc_IsTable_Found(self.tables[tableindex+2], "Electronic ID Verification"))):
+                        self.fun_mergetables(self.tables[tableindex+2], False,False)
+                DetailTable = pd.DataFrame(
+                    self.tableData, columns=self.tableDataColumnName)
+                foundTable = True
+                self.CurrentAddressFound = True
+                break
+        if(foundTable):
+            PreviousAddressCounter = 0
+            PreviousColumnIndex = 0
+            PreviousRowIndex = 0
+            Addressee = self.varApplicant1.get() if (
+                Applicantid == 1) else self.varApplicant2.get() if (Applicantid == 2) else ""
+            while PreviousAddressCounter < 1:
+                self.IsEvenColumn = False
+                foundItem = False
+                tempData = {"column": 1, "row": 0, "IsFound": True} if(
+                    Applicantid == 1) else {"column": 2, "row": 0, "IsFound": True}
+                foundItem = tempData["IsFound"]
+                if(foundItem):
+                    PreviousColumnIndex = tempData["column"]
+                    PreviousRowIndex = tempData["row"]
+                    rowIndex = PreviousRowIndex
+                    columnIndex = PreviousColumnIndex
+                    for ioindex, x in enumerate(self.config.IO_Name_IDVerification):
+                        self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x,
+                                                self.config.IO_Template_IDVerification[ioindex], "txt_IDVerification_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid))
+
+                    self.gridrowindex = self.gridrowindex+1
+                    ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
+                        row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
+                PreviousAddressCounter += 1
+    
+    def fnc_Read_CurrentEmployementDetails_IO_Template(self, ParentContainer, Applicantid):
+        self.gridrowindex, self.gridcolumnindex = -1, 0
+        columnIndex, rowIndex = 0, 0
+        DetailTable = None
+        foundTable, foundItem = False, False
+        
+        self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
+        for tableindex, table in enumerate(self.tables):
+            if(tableindex<self.SkipTable):
+                continue
+            if(self.fnc_IsTable_Found(table, "Current Employment Details")):
+                self.SkipTable=tableindex
+                self.fun_mergetables(table, True,True)
+                # check Next Table is on Next Page
+                if (not (self.fnc_IsTable_Found(self.tables[tableindex+1], "Assets") or self.fnc_IsTable_Found(self.tables[tableindex+1], "Liabilities"))):
+                    self.fun_mergetables(self.tables[tableindex+1], False,False)
+                    # check Next Table is on Next to Next Page
+                    if (not ( self.fnc_IsTable_Found(self.tables[tableindex+2], "Assets") or self.fnc_IsTable_Found(self.tables[tableindex+2], "Liabilities"))):
+                        self.fun_mergetables(self.tables[tableindex+2], False,False)
+                        if (not ( self.fnc_IsTable_Found(self.tables[tableindex+3], "Assets") or self.fnc_IsTable_Found(self.tables[tableindex+3], "Liabilities"))):
+                            self.fun_mergetables(self.tables[tableindex+3], False)
+                            if (not ( self.fnc_IsTable_Found(self.tables[tableindex+4], "Assets") or self.fnc_IsTable_Found(self.tables[tableindex+4], "Liabilities"))):
+                                self.fun_mergetables(self.tables[tableindex+4], False,False)
+                DetailTable = pd.DataFrame(
+                    self.tableData, columns=self.tableDataColumnName)
+                foundTable = True
+                self.CurrentAddressFound = True
+                break
+        if(foundTable):
+            PreviousAddressCounter = 0
+            PreviousColumnIndex = 0
+            PreviousRowIndex = 0
+            Addressee = self.varApplicant1.get() if (
+                Applicantid == 1) else self.varApplicant2.get() if (Applicantid == 2) else ""
+            while PreviousAddressCounter < 1:
+                self.IsEvenColumn = False
+                foundItem = False
+                tempData = {"column": 1, "row": 0, "IsFound": True} if(
+                    Applicantid == 1) else {"column": 2, "row": 0, "IsFound": True}
+                foundItem = tempData["IsFound"]
+                if(foundItem):
+                    PreviousColumnIndex = tempData["column"]
+                    PreviousRowIndex = tempData["row"]
+                    rowIndex = PreviousRowIndex
+                    columnIndex = PreviousColumnIndex
+                    for ioindex, x in enumerate(self.config.IO_Name_CurrentEmploymentDetails):
+                        self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x,
+                                                self.config.IO_Template_CurrentEmploymentDetails[ioindex], "txt_CurrentEmploymentDetails_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid))
+
+                    self.gridrowindex = self.gridrowindex+1
+                    #ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
+                PreviousAddressCounter += 1
+
+    def fnc_combinedRows(self,combinedRows,r1,r2,r3,r4):
+        if(r1==None):
+            r1=""
+        if(r2==None):
+            r2=""
+        if(r3==None):
+            r3=""
+        if(r4==None):
+            r4=""
+        if(str(r1) =="nan"):
+            r1=""
+        if(str(r2) =="nan"):
+            r2=""
+        if(str(r3) =="nan"):
+            r3=""
+        if(str(r4) =="nan"):
+            r4=""
+        if(combinedRows==1):            
+                return str(r1) 
+        elif(combinedRows==2):            
+            return (r1+" "+r2).strip()
+        elif(combinedRows==3):          
+            return (r1+" "+r2+" "+r3).strip()
+        elif(combinedRows==4):          
+            return (r1+" "+r2+" "+r3+" "+r4).strip()
+    
+    def fnc_howManyRowCombined(self,DetailTable,CurrentRow,Addressee,ApplicantId):        
+        row1vale,row2vale,row3vale,row4vale="","","",""
+        row1vale=DetailTable.iloc[CurrentRow][0]
+        if(str(row1vale)=="nan" or str(row1vale)==""):
+            return 0
+        if( len(DetailTable.index)> CurrentRow+1):
+            row2vale=DetailTable.iloc[CurrentRow+1][0]
+            if( len(DetailTable.index)> CurrentRow+2):
+                row3vale=DetailTable.iloc[CurrentRow+2][0]
+                if( len(DetailTable.index)> CurrentRow+3):
+                    row3vale=DetailTable.iloc[CurrentRow+3][0]
+        if(str(row2vale)=="nan"):
+            row2vale=""
+        if(str(row3vale)=="nan"):
+            row3vale=""
+        if(str(row4vale)=="nan"):
+            row4vale=""        
+        if ( (len(DetailTable.index)> CurrentRow+3) and
+            ((row1vale+" "+row2vale+" "+row3vale+" "+row4vale).strip()==Addressee or 
+            ((row1vale+" "+row2vale+" "+row3vale+" "+row4vale).strip()=="Joint"  and ApplicantId==1))):
+            return 4
+        elif ( (len(DetailTable.index)> CurrentRow+2) and
+            ((row1vale+" "+row2vale+" "+row3vale).strip()==Addressee or 
+            ((row1vale+" "+row2vale+" "+row3vale).strip()=="Joint"  and ApplicantId==1))):
+            return 3
+        elif ((len(DetailTable.index)> CurrentRow+1) and 
+            ((row1vale+" "+row2vale).strip()==Addressee or
+             ((row1vale+" "+row2vale).strip()=="Joint") and  ApplicantId==1)):
+            return 2
+        elif((row1vale).strip()==Addressee or ((row1vale).strip()=="Joint" and ApplicantId==1)):
+            return 1
+        else :
+            return 0
+
 
         
-    
+    def fnc_Read_Assets_IO_Template(self, ParentContainer, Applicantid):
+        self.gridrowindex, self.gridcolumnindex = -1, 0
+        DetailTable = None
+        foundTable, foundItem,foundAssetTable = False, False,False
+        membercounter=0
+        self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
+        for tableindex, table in enumerate(self.tables):
+            if(tableindex<self.SkipTable):
+                continue
+            if(self.fnc_IsTable_Found(table, "Assets")):
+                foundAssetTable=True
+                continue
+            if(foundAssetTable and self.fnc_IsTable_Found(table, "Assets1")):
+                self.SkipTable=tableindex
+                self.fun_mergetables(table, True,True)
+                # check Next Table is on Next Page
+                if (not (self.tables[tableindex+1].columns[0] == "Liabilities")):
+                    self.fun_mergetables(self.tables[tableindex+1], False,False)
+                    # check Next Table is on Next to Next Page
+                    if (not (self.tables[tableindex+2].columns[0] == "Liabilities")):
+                        self.fun_mergetables(self.tables[tableindex+2], False,False)
+                DetailTable = pd.DataFrame(
+                    self.tableData, columns=self.tableDataColumnName)
+                foundTable = True
+                self.CurrentAddressFound = True
+                break
+        if(foundTable):
+            Addressee = self.varApplicant1.get() if (
+                Applicantid == 1) else self.varApplicant2.get() if (Applicantid == 2) else ""
+            combinedRows=0            
+            i=0
+            while (i< len(DetailTable.index)):   
+                combinedRows=0         
+                
+                combinedRows= self.fnc_howManyRowCombined(DetailTable,i,Addressee,Applicantid)
+                if(combinedRows==0):
+                    i=i+1
+                    continue
+                if (combinedRows>0):                    
+                    try:
+                        membercounter=membercounter+1
+                        rowValue= self.fnc_combinedRows(combinedRows,DetailTable.iloc[i][0],  DetailTable.iloc[i+1][0] if(combinedRows>1)else "" ,DetailTable.iloc[i+2][0] if(combinedRows>2)else "",DetailTable.iloc[i+3][0] if(combinedRows>3)else "")                        
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Owner", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        rowValue= self.fnc_combinedRows(combinedRows,DetailTable.iloc[i][1],  DetailTable.iloc[i+1][1] if(combinedRows>1)else "" ,DetailTable.iloc[i+2][1] if(combinedRows>2)else "",DetailTable.iloc[i+3][1] if(combinedRows>3)else "")                        
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Category", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        rowValue= self.fnc_combinedRows(combinedRows,DetailTable.iloc[i][2],  DetailTable.iloc[i+1][2] if(combinedRows>1)else "" ,DetailTable.iloc[i+2][2] if(combinedRows>2)else "",DetailTable.iloc[i+3][2] if(combinedRows>3)else "")                        
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Related To Address", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Address Line 1[M]", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Address Line 2[M]", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Address Line 3[M]", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Address Line 4[M]", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "City[M]", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Country[M]", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Postcode[M]", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
 
+                        rowValue= self.fnc_combinedRows(combinedRows,DetailTable.iloc[i][7],  DetailTable.iloc[i+1][7] if(combinedRows>1)else "" ,DetailTable.iloc[i+2][7] if(combinedRows>2)else "",DetailTable.iloc[i+3][7] if(combinedRows>3)else "")                        
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Original Value", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        rowValue= self.fnc_combinedRows(combinedRows,DetailTable.iloc[i][8],  DetailTable.iloc[i+1][8] if(combinedRows>1)else "" ,DetailTable.iloc[i+2][8] if(combinedRows>2)else "",DetailTable.iloc[i+3][8] if(combinedRows>3)else "") 
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Purchased On", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        rowValue= self.fnc_combinedRows(combinedRows,DetailTable.iloc[i][9],  DetailTable.iloc[i+1][9] if(combinedRows>1)else "" ,DetailTable.iloc[i+2][9] if(combinedRows>2)else "",DetailTable.iloc[i+3][9] if(combinedRows>3)else "")                        
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Value", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        rowValue= self.fnc_combinedRows(combinedRows,DetailTable.iloc[i][10],  DetailTable.iloc[i+1][10] if(combinedRows>1)else "" ,DetailTable.iloc[i+2][10] if(combinedRows>2)else "",DetailTable.iloc[i+3][10] if(combinedRows>3)else "")                        
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Valuation Date", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        
+                        self.gridrowindex = self.gridrowindex+1
+                        ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
+                        row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
+                        self.gridrowindex = self.gridrowindex+1
+                        self.IsEvenColumn = False
+                    except Exception as ex:
+                        print("Error", ex) 
+                    i=i+combinedRows
+
+
+    def fnc_Read_Liabilities_IO_Template(self, ParentContainer, Applicantid):
+        self.gridrowindex, self.gridcolumnindex = -1, 0
+        columnIndex, rowIndex = 0, 0
+        DetailTable = None
+        foundTable, foundItem,Liabilities = False, False,False        
+        self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
+        for tableindex, table in enumerate(self.tables):
+            if(tableindex<self.SkipTable):
+                continue
+            if(self.fnc_IsTable_Found(table, "Liabilities")):
+                Liabilities=True                
+                continue
+            if(Liabilities):                
+                if(self.fnc_IsTable_Found(table, "Liabilities1")):
+                    self.SkipTable=tableindex
+                    self.fun_mergetables(table, True,True)
+                    # check Next Table is on Next Page
+                    if (not (self.fnc_IsTable_Found(self.tables[tableindex+1], "Credit History") or self.fnc_IsTable_Found(self.tables[tableindex+1], "Income"))):
+                        self.fun_mergetables(self.tables[tableindex+1], False,False)
+                        # check Next Table is on Next to Next Page
+                        if (not ( self.fnc_IsTable_Found(self.tables[tableindex+2], "Credit History") or self.fnc_IsTable_Found(self.tables[tableindex+2], "Income"))):
+                            self.fun_mergetables(self.tables[tableindex+2], False,False)
+                            if (not ( self.fnc_IsTable_Found(self.tables[tableindex+3], "Credit History") or self.fnc_IsTable_Found(self.tables[tableindex+3], "Income"))):
+                                self.fun_mergetables(self.tables[tableindex+3], False,False)                
+                
+                DetailTable = pd.DataFrame(
+                    self.tableData, columns=self.tableDataColumnName)
+                foundTable = True
+                self.CurrentAddressFound = True
+                break
+        if(foundTable):
+            PreviousAddressCounter = 0
+            PreviousColumnIndex = 0
+            PreviousRowIndex = 0
+            Addressee = self.varApplicant1.get() if (
+                Applicantid == 1) else self.varApplicant2.get() if (Applicantid == 2) else ""
+            while PreviousAddressCounter < 15:
+                self.IsEvenColumn = False
+                foundItem = False
+                tempData = self.fnc_Read_Bank_GetRowColumnIndex(
+                    DetailTable, PreviousRowIndex, PreviousColumnIndex, Addressee, Applicantid)
+                foundItem = tempData["IsFound"]
+                if(foundItem):
+                    PreviousColumnIndex = tempData["column"]
+                    PreviousRowIndex = tempData["row"]
+                    rowIndex = PreviousRowIndex
+                    columnIndex = PreviousColumnIndex
+                    for ioindex, x in enumerate(self.config.IO_Name_Liabilities):
+                        self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x, self.config.IO_Template_Liabilities[
+                                                ioindex], "txt_Liabilities_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid))
+
+                    self.gridrowindex = self.gridrowindex+1
+                    ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
+                        row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
+                PreviousAddressCounter += 1
+
+    def fnc_Read_Expenditure_IO_Template(self, ParentContainer, Applicantid):
+        self.gridrowindex, self.gridcolumnindex = -1, 0
+        DetailTable = None
+        foundTable, foundItem,Expenditure,membercounter = False, False,False,0
+        self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
+        for tableindex, table in enumerate(self.tables):
+            if(tableindex<self.SkipTable):
+                continue            
+            if(self.fnc_IsTable_Found(table, "Expenditure")):
+                Expenditure=True                
+                continue
+            if(Expenditure):                
+                if(self.fnc_IsTable_Found(table, "Expenditure1")):
+                    self.SkipTable=tableindex
+                    self.fun_mergetables(table, True,True)
+                    # check Next Table is on Next Page
+                    if (not (self.fnc_IsTable_Found(self.tables[tableindex+1], "Expenditure Details") or self.fnc_IsTable_Found(self.tables[tableindex+1], "Current Monthly Cash Flow"))):
+                        self.fun_mergetables(self.tables[tableindex+1], False,False)
+                        # check Next Table is on Next to Next Page
+                        if (not ( self.fnc_IsTable_Found(self.tables[tableindex+2], "Expenditure Details") or self.fnc_IsTable_Found(self.tables[tableindex+2], "Current Monthly Cash Flow"))):
+                            self.fun_mergetables(self.tables[tableindex+2], False,False)
+                            if (not ( self.fnc_IsTable_Found(self.tables[tableindex+3], "Expenditure Details") or self.fnc_IsTable_Found(self.tables[tableindex+3], "Current Monthly Cash Flow"))):
+                                self.fun_mergetables(self.tables[tableindex+3], False,False)                
+                
+                DetailTable = pd.DataFrame(
+                    self.tableData, columns=self.tableDataColumnName)
+                foundTable = True
+                self.CurrentAddressFound = True
+                break
+        if(foundTable):
+            Addressee = self.varApplicant1.get() if (
+                Applicantid == 1) else self.varApplicant2.get() if (Applicantid == 2) else ""
+            for ioindex, x in enumerate(self.config.IO_Name_Expenditure):
+                foundItem = False
+                PreviousRowIndex = 0
+                if (not("[M]" in x)):
+                    tempData = self.fnc_Read_Vertical_GetRowColumnIndex(
+                        DetailTable, 0, 1, Addressee, self.config.IO_Template_Expenditure[ioindex], 0)
+                    foundItem = tempData["IsFound"]
+                    if(foundItem):
+                        membercounter=membercounter+1
+                        PreviousRowIndex = tempData["row"]                        
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,x, "Category", "txt_Category_"+str(Applicantid)+"_"+str(membercounter))
+                        rowValue= DetailTable.iloc[PreviousRowIndex][1]
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Owner", "txt_Category_"+str(Applicantid)+"_"+str(membercounter))
+                        rowValue= DetailTable.iloc[PreviousRowIndex][2]
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Description", "txt_Category_"+str(Applicantid)+"_"+str(membercounter))
+                        rowValue= DetailTable.iloc[PreviousRowIndex][3]
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Net Amount", "txt_Category_"+str(Applicantid)+"_"+str(membercounter))
+                        rowValue= DetailTable.iloc[PreviousRowIndex][4]
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Frequency", "txt_Category_"+str(Applicantid)+"_"+str(membercounter))
+                        self.gridrowindex = self.gridrowindex+1
+                        ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
+                        row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
+                        self.gridrowindex = self.gridrowindex+1
+                        self.IsEvenColumn = False
+
+    def fnc_Read_ExistingMortgageDetails_IO_Template(self, ParentContainer, Applicantid):
+        self.gridrowindex, self.gridcolumnindex = -1, 0
+        columnIndex, rowIndex = 0, 0
+        DetailTable = None
+        foundTable, foundItem,ExistingMortgageDetails= False, False,False        
+        self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
+        for tableindex, table in enumerate(self.tables):
+            if(tableindex<self.SkipTable):
+                continue
+            if(self.fnc_IsTable_Found(table, "Existing Mortgage Details")):
+                ExistingMortgageDetails=True                
+                continue
+            if(ExistingMortgageDetails):                
+                if(self.fnc_IsTable_Found(table, "Existing Mortgage Details1")):
+                    self.SkipTable=tableindex
+                    self.fun_mergetables(table, True,True)
+                    # check Next Table is on Next Page
+                    if (not (self.fnc_IsTable_Found(self.tables[tableindex+1], "Mortgage Requirements") or self.fnc_IsTable_Found(self.tables[tableindex+1], "Property Details"))):
+                        self.fun_mergetables(self.tables[tableindex+1], False,False)
+                        # check Next Table is on Next to Next Page
+                        if (not ( self.fnc_IsTable_Found(self.tables[tableindex+2], "Mortgage Requirements") or self.fnc_IsTable_Found(self.tables[tableindex+2], "Property Details") )):
+                            self.fun_mergetables(self.tables[tableindex+2], False,False)
+                            if (not ( self.fnc_IsTable_Found(self.tables[tableindex+3], "Mortgage Requirements") or self.fnc_IsTable_Found(self.tables[tableindex+3], "Property Details"))):
+                                self.fun_mergetables(self.tables[tableindex+3], False,False)
+                                if (not ( self.fnc_IsTable_Found(self.tables[tableindex+4], "Mortgage Requirements") or self.fnc_IsTable_Found(self.tables[tableindex+4], "Property Details"))):
+                                    self.fun_mergetables(self.tables[tableindex+4], False,False)                
+                                    if (not ( self.fnc_IsTable_Found(self.tables[tableindex+5], "Mortgage Requirements") or self.fnc_IsTable_Found(self.tables[tableindex+5], "Property Details"))):
+                                        self.fun_mergetables(self.tables[tableindex+5], False,False)                
+                
+                DetailTable = pd.DataFrame(
+                    self.tableData, columns=self.tableDataColumnName)
+                foundTable = True
+                self.CurrentAddressFound = True                
+                break
+        if(foundTable):
+            PreviousAddressCounter = 0
+            PreviousColumnIndex = 0
+            PreviousRowIndex = 0
+            Addressee = self.varApplicant1.get() if (
+                Applicantid == 1) else self.varApplicant2.get() if (Applicantid == 2) else ""
+            while PreviousAddressCounter < 15:
+                self.IsEvenColumn = False
+                foundItem = False
+                tempData = self.fnc_Read_Bank_GetRowColumnIndex(
+                    DetailTable, PreviousRowIndex, PreviousColumnIndex, Addressee, Applicantid)
+                foundItem = tempData["IsFound"]
+                if(foundItem):
+                    PreviousColumnIndex = tempData["column"]
+                    PreviousRowIndex = tempData["row"]
+                    rowIndex = PreviousRowIndex
+                    columnIndex = PreviousColumnIndex
+                    for ioindex, x in enumerate(self.config.IO_Name_ExistingMortgage):
+                        self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x, self.config.IO_Template_ExistingMortgage[
+                                                ioindex], "txt_ExistingMortgage_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid))
+
+                    self.gridrowindex = self.gridrowindex+1
+                    ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
+                        row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
+                PreviousAddressCounter += 1
+
+    def fnc_Read_MortgageRequirements_IO_Template(self, ParentContainer, Applicantid):
+        self.gridrowindex, self.gridcolumnindex = -1, 0
+        columnIndex, rowIndex = 0, 0
+        DetailTable = None
+        foundTable, foundItem= False, False
+        self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
+        for tableindex, table in enumerate(self.tables):
+            if(tableindex<self.SkipTable):
+                continue            
+            if(self.fnc_IsTable_Found(table, "Mortgage Requirements")):
+                self.SkipTable=tableindex
+                self.fun_mergetables(table, True,True)
+                # check Next Table is on Next Page
+                if (not (self.fnc_IsTable_Found(self.tables[tableindex+1], "Mortgage Preferences & Attitude to Risk") or self.fnc_IsTable_Found(self.tables[tableindex+1], "Which of the following are important to you?"))):
+                    self.fun_mergetables(self.tables[tableindex+1], False,False)
+                    # check Next Table is on Next to Next Page
+                    if (not ( self.fnc_IsTable_Found(self.tables[tableindex+2], "Mortgage Preferences & Attitude to Risk") or self.fnc_IsTable_Found(self.tables[tableindex+2], "Which of the following are important to you?") )):
+                        self.fun_mergetables(self.tables[tableindex+2], False,False)
+                        if (not ( self.fnc_IsTable_Found(self.tables[tableindex+3], "Mortgage Preferences & Attitude to Risk") or self.fnc_IsTable_Found(self.tables[tableindex+3], "Which of the following are important to you?"))):
+                            self.fun_mergetables(self.tables[tableindex+3], False,False)
+                DetailTable = pd.DataFrame(
+                    self.tableData, columns=self.tableDataColumnName)
+                foundTable = True
+                self.CurrentAddressFound = True                
+                break
+        if(foundTable):
+            PreviousAddressCounter = 0
+            PreviousColumnIndex = 0
+            PreviousRowIndex = 0
+            Addressee = self.varApplicant1.get() if (
+                Applicantid == 1) else self.varApplicant2.get() if (Applicantid == 2) else ""
+            while PreviousAddressCounter < 15:
+                self.IsEvenColumn = False
+                foundItem = False
+                tempData = self.fnc_Read_Bank_GetRowColumnIndex(
+                    DetailTable, PreviousRowIndex, PreviousColumnIndex, Addressee, Applicantid)
+                foundItem = tempData["IsFound"]
+                if(foundItem):
+                    PreviousColumnIndex = tempData["column"]
+                    PreviousRowIndex = tempData["row"]
+                    rowIndex = PreviousRowIndex
+                    columnIndex = PreviousColumnIndex
+                    for ioindex, x in enumerate(self.config.IO_Name_MortgageRequirements):                        
+                        self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x, self.config.IO_Template_MortgageRequirements[
+                                                ioindex], "txt_MortgageRequirements_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid))
+
+                    self.gridrowindex = self.gridrowindex+1
+                    ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
+                        row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
+                PreviousAddressCounter += 1
+
+    def fnc_Read_whichofthefollowingareimportant_IO_Template(self, ParentContainer, Applicantid):
+        if(Applicantid!=1):
+            return
+        self.gridrowindex, self.gridcolumnindex = -1, 0
+        columnIndex, rowIndex = 0, 0
+        DetailTable = None
+        foundTable, foundItem= False, False
+        self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
+        for tableindex, table in enumerate(self.tables):
+            if(tableindex<self.SkipTable):
+                continue            
+            if(self.fnc_IsTable_Found(table, "Which of the following are important to you?")):
+                self.SkipTable=tableindex
+                self.fun_mergetables(table, True,True)
+                # check Next Table is on Next Page
+                if (not (self.fnc_IsTable_Found(self.tables[tableindex+1], "Final Salary Pension Schemes"))):
+                    self.fun_mergetables(self.tables[tableindex+1], False,False)
+                    # check Next Table is on Next to Next Page
+                    if (not ( self.fnc_IsTable_Found(self.tables[tableindex+2], "Final Salary Pension Schemes"))):
+                        self.fun_mergetables(self.tables[tableindex+2], False,False)
+                        if (not ( self.fnc_IsTable_Found(self.tables[tableindex+3], "Final Salary Pension Schemes"))):
+                            self.fun_mergetables(self.tables[tableindex+3], False,False)
+                DetailTable = pd.DataFrame(
+                    self.tableData, columns=self.tableDataColumnName)
+                foundTable = True
+                self.CurrentAddressFound = True                
+                break
+        if(foundTable):
+            PreviousAddressCounter = 0
+            PreviousColumnIndex = 0
+            PreviousRowIndex = 0
+            Addressee = self.varApplicant1.get() if (
+                Applicantid == 1) else self.varApplicant2.get() if (Applicantid == 2) else ""
+            while PreviousAddressCounter < 15:
+                self.IsEvenColumn = False
+                foundItem = False
+                tempData ={"IsFound":True,"row":0,"column":1}
+                foundItem = tempData["IsFound"]
+                if(foundItem):
+                    PreviousColumnIndex = tempData["column"]
+                    PreviousRowIndex = tempData["row"]
+                    rowIndex = PreviousRowIndex
+                    columnIndex = PreviousColumnIndex
+                    for ioindex, x in enumerate(self.config.IO_Name_MortgageRequirements):                        
+                        self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x, self.config.IO_Template_MortgageRequirements[
+                                                ioindex], "txt_Whichofthefollowingareimportant_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid))
+                    self.gridrowindex = self.gridrowindex+1
+                    ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
+                        row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
+                PreviousAddressCounter += 1
+
+
+    def hide_unhide_applicant(self):        
+        if(self.varApplicantType.get() == "Single"):
+            if(self.frm_Applicant2!=None):
+                self.ApplicantTab.forget(self.frm_Applicant2)
+        else:
+            if(self.frm_Applicant2!=None):
+                self.ApplicantTab.add(self.frm_Applicant2)
+            
+
+    def clear_frame(self, frame):
+        for widgets in frame.winfo_children():
+            widgets.destroy()
+
+    def open_file(self):
+        open_file = askopenfilename(initialdir="d:", title="Open Template", filetypes=[
+                                    ('Pdf Files', '*.pdf')])
+        if open_file:
+            self.tables = tabula.read_pdf(open_file, pages="all")
+            self.CurrentAddressFound = False
+            if(self.frm_Applicant1!= None):
+                self.clear_frame(self.frm_Applicant1)
+            else:
+                self.frm_Applicant1=ttk.Frame(self.ApplicantTab)
+            if(self.frm_Applicant2!= None):
+                self.clear_frame(self.frm_Applicant2)
+            else:
+                self.frm_Applicant2=ttk.Frame(self.ApplicantTab)
+
+
+            self.frm_Applicant1.columnconfigure(0, weight=1)
+            self.frm_Applicant1.rowconfigure(0, weight=1)
+            self.frm_Applicant1.rowconfigure(1, weight=1)
+            self.frm_Applicant1.rowconfigure(2, weight=1)
+            self.frm_Applicant1.rowconfigure(3, weight=1)
+            self.frm_Applicant1.rowconfigure(4, weight=100)            
+            ttk.Label(self.frm_Applicant1, text="Applicant 1", textvariable=self.varApplicant1, style="H1.TLabel").grid(row=0, column=0, sticky=tk.N+tk.W)
+            ttk.Frame(self.frm_Applicant1, height=10).grid(row=1, column=0, sticky=tk.E+tk.W)
+            ttk.Frame(self.frm_Applicant1, style="Separator.TFrame", height=2).grid(row=2, column=0, sticky=tk.E+tk.W)
+            ttk.Frame(self.frm_Applicant1, height=10).grid(row=3, column=0, sticky=tk.E+tk.W)
+            frmInnerContentFrame1 = ttk.Frame(self.frm_Applicant1)
+            frmInnerContentFrame1.grid(row=4, column=0, sticky=tk.E+tk.W+tk.N+tk.S)            
+            self.SkipTable=0
+            self.fnc_Read_PersonalDetails(frmInnerContentFrame1, 1)
+            self.ApplicantTab.add(self.frm_Applicant1, text ='Applicant 1')
+
+            if(self.varApplicantType.get() == "Co Applicant"):
+                self.frm_Applicant2.columnconfigure(0, weight=1)
+                self.frm_Applicant2.rowconfigure(0, weight=1)
+                self.frm_Applicant2.rowconfigure(1, weight=1)
+                self.frm_Applicant2.rowconfigure(2, weight=1)
+                self.frm_Applicant2.rowconfigure(3, weight=1)
+                self.frm_Applicant2.rowconfigure(4, weight=100)                
+                self.ApplicantTab.add(self.frm_Applicant2, text ='Applicant 2')
+                ttk.Label(self.frm_Applicant2, text="Applicant 2", textvariable=self.varApplicant2, style="H1.TLabel").grid(row=0, column=0, sticky=tk.N+tk.W)
+                ttk.Frame(self.frm_Applicant2, height=10).grid(row=1, column=0, sticky=tk.E+tk.W)
+                ttk.Frame(self.frm_Applicant2, style="Separator.TFrame", height=1).grid(row=2, column=0, sticky=tk.E+tk.W)
+                ttk.Frame(self.frm_Applicant2, height=10).grid(row=3, column=0, sticky=tk.E+tk.W)
+                frmInnerContentFrame2 = ttk.Frame(self.frm_Applicant2)
+                self.SkipTable=0
+                self.fnc_Read_PersonalDetails(frmInnerContentFrame2, 2)
+                frmInnerContentFrame2.grid(row=4, column=0, sticky=tk.E+tk.W+tk.N+tk.S)
 
     def fncCreateItems(self):
+        self.ContainerFrame.columnconfigure(0, weight=1)
+        self.ContainerFrame.columnconfigure(1, weight=1)
+        self.ContainerFrame.columnconfigure(2, weight=100)
+        self.ContainerFrame.rowconfigure(0, weight=1)
+        self.ContainerFrame.rowconfigure(1, weight=1)
+        self.ContainerFrame.rowconfigure(2, weight=1)
+        self.ContainerFrame.rowconfigure(3, weight=1)
+        self.ContainerFrame.rowconfigure(4, weight=100)
         self.varApplicantType.set("Co Applicant")
         self.varTemplateType.set("IO Template")
         
-        yaxis=0
-        tk.Label(self,text = "Id",font=self.config.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).place(x = 40,y = (10), anchor=tk.NW)
-        tk.Entry(self,bg=self.config.COLOR_BACKGROUND,name="txt__Id",textvariable = self.varId ,width = 25,font=self.config.displayFont).place(x = 170,y = (10), anchor=tk.NW)	
-        yaxis=40
-        tk.Label(self,text = "Template Type",font=self.config.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).place(x = 40,y = (10+yaxis), anchor=tk.NW)
-        combostyle = ttk.Style()
-        combostyle.theme_create('combostyle', parent='alt',settings = {'TCombobox':{'configure':{'fieldbackground': self.config.COLOR_BACKGROUND,'background': self.config.COLOR_BACKGROUND}}})
-        
-        combostyle.theme_use('combostyle') 
-        cmbTemplateType = ttk.Combobox(self, width = 23, textvariable =self.varTemplateType,font=self.config.displayFont)
+        ttk.Label(self.ContainerFrame, text="File Name").grid(row=0, column=0, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
+        ttk.Entry(self.ContainerFrame, name="txtFileName", textvariable=self.varFileName, width=25).grid(row=0, column=1, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
+        ttk.Label(self.ContainerFrame, text="Template Type").grid(row=1, column=0, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
+        cmbTemplateType = ttk.Combobox(self.ContainerFrame, width=23, textvariable=self.varTemplateType)
         # Adding combobox drop down list
         cmbTemplateType['values'] = ('IO Template', 'Fact Find')
-        cmbTemplateType.place(x = 170,y = (10+yaxis), anchor=tk.NW)	
+        cmbTemplateType.grid(row=1, column=1, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
+        ttk.Label(self.ContainerFrame, text="Applicant Type").grid(row=2, column=0, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
 
-        yaxis=yaxis+40
-        tk.Label(self,text = "Applicant Type",font=self.config.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).place(x = 40,y = (10+yaxis), anchor=tk.NW)
-        cmbApplicantType = ttk.Combobox(self, width = 23, textvariable = self.varApplicantType,font=self.config.displayFont)
+        cmbApplicantType = ttk.Combobox(self.ContainerFrame, width=23, textvariable=self.varApplicantType)
         cmbApplicantType['values'] = ('Single', 'Co Applicant')
-        cmbApplicantType.place(x = 170,y = (10+yaxis), anchor=tk.NW)	
-        cmbApplicantType.bind("<<ComboboxSelected>>", self.hide_unhide_applicant)
-        yaxis=yaxis+40
-        self.varStarttingPoint=yaxis
-        for x in self.config.IO_Name:
-            tk.Label(self,  text = x.strip(),font=self.config.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).place(x = 40,y = (10+yaxis), anchor=tk.NW)
-            tk.Entry(self,name="txtApplicant"+ x.strip().replace(' ', '_'),bg=self.config.COLOR_BACKGROUND, width = 25,font=self.config.displayFont).place(x = 170,y = (10+yaxis), anchor=tk.NW)
-            tk.Entry(self,name="txtCoApplicant"+ x.strip().replace(' ', '_'),bg=self.config.COLOR_BACKGROUND, width = 25,font=self.config.displayFont).place(x = 400,y = (10+yaxis), anchor=tk.NW)	
-            yaxis=yaxis+40
-        
-        btnImport = tk.Button ( self, text ="Import",width=10, relief='flat', font=self.config.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND,  command =lambda:self.open_file() )
-        btnSave = tk.Button ( self, text ="Save", width=10,relief='flat', font=self.config.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND, command =lambda: self.save_data())
-        btnReset = tk.Button ( self, text ="Reset", width=10,relief='flat', font=self.config.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND, command =lambda: self.reset_data())
-        btnImport.bind('<Enter>', self.config.on_enter_button)
-        btnImport.bind('<Leave>', self.config.on_leave_button)
-        btnSave.bind('<Enter>', self.config.on_enter_button)
-        btnSave.bind('<Leave>', self.config.on_leave_button)
-        btnReset.bind('<Enter>', self.config.on_enter_button)
-        btnReset.bind('<Leave>', self.config.on_leave_button)
-        btnImport.place(x = 400,y = 10, anchor=tk.NW)
-        btnSave.place(x = 400,y = 50, anchor=tk.NW)
-        btnReset.place(x = 400,y = 90, anchor=tk.NW)
-        yaxis=yaxis+50
-        #txtDetail=tk.Text(self,height=5, name="txtremarks")
-        #txtDetail.place(x = 170,y = 10+yaxis, anchor=tk.NW)
-        
-        
-if __name__ == '__main__':
-    config= Gc.GenerateConfig()
-    ImportData(config).mainloop()
-        
+        cmbApplicantType.grid(row=2, column=1, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
+        cmbApplicantType.bind("<<ComboboxSelected>>",lambda: self.hide_unhide_applicant())
 
+        btnFrame = ttk.Frame(self.ContainerFrame)
+        btnFrame.grid(row=0, rowspan=3, column=2, sticky=tk.N+tk.S+tk.W)
+
+        btnImport = ttk.Button(btnFrame, text="Import",width=10,  command=lambda: self.open_file())
+        #btnLoad = ttk.Button(btnFrame, text="Load", width=10,command=lambda: self.open_file())
+        btnSave = ttk.Button(btnFrame, text="Save", width=10,command=lambda: self.save_data())
+        btnReset = ttk.Button(btnFrame, text="Reset",width=10, command=lambda: self.reset_data())
+        
+        btnImport.grid(row=0, column=0, sticky=tk.N+tk.S+tk.W, padx=(5, 5), pady=(5, 5))
+        #btnLoad.grid(row=0, column=1, sticky=tk.N+tk.S+tk.W, padx=(5, 5), pady=(5, 5))
+        btnSave.grid(row=1, column=0, sticky=tk.N+tk.S+tk.W, padx=(5, 5), pady=(5, 5))
+        btnReset.grid(row=1, column=1, sticky=tk.N+tk.S+tk.W, padx=(5, 5), pady=(5, 5))
+        ttk.Frame(self.ContainerFrame,height=5).grid(row=3,column=0,columnspan=3,sticky=tk.W+tk.E)
+        self.ApplicantTab= ttk.Notebook(self.ContainerFrame)
+        self.ApplicantTab.grid(row=4,column=0,columnspan=3,sticky=tk.N+tk.S+tk.W+tk.E)
+
+
+if __name__ == '__main__':
+    config = Gc.GenerateConfig()
+
+    #ctypes.windll.shcore.SetProcessDpiAwareness(1)
+    root = tk.Tk()
+    sizex = 700
+    sizey = 500
+    posx = 100
+    posy = 100
+    root.wm_geometry("%dx%d+%d+%d" % (sizex, sizey, posx, posy))
+    myframe = tk.Frame(root, relief=tk.GROOVE, width=500, height=600, bd=1)
+    myframe.pack(fill="both", expand=tk.TRUE, anchor=tk.N+tk.W)
+    config.set_theme(None, myframe)
+    ImportData1(myframe, config)
+    root.mainloop()
