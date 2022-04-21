@@ -4,7 +4,7 @@ from turtle import color
 import fontawesome as fa
 import os,json
 import GenerateConfig as Gc
-import frmImportData1 as ImpData
+import frmImportData as ImpData
 import frmAddTemplate as AddTmp
 
 

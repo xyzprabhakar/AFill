@@ -1,4 +1,5 @@
 
+from ast import Return
 import ctypes
 from email.headerregistry import Address
 import os
@@ -9,19 +10,19 @@ import pandas as pd
 import io
 import tkinter as tk
 from tkinter.filedialog import askopenfile, askopenfilename
-from tkinter import RAISED, ttk
+from tkinter import RAISED, ttk,messagebox
 import GenerateConfig as Gc
 import json
-import tkinter as tk
 
 
-class ImportData1:
+
+class ImportData:
     config = None
     varApplicant1,varApplicant2 = None,None     
     varTemplateType,varApplicantType,varFileName = None,None  ,None   
     varStarttingPoint = 0
     varAllJsonData = []     
-    ContainerCanvas,ContainerFrame,ApplicantTab,frm_Applicant1,frm_Applicant2 = None,None,None,None,None     
+    ContainerCanvas,ContainerFrame,ApplicantTab,frm_Applicant1,frm_Applicant1Canvas,frm_Applicant1Parent,frm_Applicant2,frm_Applicant2Canvas,frm_Applicant2Parent = None,None,None,None,None ,None,None ,None,None   
     Parent_Height = 500
     Parent_Width = 600
     tables = None
@@ -35,39 +36,23 @@ class ImportData1:
         self.varApplicant2 = tk.StringVar()
         self.varFileName = tk.StringVar()
 
-        #self.ContainerCanvas = tk.Canvas(Container, bg=self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge',width=Container["width"], height=Container["height"])
-        ContainerCanvas = tk.Canvas(Container, bg="RED",highlightthickness=0, relief='ridge',width=Container["width"], height=Container["height"])
-        ContainerCanvas.pack(side=tk.LEFT,expand=tk.TRUE, fill="both")
-        #add Scroll bar
-        scrollbar_y = tk.Scrollbar(Container, orient=tk.VERTICAL, command=ContainerCanvas.yview)
-        scrollbar_x = tk.Scrollbar(Container, orient=tk.HORIZONTAL, command=ContainerCanvas.xview)
-        scrollbar_y.pack(side=tk.RIGHT, fill="y")
-        scrollbar_x.pack(side=tk.BOTTOM, fill="x")
-        #configure canvas
-        ContainerCanvas.configure(yscrollcommand=scrollbar_y,xscrollcommand=scrollbar_x,)
-        ContainerCanvas.bind("<Configure>", lambda e: ContainerCanvas.configure(scrollregion=ContainerCanvas.bbox("all")))
-        #ContainerCanvas.bind("<Configure>",  lambda : self.fnc_resizeScroll(e,ContainerCanvas))
-        
-        self.ContainerFrame = ttk.Frame(ContainerCanvas)
-        ContainerCanvas.create_window((0, 0), window=self.ContainerFrame, anchor='nw')
-        # self.ContainerCanvas.configure(yscrollcommand=self.scrollbar_y.set, xscrollcommand=scrollbar_x.set)      
-        
-        #self.ContainerFrame.bind("<Configure>", self.fnc_resizeScroll)
-        #self.ContainerCanvas.bind_all("<MouseWheel>", self.OnMouseWheel)
+        self.ContainerFrame=ttk.Frame(Container)
+        self.ContainerFrame.pack(expand=tk.TRUE, fill="both",pady=(5,3))       
         self.fncCreateItems()
         
-        # for  thing in range(1,100):
-        #     ttk.Button(self.ContainerFrame,text=f'Button {thing} hi').grid(row=thing,columns=1,pady=10,padx=10)
+    def OnMouseWheel1(self, event,canvas_):
+        canvas_=self.ApplicantTab.index(self.ApplicantTab.select())
+        if(canvas_==0):
+            self.frm_Applicant1Canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+        elif(canvas_==1):            
+            self.frm_Applicant2Canvas.yview_scroll(int(-1*(event.delta/120)), "units")
         
         
-    def OnMouseWheel(self, event):
-        self.ContainerCanvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
-    def fnc_resizeScroll(self, e,canvas):
-        canvas.configure(scrollregion=canvas.bbox("all"))
-    # def fnc_resizeScroll(self, event):
-    #     self.ContainerCanvas.configure(scrollregion=self.ContainerCanvas.bbox(
-    #         "all"), width=self.Parent_Width, height=self.Parent_Height)
+    # def fnc_resizeScroll(self, e,canvas):
+    #     canvas.configure(scrollregion=canvas.bbox("all"))
+    def fnc_resizeScroll(self,event):
+        self.ContainerCanvas.configure(scrollregion=self.ContainerCanvas.bbox("all"))
 
     def fnc_Read_PersonalDetails(self, ParentContainer, Applicantid):
         
@@ -77,32 +62,32 @@ class ImportData1:
         frmTopFrame.pack(fill="both",anchor="nw")        
 
         if(self.varTemplateType.get() == "IO Template"): 
-            frmDetailFrame = ttk.Frame(frmTopFrame) 
-            frmPersonalDetailsFrame = ttk.LabelFrame(frmDetailFrame, text="Personal Details", style="Details.TLabelframe")
+            frmDetailFrame = ttk.Frame(frmTopFrame ,name="frmDetailFrame_"+str(Applicantid)) 
+            frmPersonalDetailsFrame = ttk.LabelFrame(frmDetailFrame,name="frmPersonalDetailsFrame_"+str(Applicantid), text="Personal Details", style="Details.TLabelframe")
             frmPersonalDetailsFrame.grid(row=0, column=0, sticky=tk.N+tk.W, pady=(10, 10), padx=(10, 10))
             self.fnc_Read_PersonalDetails_IO_Template(frmPersonalDetailsFrame, Applicantid)            
             frmAddressFrame = ttk.Notebook(frmDetailFrame,name="tab_Section_Address_"+str(Applicantid))
             # Add Current Address
-            frmCurrentAddressFrame = ttk.Frame(frmAddressFrame)            
+            frmCurrentAddressFrame = ttk.Frame(frmAddressFrame, name="frmCurrentAddressFrame_"+str(Applicantid))    
             self.fnc_Read_CurrentAddress_IO_Template(frmCurrentAddressFrame, Applicantid)
             frmAddressFrame.add(frmCurrentAddressFrame, text ='Current Address')            
 
             # Add Previous Address
-            frmPreviousAddressFrame = ttk.Frame(frmAddressFrame)
+            frmPreviousAddressFrame = ttk.Frame(frmAddressFrame,name="frmPreviousAddressFrame_"+str(Applicantid))
             self.fnc_Read_PreviousAddress_IO_Template(frmPreviousAddressFrame, Applicantid)
             frmAddressFrame.add(frmPreviousAddressFrame, text ='Previous Address')
             # Contact Details
-            frmContactDetailFrame = ttk.LabelFrame(frmDetailFrame, text="Contact Details", style="Details.TLabelframe")            
+            frmContactDetailFrame = ttk.LabelFrame(frmDetailFrame,name="frmContactDetailFrame_"+str(Applicantid) ,text="Contact Details", style="Details.TLabelframe")            
             self.fnc_Read_ContactDetails_IO_Template(frmContactDetailFrame, Applicantid)
             frmContactDetailFrame.grid(row=1, column=0, sticky=tk.N+tk.W, pady=(10, 10), padx=(10, 10))
 
             
             # ProfessionalContacts
-            frmProfessionalContactsFrame = ttk.Frame(frmAddressFrame)
+            frmProfessionalContactsFrame = ttk.Frame(frmAddressFrame,name="frmProfessionalContactsFrame_"+str(Applicantid))
             self.fnc_Read_ProfessionalContact_IO_Template(frmProfessionalContactsFrame, Applicantid)
             frmAddressFrame.add(frmProfessionalContactsFrame, text ='Professional Contacts')
             # Bank Details
-            frmBankDetailFrame = ttk.Frame(frmAddressFrame)
+            frmBankDetailFrame = ttk.Frame(frmAddressFrame,name="frmBankDetailFrame_"+str(Applicantid))
             self.fnc_Read_BankAccountDetails_IO_Template(frmBankDetailFrame, Applicantid)
             frmAddressFrame.add(frmBankDetailFrame, text ='Bank Details')
 
@@ -113,44 +98,44 @@ class ImportData1:
 
             
             # Family And Dependants
-            frmFamilyAndDependantsrame = ttk.LabelFrame(frmTopFrame, text="Family And Dependants", style="Details.TLabelframe")
+            frmFamilyAndDependantsrame = ttk.LabelFrame(frmTopFrame,name="frmFamilyAndDependantsrame_"+str(Applicantid), text="Family And Dependants", style="Details.TLabelframe")
             self.fnc_Read_FamilyAndDependants_IO_Template(frmFamilyAndDependantsrame, Applicantid)
             frmTopFrame.add(frmFamilyAndDependantsrame, text ='Family')
             # ID Verfication
-            frmIDVerificationFrame = ttk.Frame(frmTopFrame)
+            frmIDVerificationFrame = ttk.Frame(frmTopFrame,name="frmIDVerificationFrame_"+str(Applicantid))
             self.fnc_Read_IDVerification_IO_Template(frmIDVerificationFrame, Applicantid)
             frmTopFrame.add(frmIDVerificationFrame, text ='ID Verification')
 
             # Current Employement Details
-            frmCurrentEmployementDetailsFrame = ttk.LabelFrame(frmTopFrame,text="Current Employement Details",style="Details.TLabelframe")
+            frmCurrentEmployementDetailsFrame = ttk.LabelFrame(frmTopFrame,name="frmCurrentEmployementDetailsFrame_"+str(Applicantid),text="Current Employement Details",style="Details.TLabelframe")
             self.fnc_Read_CurrentEmployementDetails_IO_Template(frmCurrentEmployementDetailsFrame, Applicantid)           
             frmTopFrame.add(frmCurrentEmployementDetailsFrame, text ='Employement')
 
 
-            frmAssetsLiabilitiesFrame=ttk.Notebook(frmTopFrame)            
+            frmAssetsLiabilitiesFrame=ttk.Notebook(frmTopFrame,name="frmAssetsLiabilitiesFrame_"+str(Applicantid))            
             
             # Assets Details            
-            frmAssetsFrame = ttk.Frame(frmAssetsLiabilitiesFrame)            
+            frmAssetsFrame = ttk.Frame(frmAssetsLiabilitiesFrame,name="frmAssetsFrame_"+str(Applicantid))
             self.fnc_Read_Assets_IO_Template(frmAssetsFrame, Applicantid)            
             frmAssetsLiabilitiesFrame.add(frmAssetsFrame, text ='Assets')
 
             # Liabilities
-            frmLiabilitiesFrame = ttk.Frame(frmAssetsLiabilitiesFrame)            
+            frmLiabilitiesFrame = ttk.Frame(frmAssetsLiabilitiesFrame,name="frmLiabilitiesFrame_"+str(Applicantid))
             self.fnc_Read_Liabilities_IO_Template(frmLiabilitiesFrame, Applicantid)
             frmAssetsLiabilitiesFrame.add(frmLiabilitiesFrame, text ='Liabilities')
             # Expenditure
-            frmExpenditureFrame = ttk.Frame(frmAssetsLiabilitiesFrame)            
+            frmExpenditureFrame = ttk.Frame(frmAssetsLiabilitiesFrame,name="frmExpenditureFrame_"+str(Applicantid))
             self.fnc_Read_Expenditure_IO_Template(frmExpenditureFrame, Applicantid)
             frmAssetsLiabilitiesFrame.add(frmExpenditureFrame, text ='Expenditure')
             frmTopFrame.add(frmAssetsLiabilitiesFrame, text ='Assets/Liabilities')
 
-            frmMortgageFrame = ttk.Notebook(frmTopFrame)
+            frmMortgageFrame = ttk.Notebook(frmTopFrame,name="frmMortgageFrame_"+str(Applicantid))
             # ExistingMortgage
-            frmExistingMortgageFrame = ttk.Frame(frmMortgageFrame)
+            frmExistingMortgageFrame = ttk.Frame(frmMortgageFrame,name="frmExistingMortgageFrame_"+str(Applicantid))
             self.fnc_Read_ExistingMortgageDetails_IO_Template(frmExistingMortgageFrame, Applicantid)
             frmMortgageFrame.add(frmExistingMortgageFrame, text ='Existing Mortgage')
             #Mortage Requirement
-            frmMortgageRequirementsFrame = ttk.Frame(frmMortgageFrame)            
+            frmMortgageRequirementsFrame = ttk.Frame(frmMortgageFrame,name="frmMortgageRequirementsFrame_"+str(Applicantid))
             self.fnc_Read_MortgageRequirements_IO_Template(frmMortgageRequirementsFrame, Applicantid)
             frmMortgageFrame.add(frmMortgageRequirementsFrame, text ='Mortgage Requirements')
             frmTopFrame.add(frmMortgageFrame, text ='Mortgage')
@@ -1004,8 +989,6 @@ class ImportData1:
             return 1
         else :
             return 0
-
-
         
     def fnc_Read_Assets_IO_Template(self, ParentContainer, Applicantid):
         self.gridrowindex, self.gridcolumnindex = -1, 0
@@ -1079,7 +1062,6 @@ class ImportData1:
                     except Exception as ex:
                         print("Error", ex) 
                     i=i+combinedRows
-
 
     def fnc_Read_Liabilities_IO_Template(self, ParentContainer, Applicantid):
         self.gridrowindex, self.gridcolumnindex = -1, 0
@@ -1357,15 +1339,17 @@ class ImportData1:
                 PreviousAddressCounter += 1
 
 
-    def hide_unhide_applicant(self):        
-        if(self.varApplicantType.get() == "Single"):
-            if(self.frm_Applicant2!=None):
-                self.ApplicantTab.forget(self.frm_Applicant2)
-        else:
-            if(self.frm_Applicant2!=None):
-                self.ApplicantTab.add(self.frm_Applicant2)
-            
-
+    def hide_unhide_applicant(self,event):       
+        if(self.frm_Applicant1Parent!= None):
+                self.ApplicantTab.forget(self.frm_Applicant1Parent)      
+                self.clear_frame(self.frm_Applicant1Parent)
+                self.frm_Applicant1Parent=None
+        if(self.frm_Applicant2Parent!= None):
+                self.ApplicantTab.forget(self.frm_Applicant2Parent)      
+                self.clear_frame(self.frm_Applicant2Parent)
+                self.frm_Applicant2Parent=None
+                
+        
     def clear_frame(self, frame):
         for widgets in frame.winfo_children():
             widgets.destroy()
@@ -1376,48 +1360,153 @@ class ImportData1:
         if open_file:
             self.tables = tabula.read_pdf(open_file, pages="all")
             self.CurrentAddressFound = False
-            if(self.frm_Applicant1!= None):
-                self.clear_frame(self.frm_Applicant1)
-            else:
-                self.frm_Applicant1=ttk.Frame(self.ApplicantTab)
-            if(self.frm_Applicant2!= None):
-                self.clear_frame(self.frm_Applicant2)
-            else:
-                self.frm_Applicant2=ttk.Frame(self.ApplicantTab)
+            self.hide_unhide_applicant(None)
+            
+            
+            self.frm_Applicant1Parent=ttk.Frame(self.ApplicantTab)
+            self.frm_Applicant2Parent=ttk.Frame(self.ApplicantTab)
 
-
+            self.frm_Applicant1Canvas = tk.Canvas(self.frm_Applicant1Parent, bg=self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge')
+            self.frm_Applicant1 = ttk.Frame(self.frm_Applicant1Canvas)            
             self.frm_Applicant1.columnconfigure(0, weight=1)
             self.frm_Applicant1.rowconfigure(0, weight=1)
             self.frm_Applicant1.rowconfigure(1, weight=1)
             self.frm_Applicant1.rowconfigure(2, weight=1)
             self.frm_Applicant1.rowconfigure(3, weight=1)
-            self.frm_Applicant1.rowconfigure(4, weight=100)            
-            ttk.Label(self.frm_Applicant1, text="Applicant 1", textvariable=self.varApplicant1, style="H1.TLabel").grid(row=0, column=0, sticky=tk.N+tk.W)
-            ttk.Frame(self.frm_Applicant1, height=10).grid(row=1, column=0, sticky=tk.E+tk.W)
-            ttk.Frame(self.frm_Applicant1, style="Separator.TFrame", height=2).grid(row=2, column=0, sticky=tk.E+tk.W)
-            ttk.Frame(self.frm_Applicant1, height=10).grid(row=3, column=0, sticky=tk.E+tk.W)
-            frmInnerContentFrame1 = ttk.Frame(self.frm_Applicant1)
-            frmInnerContentFrame1.grid(row=4, column=0, sticky=tk.E+tk.W+tk.N+tk.S)            
+            self.frm_Applicant1.rowconfigure(4, weight=1)
+            self.frm_Applicant1.rowconfigure(5, weight=100)                                
+            ttk.Frame(self.frm_Applicant1, height=10).grid(row=0, column=0, sticky=tk.E+tk.W)
+            ttk.Label(self.frm_Applicant1, text="Applicant 1", textvariable=self.varApplicant1, style="H1.TLabel").grid(row=1, column=0, sticky=tk.N+tk.W)
+            ttk.Frame(self.frm_Applicant1, height=10).grid(row=2, column=0, sticky=tk.E+tk.W)
+            ttk.Frame(self.frm_Applicant1, style="Separator.TFrame", height=1).grid(row=3, column=0, sticky=tk.E+tk.W)
+            ttk.Frame(self.frm_Applicant1, height=10).grid(row=4, column=0, sticky=tk.E+tk.W)
+            frmInnerContentFrame1 = ttk.Frame(self.frm_Applicant1,name="frmInnerContentFrame1")
+            frmInnerContentFrame1.grid(row=5, column=0, sticky=tk.E+tk.W+tk.N+tk.S)            
             self.SkipTable=0
             self.fnc_Read_PersonalDetails(frmInnerContentFrame1, 1)
-            self.ApplicantTab.add(self.frm_Applicant1, text ='Applicant 1')
+            self.frm_Applicant1Canvas.create_window((0, 0), window=self.frm_Applicant1, anchor='nw')
+            self.ApplicantTab.add(self.frm_Applicant1Parent, text ='Applicant 1')
+            scrollbar_y_Applicant1 = ttk.Scrollbar(self.frm_Applicant1Parent, orient=tk.VERTICAL, command=self.frm_Applicant1Canvas.yview)
+            scrollbar_x_Applicant1 = ttk.Scrollbar(self.frm_Applicant1Parent, orient=tk.HORIZONTAL, command=self.frm_Applicant1Canvas.xview)
+            scrollbar_y_Applicant1.pack(side=tk.RIGHT, fill="y")
+            scrollbar_x_Applicant1.pack(side=tk.BOTTOM, fill="x")
+            self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
+            self.frm_Applicant1Canvas.configure(yscrollcommand=scrollbar_y_Applicant1,xscrollcommand=scrollbar_x_Applicant1)
+            self.frm_Applicant1Canvas.bind("<Configure>",  lambda e: self.frm_Applicant1Canvas.configure(scrollregion=self.frm_Applicant1Canvas.bbox("all")))
+            self.frm_Applicant1Canvas.bind_all("<MouseWheel>",   lambda e: self.OnMouseWheel1(e,1) )
+            
+            
+
+
 
             if(self.varApplicantType.get() == "Co Applicant"):
+                self.frm_Applicant2Canvas = tk.Canvas(self.frm_Applicant2Parent, bg=self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge')
+                self.frm_Applicant2 = ttk.Frame(self.frm_Applicant2Canvas)
+                scrollbar_y_Applicant2 = ttk.Scrollbar(self.frm_Applicant2Parent, orient=tk.VERTICAL, command=self.frm_Applicant2Canvas.yview)
+                scrollbar_x_Applicant2 = ttk.Scrollbar(self.frm_Applicant2Parent, orient=tk.HORIZONTAL, command=self.frm_Applicant2Canvas.xview)
+                scrollbar_y_Applicant2.pack(side=tk.RIGHT, fill="y")
+                scrollbar_x_Applicant2.pack(side=tk.BOTTOM, fill="x")
+                self.frm_Applicant2Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
                 self.frm_Applicant2.columnconfigure(0, weight=1)
                 self.frm_Applicant2.rowconfigure(0, weight=1)
                 self.frm_Applicant2.rowconfigure(1, weight=1)
                 self.frm_Applicant2.rowconfigure(2, weight=1)
                 self.frm_Applicant2.rowconfigure(3, weight=1)
-                self.frm_Applicant2.rowconfigure(4, weight=100)                
-                self.ApplicantTab.add(self.frm_Applicant2, text ='Applicant 2')
-                ttk.Label(self.frm_Applicant2, text="Applicant 2", textvariable=self.varApplicant2, style="H1.TLabel").grid(row=0, column=0, sticky=tk.N+tk.W)
-                ttk.Frame(self.frm_Applicant2, height=10).grid(row=1, column=0, sticky=tk.E+tk.W)
-                ttk.Frame(self.frm_Applicant2, style="Separator.TFrame", height=1).grid(row=2, column=0, sticky=tk.E+tk.W)
-                ttk.Frame(self.frm_Applicant2, height=10).grid(row=3, column=0, sticky=tk.E+tk.W)
-                frmInnerContentFrame2 = ttk.Frame(self.frm_Applicant2)
+                self.frm_Applicant2.rowconfigure(4, weight=1)
+                self.frm_Applicant2.rowconfigure(5, weight=100)                                
+                ttk.Frame(self.frm_Applicant2, height=10).grid(row=0, column=0, sticky=tk.E+tk.W)
+                ttk.Label(self.frm_Applicant2, text="Applicant 2", textvariable=self.varApplicant2, style="H1.TLabel").grid(row=1, column=0, sticky=tk.N+tk.W)
+                ttk.Frame(self.frm_Applicant2, height=10).grid(row=2, column=0, sticky=tk.E+tk.W)
+                ttk.Frame(self.frm_Applicant2, style="Separator.TFrame", height=1).grid(row=3, column=0, sticky=tk.E+tk.W)
+                ttk.Frame(self.frm_Applicant2, height=10).grid(row=4, column=0, sticky=tk.E+tk.W)
+                frmInnerContentFrame2 = ttk.Frame(self.frm_Applicant2,name="frmInnerContentFrame2" )
+                frmInnerContentFrame2.grid(row=5, column=0, sticky=tk.E+tk.W+tk.N+tk.S)            
                 self.SkipTable=0
                 self.fnc_Read_PersonalDetails(frmInnerContentFrame2, 2)
-                frmInnerContentFrame2.grid(row=4, column=0, sticky=tk.E+tk.W+tk.N+tk.S)
+                self.ApplicantTab.add(self.frm_Applicant2Parent, text ='Applicant 2')
+                self.frm_Applicant2Canvas.configure(yscrollcommand=scrollbar_y_Applicant2,xscrollcommand=scrollbar_x_Applicant2)
+                self.frm_Applicant2Canvas.bind("<Configure>",  lambda e: self.frm_Applicant2Canvas.configure(scrollregion=self.frm_Applicant2Canvas.bbox("all")))
+                self.frm_Applicant2Canvas.bind_all("<MouseWheel>",   lambda e: self.OnMouseWheel1(e,2) )
+                self.frm_Applicant2Canvas.create_window((0, 0), window=self.frm_Applicant2, anchor='nw')
+                
+            
+            self.ApplicantTab.update_idletasks()
+
+    def save_data(self):
+        if not os.path.exists(self.config.FilePath):
+            os.makedirs(self.config.FilePath)
+        if(self.varFileName.get()==""):
+            messagebox.showerror("Required", "Please add FileName")
+        if os.path.isfile(os.path.join(self.config.FilePath, self.varFileName.get()+".json")):
+            messagebox.showerror("Already Exists", "FileName already Exists")
+            return
+        self.fnc_Save_CurrentAddress(1)
+        self.fnc_Save_PreviousAddress(1)
+
+    def checkKey(self,dict, key):      
+        if key in dict.keys():
+            return True
+        else:
+            return False
+
+
+    def fnc_Save_CurrentAddress(self,ApplicantId):
+        CurrentAddress={}
+        TabFrame,frmInnerContentFrame=None,None
+        if(ApplicantId==1):
+            TabFrame=self.frm_Applicant1
+        elif(ApplicantId==2):
+            TabFrame=self.frm_Applicant2
+        if(self.checkKey(TabFrame.children,"frmInnerContentFrame"+str(ApplicantId))):
+            if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children,"tab_Section_"+str(ApplicantId))):
+                if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmDetailFrame_"+str(ApplicantId))):
+                    if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children,"tab_Section_Address_"+str(ApplicantId))):
+                        if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["tab_Section_Address_"+str(ApplicantId)].children,"frmCurrentAddressFrame_"+str(ApplicantId))):
+                            frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["tab_Section_Address_"+str(ApplicantId)].children["frmCurrentAddressFrame_"+str(ApplicantId)]
+                            controlName,controlVal='',''
+                            for  x in self.config.IO_Name_CurrentAddress: 
+                                controlName,controlVal='',''
+                                controlName= "txt_CurrentAddress_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                if (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                    controlVal=frmInnerContentFrame.children[controlName].get()
+                                CurrentAddress.update({controlName:controlVal})                
+        return CurrentAddress
+
+    def fnc_Save_PreviousAddress(self,ApplicantId):
+        PreviousAdd=[]
+        for M in range(1,5):
+            tempData=self.fnc_Save_PreviousAddressDetail(ApplicantId,M)
+            if(tempData != None):
+                PreviousAdd.append(tempData)
+        print(PreviousAdd)
+        return PreviousAdd
+
+    def fnc_Save_PreviousAddressDetail(self,ApplicantId,MemberId):
+        CurrentAddress={}
+        TabFrame,frmInnerContentFrame=None,None
+        if(ApplicantId==1):
+            TabFrame=self.frm_Applicant1
+        elif(ApplicantId==2):
+            TabFrame=self.frm_Applicant2
+        if(self.checkKey(TabFrame.children,"frmInnerContentFrame"+str(ApplicantId))):
+            if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children,"tab_Section_"+str(ApplicantId))):
+                if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmDetailFrame_"+str(ApplicantId))):
+                    if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children,"tab_Section_Address_"+str(ApplicantId))):
+                        if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["tab_Section_Address_"+str(ApplicantId)].children,"frmPreviousAddressFrame_"+str(ApplicantId))):
+                            frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["tab_Section_Address_"+str(ApplicantId)].children["frmPreviousAddressFrame_"+str(ApplicantId)]
+                            controlName,controlVal='',''
+                            controlName= "txt_PreviousAddress_"+str(MemberId)+"_"+str(ApplicantId)+"Address Line 1".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                            if not (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                return None
+                            for  x in self.config.IO_Name_CurrentAddress: 
+                                controlName,controlVal='',''
+                                controlName= "txt_PreviousAddress_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                if (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                    controlVal=frmInnerContentFrame.children[controlName].get()
+                                CurrentAddress.update({controlName:controlVal})                
+        return CurrentAddress
+
+            
 
     def fncCreateItems(self):
         self.ContainerFrame.columnconfigure(0, weight=1)
@@ -1443,7 +1532,7 @@ class ImportData1:
         cmbApplicantType = ttk.Combobox(self.ContainerFrame, width=23, textvariable=self.varApplicantType)
         cmbApplicantType['values'] = ('Single', 'Co Applicant')
         cmbApplicantType.grid(row=2, column=1, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
-        cmbApplicantType.bind("<<ComboboxSelected>>",lambda: self.hide_unhide_applicant())
+        cmbApplicantType.bind("<<ComboboxSelected>>",lambda e: self.hide_unhide_applicant(e))
 
         btnFrame = ttk.Frame(self.ContainerFrame)
         btnFrame.grid(row=0, rowspan=3, column=2, sticky=tk.N+tk.S+tk.W)
@@ -1458,7 +1547,7 @@ class ImportData1:
         btnSave.grid(row=1, column=0, sticky=tk.N+tk.S+tk.W, padx=(5, 5), pady=(5, 5))
         btnReset.grid(row=1, column=1, sticky=tk.N+tk.S+tk.W, padx=(5, 5), pady=(5, 5))
         ttk.Frame(self.ContainerFrame,height=5).grid(row=3,column=0,columnspan=3,sticky=tk.W+tk.E)
-        self.ApplicantTab= ttk.Notebook(self.ContainerFrame)
+        self.ApplicantTab= ttk.Notebook(self.ContainerFrame, height=600)
         self.ApplicantTab.grid(row=4,column=0,columnspan=3,sticky=tk.N+tk.S+tk.W+tk.E)
 
 
@@ -1475,5 +1564,5 @@ if __name__ == '__main__':
     myframe = tk.Frame(root, relief=tk.GROOVE, width=500, height=600, bd=1)
     myframe.pack(fill="both", expand=tk.TRUE, anchor=tk.N+tk.W)
     config.set_theme(None, myframe)
-    ImportData1(myframe, config)
+    ImportData(myframe, config)
     root.mainloop()
