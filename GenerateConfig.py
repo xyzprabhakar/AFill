@@ -84,8 +84,8 @@ class GenerateConfig:
         self.Password = self.config_file['AFill_Users']['Password']
         self.IO_Name=self.config_file['InputTemplate']['IO_Name'].split(",")
         self.IO_Template=self.config_file['InputTemplate']['IO_Template'].split(",")
-        self.IO_Name_PersonalDetail=self.config_file['InputTemplate']['IO_Name_PersonalDetail'].split(",")
-        self.IO_Template_PersonalDetail=self.config_file['InputTemplate']['IO_Template_PersonalDetail'].split(",")
+        self.IO_Name_PersonalDetails=self.config_file['InputTemplate']['IO_Name_PersonalDetails'].split(",")
+        self.IO_Template_PersonalDetails=self.config_file['InputTemplate']['IO_Template_PersonalDetails'].split(",")
         self.IO_Name_CurrentAddress=self.config_file['InputTemplate']['IO_Name_CurrentAddress'].split(",")
         self.IO_Template_CurrentAddress=self.config_file['InputTemplate']['IO_Template_CurrentAddress'].split(",")
         self.IO_Name_PreviousAddress=self.config_file['InputTemplate']['IO_Name_PreviousAddress'].split(",")
@@ -144,8 +144,8 @@ class GenerateConfig:
         "FamilyAndDependants[A],IDVerification[G],CurrentEmployment[G],Asset[A],Liabilities[A],Expenditure[A],Source of Deposit[M][D]," +
         "ExistingMortgage[A],MortgageRequirements[A]"
         )
-        self.config_file.set("InputTemplate", "IO_Name_PersonalDetail","Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,Marital Status,Country of Birth,Nationality,National Insurance No.,Country Of Residence")
-        self.config_file.set("InputTemplate", "IO_Template_PersonalDetail","Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,Marital Status,Country of Birth,Nationality,National Insurance No.,Country Of Residence")
+        self.config_file.set("InputTemplate", "IO_Name_PersonalDetails","Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,Marital Status,Country of Birth,Nationality,National Insurance No.,Country Of Residence")
+        self.config_file.set("InputTemplate", "IO_Template_PersonalDetails","Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,Marital Status,Country of Birth,Nationality,National Insurance No.,Country Of Residence")
         self.config_file.set("InputTemplate", "IO_Name_CurrentAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,Country,Postcode,Residency Status,Date From")
         self.config_file.set("InputTemplate", "IO_Template_CurrentAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City / Town,Country,Postcode,Residency Status,Date From")
         self.config_file.set("InputTemplate", "IO_Name_PreviousAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,Country,Postcode,Residency Status,Date From,Date To")

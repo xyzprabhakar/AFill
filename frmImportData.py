@@ -262,7 +262,7 @@ class ImportData:
             if(DetailTable.columns[0] == "ank Account Details"):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Bank Name" and row[0] =="Account Holder(s)"):
+                if(row[0] == "Bank Name" or row[0] =="Account Holder(s)"):
                     return True
         elif(tableName == "Family And Dependants"):
             if(DetailTable.columns[0] == "amily And Dependants"):
@@ -413,9 +413,9 @@ class ImportData:
                 self.varApplicant1.set(addressee)
             elif(Applicantid == 2):
                 self.varApplicant2.set(addressee)
-            for ioindex, x in enumerate(self.config.IO_Name_PersonalDetail):
+            for ioindex, x in enumerate(self.config.IO_Name_PersonalDetails):
                 self.fnc_GenrateControl(ParentContainer, PersonalDetailTable, Applicantid, 0, x,
-                                        self.config.IO_Template_PersonalDetail[ioindex], "txt_PersonalDetails_"+str(Applicantid))
+                                        self.config.IO_Template_PersonalDetails[ioindex], "txt_PersonalDetails_"+str(Applicantid))
 
     def fnc_Read_Address_GetRowColumnIndex(self, DetailTable, PreviousRowIndex, PreviousColumnIndex, Adressee, IsCurrentAddress):
         FoundApplicant = False
@@ -736,7 +736,7 @@ class ImportData:
         for tableindex, table in enumerate(self.tables):
             if(tableindex<self.SkipTable):
                 continue
-            if(table.columns[0] == "ank Account Details"):
+            if( self.fnc_IsTable_Found(table, "Bank Account Details")):
                 self.SkipTable=tableindex
                 self.fun_mergetables(table, True,True)
                 # check Next Table is on Next Page
@@ -807,19 +807,19 @@ class ImportData:
                     if(row[4] == Addressee or  (row[4] == "Joint" and Applicantid== 1)):
                         membercounter=membercounter+1
                         self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 0,i, "Full Name",
-                                                 "Full Name", "txt_FamilyAndDependants_"+str(Applicantid)+"_"+str(membercounter))
+                                                 "Full Name", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid))
                         self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 1,i, "Date of Birth",
-                                                 "Date of Birth", "txt_FamilyAndDependants_"+str(Applicantid)+"_"+str(membercounter))                        
+                                                 "Date of Birth", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid))                        
                         self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 2,i, "Age",
-                                                 "Age", "txt_FamilyAndDependants_"+str(Applicantid)+"_"+str(membercounter))
+                                                 "Age", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid))
                         self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 3,i, "Relationship",
-                                                 "Relationship", "txt_FamilyAndDependants_"+str(Applicantid)+"_"+str(membercounter))
+                                                 "Relationship", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid))
                         self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 4,i, "Related To",
-                                                 "Related To", "txt_FamilyAndDependants_"+str(Applicantid)+"_"+str(membercounter))
+                                                 "Related To", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid))
                         self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 5,i, "Financially Dependant",
-                                                 "Financially Dependant", "txt_FamilyAndDependants_"+str(Applicantid)+"_"+str(membercounter))
+                                                 "Financially Dependant", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid))
                         self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 7,i, "Dependant Living with Client",
-                                                 "Dependant Living with Client", "txt_FamilyAndDependants_"+str(Applicantid)+"_"+str(membercounter))
+                                                 "Dependant Living with Client", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid))
                         self.gridrowindex = self.gridrowindex+1
                         ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
                         row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
@@ -1032,27 +1032,27 @@ class ImportData:
                     try:
                         membercounter=membercounter+1
                         rowValue= self.fnc_combinedRows(combinedRows,DetailTable.iloc[i][0],  DetailTable.iloc[i+1][0] if(combinedRows>1)else "" ,DetailTable.iloc[i+2][0] if(combinedRows>2)else "",DetailTable.iloc[i+3][0] if(combinedRows>3)else "")                        
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Owner", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Owner", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid))
                         rowValue= self.fnc_combinedRows(combinedRows,DetailTable.iloc[i][1],  DetailTable.iloc[i+1][1] if(combinedRows>1)else "" ,DetailTable.iloc[i+2][1] if(combinedRows>2)else "",DetailTable.iloc[i+3][1] if(combinedRows>3)else "")                        
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Category", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
-                        rowValue= self.fnc_combinedRows(combinedRows,DetailTable.iloc[i][2],  DetailTable.iloc[i+1][2] if(combinedRows>1)else "" ,DetailTable.iloc[i+2][2] if(combinedRows>2)else "",DetailTable.iloc[i+3][2] if(combinedRows>3)else "")                        
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Related To Address", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Address Line 1[M]", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Address Line 2[M]", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Address Line 3[M]", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Address Line 4[M]", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "City[M]", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Country[M]", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Postcode[M]", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Category", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid))
+                        rowValue= self.fnc_combinedRows(combinedRows,DetailTable.iloc[i][2],  DetailTable.iloc[i+1][2] if(membercounter>1)else "" ,DetailTable.iloc[i+2][2] if(combinedRows>2)else "",DetailTable.iloc[i+3][2] if(combinedRows>3)else "")                        
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Related To Address", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Address Line 1[M]", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Address Line 2[M]", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Address Line 3[M]", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Address Line 4[M]", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "City[M]", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Country[M]", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Postcode[M]", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid))
 
                         rowValue= self.fnc_combinedRows(combinedRows,DetailTable.iloc[i][7],  DetailTable.iloc[i+1][7] if(combinedRows>1)else "" ,DetailTable.iloc[i+2][7] if(combinedRows>2)else "",DetailTable.iloc[i+3][7] if(combinedRows>3)else "")                        
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Original Value", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Original Value", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid))
                         rowValue= self.fnc_combinedRows(combinedRows,DetailTable.iloc[i][8],  DetailTable.iloc[i+1][8] if(combinedRows>1)else "" ,DetailTable.iloc[i+2][8] if(combinedRows>2)else "",DetailTable.iloc[i+3][8] if(combinedRows>3)else "") 
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Purchased On", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Purchased On", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid))
                         rowValue= self.fnc_combinedRows(combinedRows,DetailTable.iloc[i][9],  DetailTable.iloc[i+1][9] if(combinedRows>1)else "" ,DetailTable.iloc[i+2][9] if(combinedRows>2)else "",DetailTable.iloc[i+3][9] if(combinedRows>3)else "")                        
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Value", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Value", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid))
                         rowValue= self.fnc_combinedRows(combinedRows,DetailTable.iloc[i][10],  DetailTable.iloc[i+1][10] if(combinedRows>1)else "" ,DetailTable.iloc[i+2][10] if(combinedRows>2)else "",DetailTable.iloc[i+3][10] if(combinedRows>3)else "")                        
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Valuation Date", "txt_Assets_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Valuation Date", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid))
                         
                         self.gridrowindex = self.gridrowindex+1
                         ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
@@ -1161,15 +1161,15 @@ class ImportData:
                     if(foundItem):
                         membercounter=membercounter+1
                         PreviousRowIndex = tempData["row"]                        
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,x, "Category", "txt_Category_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,x, "Category", "txt_Expenditure_"+str(membercounter)+"_"+str(Applicantid))
                         rowValue= DetailTable.iloc[PreviousRowIndex][1]
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Owner", "txt_Category_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Owner", "txt_Expenditure_"+str(membercounter)+"_"+str(Applicantid))
                         rowValue= DetailTable.iloc[PreviousRowIndex][2]
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Description", "txt_Category_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Description", "txt_Expenditure_"+str(membercounter)+"_"+str(Applicantid))
                         rowValue= DetailTable.iloc[PreviousRowIndex][3]
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Net Amount", "txt_Category_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Net Amount", "txt_Expenditure_"+str(membercounter)+"_"+str(Applicantid))
                         rowValue= DetailTable.iloc[PreviousRowIndex][4]
-                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Frequency", "txt_Category_"+str(Applicantid)+"_"+str(membercounter))
+                        self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Frequency", "txt_Expenditure_"+str(membercounter)+"_"+str(Applicantid))
                         self.gridrowindex = self.gridrowindex+1
                         ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
                         row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
@@ -1437,11 +1437,36 @@ class ImportData:
             os.makedirs(self.config.FilePath)
         if(self.varFileName.get()==""):
             messagebox.showerror("Required", "Please add FileName")
+            return
         if os.path.isfile(os.path.join(self.config.FilePath, self.varFileName.get()+".json")):
             messagebox.showerror("Already Exists", "FileName already Exists")
             return
-        self.fnc_Save_CurrentAddress(1)
-        self.fnc_Save_PreviousAddress(1)
+        
+        TotalApplicant=1
+        if(self.varApplicantType=="Co Applicant"):
+            TotalApplicant=2
+        AllData=[]
+        for ApplicantId in range(1,TotalApplicant+1):
+            ApplicantData={}
+            ApplicantData
+            ApplicantData.update({"ApplicantId":ApplicantId})                
+            ApplicantData.update({"PersonalDetails":self.fnc_Save_PersonalDetails(ApplicantId)})
+            ApplicantData.update({"ContactDetails":self.fnc_Save_ContactDetails(ApplicantId)})
+            ApplicantData.update({"CurrentAddress":self.fnc_Save_CurrentAddress(ApplicantId)})
+            ApplicantData.update({"PreviousAddress":self.fnc_Save_PreviousAddress(ApplicantId)})
+            ApplicantData.update({"ProfessionalContacts":self.fnc_Save_ProfessionalContacts(ApplicantId)})
+            ApplicantData.update({"BankAccount":self.fnc_Save_BankAccount(ApplicantId)})
+            ApplicantData.update({"FamilyAndDependants":self.fnc_Save_FamilyAndDependants(ApplicantId)})
+            ApplicantData.update({"IDVerification":self.fnc_Save_IDVerification(ApplicantId)})
+            ApplicantData.update({"CurrentEmployementDetails":self.fnc_Save_CurrentEmployementDetails(ApplicantId)})
+            ApplicantData.update({"Assets":self.fnc_Save_Assets(ApplicantId)})
+            ApplicantData.update({"Liabilities":self.fnc_Save_Liabilities(ApplicantId)})
+            ApplicantData.update({"Expenditure":self.fnc_Save_Expenditure(ApplicantId)})
+            ApplicantData.update({"ExistingMortgage":self.fnc_Save_ExistingMortgage(ApplicantId)})
+            ApplicantData.update({"MortgageRequirements":self.fnc_Save_MortgageRequirements(ApplicantId)})
+            AllData.append(ApplicantData)
+        print(AllData)
+            
 
     def checkKey(self,dict, key):      
         if key in dict.keys():
@@ -1449,6 +1474,49 @@ class ImportData:
         else:
             return False
 
+    def fnc_Save_PersonalDetails(self,ApplicantId):
+        PersonalDetails={}
+        TabFrame,frmInnerContentFrame=None,None
+        if(ApplicantId==1):
+            TabFrame=self.frm_Applicant1
+        elif(ApplicantId==2):
+            TabFrame=self.frm_Applicant2
+        if(self.checkKey(TabFrame.children,"frmInnerContentFrame"+str(ApplicantId))):
+            if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children,"tab_Section_"+str(ApplicantId))):
+                if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmDetailFrame_"+str(ApplicantId))):
+                    if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children,"frmPersonalDetailsFrame_"+str(ApplicantId))):
+                            frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["frmPersonalDetailsFrame_"+str(ApplicantId)]
+                            controlName,controlVal='',''
+                            for  x in self.config.IO_Name_PersonalDetails: 
+                                controlName,controlVal='',''
+                                controlName= "txt_PersonalDetails_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                if (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                    controlVal=frmInnerContentFrame.children[controlName].get()
+                                PersonalDetails.update({controlName:controlVal})                
+        print(PersonalDetails)
+        return PersonalDetails
+
+    def fnc_Save_ContactDetails(self,ApplicantId):
+        ContactDetails={}
+        TabFrame,frmInnerContentFrame=None,None
+        if(ApplicantId==1):
+            TabFrame=self.frm_Applicant1
+        elif(ApplicantId==2):
+            TabFrame=self.frm_Applicant2
+        if(self.checkKey(TabFrame.children,"frmInnerContentFrame"+str(ApplicantId))):
+            if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children,"tab_Section_"+str(ApplicantId))):
+                if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmDetailFrame_"+str(ApplicantId))):
+                    if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children,"frmContactDetailFrame_"+str(ApplicantId))):
+                            frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["frmContactDetailFrame_"+str(ApplicantId)]
+                            controlName,controlVal='',''
+                            for  x in self.config.IO_Name_ContactDetails: 
+                                controlName,controlVal='',''
+                                controlName= "txt_ContactDetails_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                if (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                    controlVal=frmInnerContentFrame.children[controlName].get()
+                                ContactDetails.update({controlName:controlVal})                
+        print(ContactDetails)
+        return ContactDetails
 
     def fnc_Save_CurrentAddress(self,ApplicantId):
         CurrentAddress={}
@@ -1477,8 +1545,8 @@ class ImportData:
         for M in range(1,5):
             tempData=self.fnc_Save_PreviousAddressDetail(ApplicantId,M)
             if(tempData != None):
-                PreviousAdd.append(tempData)
-        print(PreviousAdd)
+                if(bool(tempData)):
+                    PreviousAdd.append(tempData)        
         return PreviousAdd
 
     def fnc_Save_PreviousAddressDetail(self,ApplicantId,MemberId):
@@ -1506,7 +1574,312 @@ class ImportData:
                                 CurrentAddress.update({controlName:controlVal})                
         return CurrentAddress
 
-            
+    def fnc_Save_ProfessionalContacts(self,ApplicantId):
+        ProfessionalContacts=[]
+        for M in range(1,10):
+            tempData=self.fnc_Save_ProfessionalContactsDetail(ApplicantId,M)
+            if(tempData != None):
+                if(bool(tempData)):
+                    ProfessionalContacts.append(tempData)              
+        return ProfessionalContacts
+
+    def fnc_Save_ProfessionalContactsDetail(self,ApplicantId,MemberId):
+        ProfessionalContacts={}
+        TabFrame,frmInnerContentFrame=None,None
+        if(ApplicantId==1):
+            TabFrame=self.frm_Applicant1
+        elif(ApplicantId==2):
+            TabFrame=self.frm_Applicant2
+        if(self.checkKey(TabFrame.children,"frmInnerContentFrame"+str(ApplicantId))):
+            if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children,"tab_Section_"+str(ApplicantId))):
+                if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmDetailFrame_"+str(ApplicantId))):
+                    if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children,"tab_Section_Address_"+str(ApplicantId))):
+                        if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["tab_Section_Address_"+str(ApplicantId)].children,"frmProfessionalContactsFrame_"+str(ApplicantId))):
+                            frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["tab_Section_Address_"+str(ApplicantId)].children["frmProfessionalContactsFrame_"+str(ApplicantId)]
+                            controlName,controlVal='',''
+                            controlName= "txt_ProfessionalContacts_"+str(MemberId)+"_"+str(ApplicantId)+"Address Line 1".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                            if not (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                return None
+                            for  x in self.config.IO_Name_ProfessionalContacts: 
+                                controlName,controlVal='',''
+                                controlName= "txt_ProfessionalContacts_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                if (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                    controlVal=frmInnerContentFrame.children[controlName].get()
+                                ProfessionalContacts.update({controlName:controlVal})                
+        return ProfessionalContacts
+
+    def fnc_Save_BankAccount(self,ApplicantId):
+        BankAccount=[]
+        for M in range(1,15):
+            tempData=self.fnc_Save_BankAccountDetails(ApplicantId,M)
+            if(tempData != None):
+                if(bool(tempData)):
+                    BankAccount.append(tempData)                
+        return BankAccount
+
+    def fnc_Save_BankAccountDetails(self,ApplicantId,MemberId):
+        BankAccount={}
+        TabFrame,frmInnerContentFrame=None,None
+        if(ApplicantId==1):
+            TabFrame=self.frm_Applicant1
+        elif(ApplicantId==2):
+            TabFrame=self.frm_Applicant2
+        if(self.checkKey(TabFrame.children,"frmInnerContentFrame"+str(ApplicantId))):
+            if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children,"tab_Section_"+str(ApplicantId))):
+                if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmDetailFrame_"+str(ApplicantId))):
+                    if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children,"tab_Section_Address_"+str(ApplicantId))):
+                        if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["tab_Section_Address_"+str(ApplicantId)].children,"frmBankDetailFrame_"+str(ApplicantId))):
+                            frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["tab_Section_Address_"+str(ApplicantId)].children["frmBankDetailFrame_"+str(ApplicantId)]
+                            controlName,controlVal='',''
+                            controlName= "txt_BankAccountDetails_"+str(MemberId)+"_"+str(ApplicantId)+"Owner".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                            if not (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                return None
+                            for  x in self.config.IO_Name_BankAccountDetails: 
+                                controlName,controlVal='',''
+                                controlName= "txt_BankAccountDetails_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                if (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                    controlVal=frmInnerContentFrame.children[controlName].get()
+                                BankAccount.update({controlName:controlVal})                
+        return BankAccount
+
+    def fnc_Save_FamilyAndDependants(self,ApplicantId):
+        BankAccount=[]
+        for M in range(1,15):
+            tempData=self.fnc_Save_FamilyAndDependantsDetails(ApplicantId,M)
+            if(tempData != None):
+                if(bool(tempData)):
+                    BankAccount.append(tempData)        
+        print(BankAccount)
+        return BankAccount
+
+    def fnc_Save_FamilyAndDependantsDetails(self,ApplicantId,MemberId):
+        BankAccount={}
+        TabFrame,frmInnerContentFrame=None,None
+        if(ApplicantId==1):
+            TabFrame=self.frm_Applicant1
+        elif(ApplicantId==2):
+            TabFrame=self.frm_Applicant2
+        if(self.checkKey(TabFrame.children,"frmInnerContentFrame"+str(ApplicantId))):
+            if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children,"tab_Section_"+str(ApplicantId))):
+                if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmFamilyAndDependantsrame_"+str(ApplicantId))):
+                            frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmFamilyAndDependantsrame_"+str(ApplicantId)]
+                            controlName,controlVal='',''
+                            controlName= "txt_FamilyAndDependants_"+str(MemberId)+"_"+str(ApplicantId)+"Date of Birth".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                            if not (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                return None
+                            for  x in self.config.IO_Name_FamilyAndDependants: 
+                                controlName,controlVal='',''
+                                controlName= "txt_FamilyAndDependants_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                if (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                    controlVal=frmInnerContentFrame.children[controlName].get()
+                                BankAccount.update({controlName:controlVal})                
+        return BankAccount
+
+    def fnc_Save_IDVerification(self,ApplicantId):
+        IDVerification={}
+        TabFrame,frmInnerContentFrame=None,None
+        if(ApplicantId==1):
+            TabFrame=self.frm_Applicant1
+        elif(ApplicantId==2):
+            TabFrame=self.frm_Applicant2
+        if(self.checkKey(TabFrame.children,"frmInnerContentFrame"+str(ApplicantId))):
+            if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children,"tab_Section_"+str(ApplicantId))):
+                if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmIDVerificationFrame_"+str(ApplicantId))):                    
+                            frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmIDVerificationFrame_"+str(ApplicantId)]
+                            controlName,controlVal='',''
+                            for  x in self.config.IO_Name_IDVerification: 
+                                controlName,controlVal='',''
+                                controlName= "txt_IDVerification_1_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                if (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                    controlVal=frmInnerContentFrame.children[controlName].get()
+                                IDVerification.update({controlName:controlVal})                
+        return IDVerification
+
+    def fnc_Save_CurrentEmployementDetails(self,ApplicantId):
+        CurrentEmployementDetails={}
+        TabFrame,frmInnerContentFrame=None,None
+        if(ApplicantId==1):
+            TabFrame=self.frm_Applicant1
+        elif(ApplicantId==2):
+            TabFrame=self.frm_Applicant2
+        if(self.checkKey(TabFrame.children,"frmInnerContentFrame"+str(ApplicantId))):
+            if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children,"tab_Section_"+str(ApplicantId))):
+                if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmCurrentEmployementDetailsFrame_"+str(ApplicantId))):                    
+                            frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmCurrentEmployementDetailsFrame_"+str(ApplicantId)]
+                            controlName,controlVal='',''
+                            for  x in self.config.IO_Name_CurrentEmploymentDetails: 
+                                controlName,controlVal='',''
+                                controlName= "txt_CurrentEmploymentDetails_1_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                if (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                    controlVal=frmInnerContentFrame.children[controlName].get()
+                                CurrentEmployementDetails.update({controlName:controlVal})                
+        return CurrentEmployementDetails
+
+    def fnc_Save_Assets(self,ApplicantId):
+        Assets=[]
+        for M in range(1,25):
+            tempData=self.fnc_Save_AssetDetails(ApplicantId,M)
+            if(tempData != None):
+                if(bool(tempData)):
+                    Assets.append(tempData)                
+        return Assets
+
+    def fnc_Save_AssetDetails(self,ApplicantId,MemberId):
+        AssetDetails={}
+        TabFrame,frmInnerContentFrame=None,None
+        if(ApplicantId==1):
+            TabFrame=self.frm_Applicant1
+        elif(ApplicantId==2):
+            TabFrame=self.frm_Applicant2
+        if(self.checkKey(TabFrame.children,"frmInnerContentFrame"+str(ApplicantId))):
+            if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children,"tab_Section_"+str(ApplicantId))):
+                if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmAssetsLiabilitiesFrame_"+str(ApplicantId))):
+                    if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmAssetsLiabilitiesFrame_"+str(ApplicantId)].children,"frmAssetsFrame_"+str(ApplicantId))):
+                            frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmAssetsLiabilitiesFrame_"+str(ApplicantId)].children["frmAssetsFrame_"+str(ApplicantId)]
+                            controlName,controlVal='',''
+                            controlName= "txt_Assets_"+str(MemberId)+"_"+str(ApplicantId)+"Category".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                            if not (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                return None
+                            for  x in self.config.IO_Name_Assets: 
+                                controlName,controlVal='',''
+                                controlName= "txt_Assets_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                if (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                    controlVal=frmInnerContentFrame.children[controlName].get()
+                                AssetDetails.update({controlName:controlVal})                
+        return AssetDetails
+
+    def fnc_Save_Liabilities(self,ApplicantId):
+        Liabilities=[]
+        for M in range(1,25):
+            tempData=self.fnc_Save_LiabilitieDetails(ApplicantId,M)
+            if(tempData != None):
+                if(bool(tempData)):
+                    Liabilities.append(tempData)                
+        return Liabilities
+
+    def fnc_Save_LiabilitieDetails(self,ApplicantId,MemberId):
+        LiabilitieDetails={}
+        TabFrame,frmInnerContentFrame=None,None
+        if(ApplicantId==1):
+            TabFrame=self.frm_Applicant1
+        elif(ApplicantId==2):
+            TabFrame=self.frm_Applicant2
+        if(self.checkKey(TabFrame.children,"frmInnerContentFrame"+str(ApplicantId))):
+            if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children,"tab_Section_"+str(ApplicantId))):
+                if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmAssetsLiabilitiesFrame_"+str(ApplicantId))):
+                    if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmAssetsLiabilitiesFrame_"+str(ApplicantId)].children,"frmLiabilitiesFrame_"+str(ApplicantId))):
+                            frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmAssetsLiabilitiesFrame_"+str(ApplicantId)].children["frmLiabilitiesFrame_"+str(ApplicantId)]
+                            controlName,controlVal='',''
+                            controlName= "txt_Liabilities_"+str(MemberId)+"_"+str(ApplicantId)+"Owner".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                            if not (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                return None
+                            for  x in self.config.IO_Name_Liabilities: 
+                                controlName,controlVal='',''
+                                controlName= "txt_Liabilities_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                if (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                    controlVal=frmInnerContentFrame.children[controlName].get()
+                                LiabilitieDetails.update({controlName:controlVal})                
+        return LiabilitieDetails
+
+    def fnc_Save_Expenditure(self,ApplicantId):
+        Expenditure=[]
+        for M in range(1,25):
+            tempData=self.fnc_Save_ExpenditureDetails(ApplicantId,M)
+            if(tempData != None):
+                if(bool(tempData)):
+                    Expenditure.append(tempData)                
+        return Expenditure
+
+    def fnc_Save_ExpenditureDetails(self,ApplicantId,MemberId):
+        ExpenditureDetails={}
+        TabFrame,frmInnerContentFrame=None,None
+        if(ApplicantId==1):
+            TabFrame=self.frm_Applicant1
+        elif(ApplicantId==2):
+            TabFrame=self.frm_Applicant2
+        if(self.checkKey(TabFrame.children,"frmInnerContentFrame"+str(ApplicantId))):
+            if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children,"tab_Section_"+str(ApplicantId))):
+                if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmAssetsLiabilitiesFrame_"+str(ApplicantId))):
+                    if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmAssetsLiabilitiesFrame_"+str(ApplicantId)].children,"frmExpenditureFrame_"+str(ApplicantId))):
+                            frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmAssetsLiabilitiesFrame_"+str(ApplicantId)].children["frmExpenditureFrame_"+str(ApplicantId)]
+                            controlName,controlVal='',''
+                            controlName= "txt_Expenditure_"+str(MemberId)+"_"+str(ApplicantId)+"Category".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                            if not (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                return None
+                            for  x in self.config.IO_Name_Expenditure: 
+                                controlName,controlVal='',''
+                                controlName= "txt_Expenditure_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                if (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                    controlVal=frmInnerContentFrame.children[controlName].get()
+                                ExpenditureDetails.update({controlName:controlVal})                
+        return ExpenditureDetails
+
+    def fnc_Save_ExistingMortgage(self,ApplicantId):
+        ExistingMortgage=[]
+        for M in range(1,25):
+            tempData=self.fnc_Save_ExistingMortgageDetails(ApplicantId,M)
+            if(tempData != None):
+                if(bool(tempData)):
+                    ExistingMortgage.append(tempData)                
+        return ExistingMortgage
+
+    def fnc_Save_ExistingMortgageDetails(self,ApplicantId,MemberId):
+        ExpenditureDetails={}
+        TabFrame,frmInnerContentFrame=None,None
+        if(ApplicantId==1):
+            TabFrame=self.frm_Applicant1
+        elif(ApplicantId==2):
+            TabFrame=self.frm_Applicant2
+        if(self.checkKey(TabFrame.children,"frmInnerContentFrame"+str(ApplicantId))):
+            if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children,"tab_Section_"+str(ApplicantId))):
+                if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmMortgageFrame_"+str(ApplicantId))):
+                    if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmMortgageFrame_"+str(ApplicantId)].children,"frmExistingMortgageFrame_"+str(ApplicantId))):
+                            frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmMortgageFrame_"+str(ApplicantId)].children["frmExistingMortgageFrame_"+str(ApplicantId)]
+                            controlName,controlVal='',''
+                            controlName= "txt_ExistingMortgage_"+str(MemberId)+"_"+str(ApplicantId)+"Owner".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                            if not (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                return None
+                            for  x in self.config.IO_Name_ExistingMortgage: 
+                                controlName,controlVal='',''
+                                controlName= "txt_ExistingMortgage_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                if (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                    controlVal=frmInnerContentFrame.children[controlName].get()
+                                ExpenditureDetails.update({controlName:controlVal})                
+        return ExpenditureDetails
+
+    def fnc_Save_MortgageRequirements(self,ApplicantId):
+        ExistingMortgage=[]
+        for M in range(1,25):
+            tempData=self.fnc_Save_MortgageRequirementDetails(ApplicantId,M)
+            if(tempData != None):
+                if(bool(tempData)):
+                    ExistingMortgage.append(tempData)                
+        return ExistingMortgage
+
+    def fnc_Save_MortgageRequirementDetails(self,ApplicantId,MemberId):
+        ExpenditureDetails={}
+        TabFrame,frmInnerContentFrame=None,None
+        if(ApplicantId==1):
+            TabFrame=self.frm_Applicant1
+        elif(ApplicantId==2):
+            TabFrame=self.frm_Applicant2
+        if(self.checkKey(TabFrame.children,"frmInnerContentFrame"+str(ApplicantId))):
+            if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children,"tab_Section_"+str(ApplicantId))):
+                if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmMortgageFrame_"+str(ApplicantId))):
+                    if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmMortgageFrame_"+str(ApplicantId)].children,"frmMortgageRequirementsFrame_"+str(ApplicantId))):
+                            frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmMortgageFrame_"+str(ApplicantId)].children["frmMortgageRequirementsFrame_"+str(ApplicantId)]
+                            controlName,controlVal='',''
+                            controlName= "txt_MortgageRequirements_"+str(MemberId)+"_"+str(ApplicantId)+"Owner".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                            if not (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                return None
+                            for  x in self.config.IO_Name_MortgageRequirements: 
+                                controlName,controlVal='',''
+                                controlName= "txt_MortgageRequirements_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                if (self.checkKey(frmInnerContentFrame.children,controlName)):
+                                    controlVal=frmInnerContentFrame.children[controlName].get()
+                                ExpenditureDetails.update({controlName:controlVal})                
+        return ExpenditureDetails
+
 
     def fncCreateItems(self):
         self.ContainerFrame.columnconfigure(0, weight=1)
