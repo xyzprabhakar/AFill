@@ -102,6 +102,7 @@ class GenerateConfig:
         self.IO_Template_IDVerification=self.config_file['InputTemplate']['IO_Template_IDVerification'].split(",")
         self.IO_Name_CurrentEmploymentDetails=self.config_file['InputTemplate']['IO_Name_CurrentEmploymentDetails'].split(",")
         self.IO_Template_CurrentEmploymentDetails=self.config_file['InputTemplate']['IO_Template_CurrentEmploymentDetails'].split(",")
+        self.IO_Name_Assets=self.config_file['InputTemplate']['IO_Name_Assets'].split(",")
         self.IO_Name_Liabilities=self.config_file['InputTemplate']['IO_Name_Liabilities'].split(",")
         self.IO_Template_Liabilities=self.config_file['InputTemplate']['IO_Template_Liabilities'].split(",")
         self.IO_Name_ExistingMortgage=self.config_file['InputTemplate']['IO_Name_ExistingMortgage'].split(",")
@@ -176,6 +177,7 @@ class GenerateConfig:
         "Net Guaranteed Monthly Overtime,Gross Regular Annual Overtime,Net Regular Monthly Overtime,Do you receive Bonus Income?,Gross Guaranteed Annual Bonus,Net Guaranteed Annual Bonus,Gross Regular Annual Bonus,Net Regular Annual Bonus,"+
         "Other Gross Income,Total Gross Annual Earnings,In Probation,"
         )
+
         self.config_file.set("InputTemplate", "IO_Name_Liabilities","Owner,Liability Account Number,Liability Category,Original Loan Amount,Repayment or Interest Only,Rate Type,Amount Outstanding,Credit Limit,Interest Rate,"+
         "Payment Amount Monthly,Lender,Loan Term years,Start Date[M],End Date,Early Redemption Charge,Whether liability is to be repaid,How will liability be repaid")
         self.config_file.set("InputTemplate", "IO_Template_Liabilities","Owner,Liability Account Number,Liability Category,Original Loan Amount,Repayment or Interest Only?,Rate Type,Amount Outstanding,Credit Limit,Interest Rate (%),"+
@@ -195,7 +197,7 @@ class GenerateConfig:
         self.config_file.set("InputTemplate", "IO_Template_MortgageRequirements","[Builder Gift][Customer’s Bank][Equity][Gifted Deposit][Immediate Family Gift][Inheritance][Loan],[Proceeds of house sale][Sale Of Other Property][Vendor Gifted],Owner,[Purchase][Re-mortgage][Product Transfer][Additional Borrow],Mortage Type,Property,Number of Bedrooms,Number of living rooms,Number of kitchen,Number of Toilets,Number of bathrooms,[on-site parking][off-street parking],[Yes][No],[Yes][No],"+
         "Repayment Method,[Freehold][Leasehold],Region[M],Year Built[M],[House][Bungalow][Flat][Maisonette],Property Description[M],Floor,Total floors in the block,Lift,Lease Years Remaining,Is above commercial,Ground rent,Service charge,EWS1 Form available,Capital Repayment Amount,Interest Only Amount,Price/Valuation,Deposit/Equity,Loan,LTV(%),Term,Source Of Deposit")
 
-        self.config_file.set("InputTemplate", "IO_Name_Asset","Owner,Category,Related to Address,Original Value,Purchased On,Value,Valuation Date,"+
+        self.config_file.set("InputTemplate", "IO_Name_Assets","Owner,Category,Related to Address,Original Value,Purchased On,Value,Valuation Date,"+
         "Address Line 1[M],Address Line 2[M],Address Line 3[M],Address Line 4[M],City[M],Country[M],Postcode[M]")
         
         self.config_file.set("InputTemplate", "IO_Name_Expenditure","Council Tax,Gas,Electricity,Water,Telephone Mobile,Food Personal Care,Car Travelling Expenses,Housekeeping,Building Insurance,Combined Utilities,Maintenance Alimony,Clothing,Basic Recreation,School Fee Childcare,Life General Assurance,Other")

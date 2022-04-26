@@ -13,6 +13,7 @@ from tkinter.filedialog import askopenfile, askopenfilename
 from tkinter import RAISED, ttk,messagebox
 import GenerateConfig as Gc
 import json
+from datetime import date
 
 
 
@@ -1338,7 +1339,6 @@ class ImportData:
                         row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
                 PreviousAddressCounter += 1
 
-
     def hide_unhide_applicant(self,event):       
         if(self.frm_Applicant1Parent!= None):
                 self.ApplicantTab.forget(self.frm_Applicant1Parent)      
@@ -1348,8 +1348,7 @@ class ImportData:
                 self.ApplicantTab.forget(self.frm_Applicant2Parent)      
                 self.clear_frame(self.frm_Applicant2Parent)
                 self.frm_Applicant2Parent=None
-                
-        
+                        
     def clear_frame(self, frame):
         for widgets in frame.winfo_children():
             widgets.destroy()
@@ -1441,7 +1440,17 @@ class ImportData:
         if os.path.isfile(os.path.join(self.config.FilePath, self.varFileName.get()+".json")):
             messagebox.showerror("Already Exists", "FileName already Exists")
             return
+
+        with io.open(os.path.join(self.config.FilePath, self.config.DataFileName)) as fp:
+            self.varAllDataFile = json.load(fp)
+            if(self.varAllDataFile==None):                
+                self.varAllDataFile=[]
+
+        varAllDataFileDetails ={}   
+        varAllDataFileDetails.update({"FileName":self.varFileName.get(),"ApplicantType":self.varApplicantType.get(), "TemplateType":self.varTemplateType.get(),"CreationDt": date.now().strftime("%d-%b-%Y %H:%M:%S"),"ModifyDt": date.now().strftime("%d-%b-%Y %H:%M:%S")}) 
+        self.varAllDataFile.append(varAllDataFileDetails)
         
+
         TotalApplicant=1
         if(self.varApplicantType=="Co Applicant"):
             TotalApplicant=2
@@ -1465,9 +1474,14 @@ class ImportData:
             ApplicantData.update({"ExistingMortgage":self.fnc_Save_ExistingMortgage(ApplicantId)})
             ApplicantData.update({"MortgageRequirements":self.fnc_Save_MortgageRequirements(ApplicantId)})
             AllData.append(ApplicantData)
-        print(AllData)
-            
 
+        with open(os.path.join(self.config.FilePath, self.varFileName.get()+".json"), 'w', encoding='utf-8') as f:
+            json.dump(AllData, f, ensure_ascii=False, indent=4,separators=(',',': '))
+            with open(os.path.join(self.config.FilePath, self.config.DataFileName), 'w', encoding='utf-8') as f1:
+                json.dump(self.varAllDataFile, f1, ensure_ascii=False, indent=4,separators=(',',': '))                
+                tk.messagebox.showinfo("showinfo", "Save Successfully")
+        
+            
     def checkKey(self,dict, key):      
         if key in dict.keys():
             return True
@@ -1492,8 +1506,7 @@ class ImportData:
                                 controlName= "txt_PersonalDetails_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                                 if (self.checkKey(frmInnerContentFrame.children,controlName)):
                                     controlVal=frmInnerContentFrame.children[controlName].get()
-                                PersonalDetails.update({controlName:controlVal})                
-        print(PersonalDetails)
+                                PersonalDetails.update({controlName:controlVal})                        
         return PersonalDetails
 
     def fnc_Save_ContactDetails(self,ApplicantId):
@@ -1515,7 +1528,7 @@ class ImportData:
                                 if (self.checkKey(frmInnerContentFrame.children,controlName)):
                                     controlVal=frmInnerContentFrame.children[controlName].get()
                                 ContactDetails.update({controlName:controlVal})                
-        print(ContactDetails)
+        
         return ContactDetails
 
     def fnc_Save_CurrentAddress(self,ApplicantId):
@@ -1649,7 +1662,7 @@ class ImportData:
             if(tempData != None):
                 if(bool(tempData)):
                     BankAccount.append(tempData)        
-        print(BankAccount)
+        
         return BankAccount
 
     def fnc_Save_FamilyAndDependantsDetails(self,ApplicantId,MemberId):
