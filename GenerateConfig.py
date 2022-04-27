@@ -111,6 +111,8 @@ class GenerateConfig:
         self.IO_Template_MortgageRequirements=self.config_file['InputTemplate']['IO_Template_MortgageRequirements'].split(",")
         self.IO_Name_Expenditure=self.config_file['InputTemplate']['IO_Name_Expenditure'].split(",")
         self.IO_Template_Expenditure=self.config_file['InputTemplate']['IO_Template_Expenditure'].split(",")
+        self.IO_Name_Expenditure1=self.config_file['InputTemplate']['IO_Name_Expenditure1'].split(",")
+        self.IO_Template_Expenditure1=self.config_file['InputTemplate']['IO_Template_Expenditure1'].split(",")
         self.IO_Name_Whichofthefollowingareimportant=self.config_file['InputTemplate']['IO_Name_Whichofthefollowingareimportant'].split(",")
         self.IO_Template_Whichofthefollowingareimportant=self.config_file['InputTemplate']['IO_Template_Whichofthefollowingareimportant'].split(",")
 
@@ -200,8 +202,10 @@ class GenerateConfig:
         self.config_file.set("InputTemplate", "IO_Name_Assets","Owner,Category,Related to Address,Original Value,Purchased On,Value,Valuation Date,"+
         "Address Line 1[M],Address Line 2[M],Address Line 3[M],Address Line 4[M],City[M],Country[M],Postcode[M]")
         
-        self.config_file.set("InputTemplate", "IO_Name_Expenditure","Council Tax,Gas,Electricity,Water,Telephone Mobile,Food Personal Care,Car Travelling Expenses,Housekeeping,Building Insurance,Combined Utilities,Maintenance Alimony,Clothing,Basic Recreation,School Fee Childcare,Life General Assurance,Other")
-        self.config_file.set("InputTemplate", "IO_Template_Expenditure","Council Tax,Gas,Electricity,Water,Telephone/Mobile,Food & Personal Care,Car/Travelling Expenses,Housekeeping,Building Insurance,Combined Utilities,Maintenance/Alimony,Clothing,TV/Satellite/Internet/Basic,School Fee/Childcare,Life/General Assurance,Other (Non-Essential)")
+        self.config_file.set("InputTemplate", "IO_Name_Expenditure","Category,Owner,Description,Net Amount,Frequency")
+        self.config_file.set("InputTemplate", "IO_Template_Expenditure","Category,Owner,Description,Net Amount,Frequency")
+        self.config_file.set("InputTemplate", "IO_Name_Expenditure1","Council Tax,Gas,Electricity,Water,Telephone Mobile,Food Personal Care,Car Travelling Expenses,Housekeeping,Building Insurance,Combined Utilities,Maintenance Alimony,Clothing,Basic Recreation,School Fee Childcare,Life General Assurance,Other")
+        self.config_file.set("InputTemplate", "IO_Template_Expenditure1","Council Tax,Gas,Electricity,Water,Telephone/Mobile,Food & Personal Care,Car/Travelling Expenses,Housekeeping,Building Insurance,Combined Utilities,Maintenance/Alimony,Clothing,TV/Satellite/Internet/Basic,School Fee/Childcare,Life/General Assurance,Other (Non-Essential)")
         
         self.config_file.set("InputTemplate", "IO_Name_D_Expenditure_Category","Council Tax,Gas,Electricity,Water,Telephone/Mobile,Food & Personal Care,Car/Travelling Expenses,Housekeeping,Building Insurance,"
         "Combined Utilities,Maintenance/Alimony,Clothing,TV/Satellite/Internet/Basic Recreation,School Fee/Childcare,Life/General Assurance Premium,Other (Non-Essential)")

@@ -6,6 +6,7 @@ import os,json
 import GenerateConfig as Gc
 import frmImportData as ImpData
 import frmAddTemplate as AddTmp
+import frmDataReport as DataReport
 
 
 class AutoFill(tk.Frame):
@@ -22,7 +23,7 @@ class AutoFill(tk.Frame):
     #Left Menu Items
     MenuItems=[{"name":"rdoDashBoard", "text":"Dashboard","icon":"images\icons\cil-moon.png", "ficon":fa.icons['palette']},
                 {"name":"rdoTemplate", "text":"Template","icon":"images\icons\cil-moon.png", "ficon":fa.icons['file']},
-                {"name":"rdoDataTemplate", "text":"Data Template","icon":"images\icons\cil-moon.png", "ficon":fa.icons['database']},
+                {"name":"rdoFillData", "text":"Fill Data","icon":"images\icons\cil-moon.png", "ficon":fa.icons['database']},
                 {"name":"rdoImportData", "text":"Import Data","icon":"images\icons\cil-moon.png", "ficon":fa.icons['file-import']},
                 {"name":"rdoReport", "text":"Report","icon":"images\icons\cil-moon.png", "ficon":fa.icons['chart-line']},
                 {"name":"rdoSetting", "text":"Setting","icon":"images\icons\cil-moon.png", "ficon":fa.icons['wrench']},
@@ -139,6 +140,8 @@ class AutoFill(tk.Frame):
             self.frmDashBoard.pack_forget()
         if(self.frmImportData!=None):
             self.frmImportData.pack_forget()
+        if(self.frmReport!=None):
+            self.frmReport.pack_forget()
 
         if(self.varMenu.get()=="Dashboard"):            
             print ("hello")
@@ -157,6 +160,13 @@ class AutoFill(tk.Frame):
                 AddTmp.AddTemplate(self.frmTemplate,self.config)
             else:
                 self.frmTemplate.pack(fill=tk.BOTH,expand=tk.TRUE)
+        elif(self.varMenu.get()=="Report"):
+            if(self.frmReport==None):
+                self.frmReport=ttk.Frame(self.frmInnerDisplayContentFrame)
+                self.frmReport.pack(fill=tk.BOTH,expand=tk.TRUE)
+                DataReport.DataReport(self.frmReport,self.config)
+            else:
+                self.frmReport.pack(fill=tk.BOTH,expand=tk.TRUE)
             
             #self._create_Template(frmInnerDisplayContentFrame)
 

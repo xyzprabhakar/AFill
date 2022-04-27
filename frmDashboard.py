@@ -11,32 +11,20 @@ from ttkthemes import ThemedStyle
 from datetime import datetime
 
 
-class DataReport:
+class Dashboard:
     config=None    
     ContainerFrame=None    
     displayFont = ( "Verdana", 10)
     combostyle=None
     treeViewStyle=None
-    varAllDataFile=[]
-    varCurrentData=None
-    varActionType= None
-    varCurrentFileName=None
-    varCurrentApplicantType=None
-    varCurrentTemplateType=None    
-    varCurrentCreationDt=None
-    varCurrentModifyDt=None
-    
-
-    treev=None;
+    varAllDataFile,varAllTemplate=[],[]    
+    varTotalDataCount,varTotalTemplateCount,varCurrentMonthDataCount,varTotalPendingDataCount=None,None,None,None
+    varLastModifyFileName,varLastModifyApplicantType,varLastModifyTemplateType,varLastModifyModifyDt=None,None,None,None
 
     def __init__(self,Container,config):
         self.config=config        
-        self.varActionType= tk.StringVar()        
-        self.varCurrentFileName= tk.StringVar()
-        self.varCurrentApplicantType= tk.StringVar() 
-        self.varCurrentTemplateType= tk.StringVar()
-        self.varCurrentCreationDt= tk.StringVar()
-        self.varCurrentModifyDt= tk.StringVar()           
+        self.varTotalDataCount,self.varTotalTemplateCount,self.varCurrentMonthDataCount,self.varTotalPendingDataCount= tk.StringVar() ,tk.StringVar() ,tk.StringVar() ,tk.StringVar() 
+        self.varLastModifyFileName,self.varLastModifyApplicantType,self.varLastModifyTemplateType,self.varLastModifyModifyDt= tk.StringVar() ,tk.StringVar() ,tk.StringVar() ,tk.StringVar() 
         #self.varCurrentData=tk.StringVar()                
         self.ContainerFrame=Container        
         self.LoadAllJsonData()
@@ -53,21 +41,33 @@ class DataReport:
             else:
                 with io.open(os.path.join(self.config.FilePath, self.config.DataFileName)) as fp:
                     self.varAllDataFile = json.load(fp)
-                    
+            if os.path.isfile(os.path.join(self.config.FilePath, self.config.TemplateFileName)) is False:
+                with io.open(os.path.join(self.config.FilePath, self.config.TemplateFileName), 'w') as fp:
+                    print('Empty File Created')
+            else:
+                with io.open(os.path.join(self.config.FilePath, self.config.TemplateFileName)) as fp1:
+                    self.varAllTemplate = json.load(fp1)
+                
+            self.varTotalDataCount.set(len(str(self.varAllDataFile)) ) 
+            self.varTotalTemplateCount.set(str(len(self.varAllTemplate)))
+            self.varTotalPendingDataCount.set("0")
+            LastMonthdate=datetime.strptime( datetime.now().strftime("01-%b-%Y"),"%d-%b-%Y")
+            MaxModifyDate=datetime.strptime( "01-Jan-2000","%d-%b-%Y")
+            currentMonthCounter=0
+            for allData in  self.varAllDataFile:
+                currentDate=datetime.strptime( allData["ModifyDt"],"%d-%b-%Y %H:%M:%S")
+                if(currentDate>=MaxModifyDate):                    
+                    MaxModifyDate=currentDate
+                    self.varLastModifyFileName.set(allData["FileName"])
+                    self.varLastModifyApplicantType.set(allData["ApplicantType"])
+                    self.varLastModifyTemplateType.set(allData["TemplateType"])
+                    self.varLastModifyModifyDt.set(allData["ModifyDt"])
+                if(currentDate>LastMonthdate):
+                    currentMonthCounter=currentMonthCounter+1
+            self.varCurrentMonthDataCount.set(str(currentMonthCounter) )
         except Exception as ex:
             messagebox.showerror("Error", ex)
 
-
-    def BindExistingTreeview(self):        
-        self.clear_all_gridview()        
-        self.LoadAllJsonData()        
-        if(self.varAllDataFile != None):            
-            for actions in self.varAllDataFile:                
-                self.treev.insert("", 'end',values =(actions["FileName"], actions["ApplicantType"],actions["TemplateType"],actions["CreationDt"],actions["ModifyDt"]))
-    
-    def clear_all_gridview(self):
-        for item in self.treev.get_children():
-            self.treev.delete(item)
 
     def fncCreateItems(self):
         self.varActionType.set("Add Template")
@@ -85,15 +85,11 @@ class DataReport:
         self.frmHeader.rowconfigure(0, weight=1)
         self.frmHeader.rowconfigure(1, weight=100)        
         
-        frmbtn1 = ttk.Frame(self.frmHeader,name="frmTreeviewhandler")        
+        frmbtn1 = ttk.Frame(self.frmHeader,name="frmTreeviewhandler1")        
         frmbtn1.grid(row=3,column = 1, columnspan=3, sticky=tk.N+tk.W+tk.E)
-        btnReffreshData = tk.Button ( frmbtn1,name="btnReffreshData", text =fa.icons['sync'], relief='groove', width=3,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command = lambda :self.BindExistingTreeview() )
-        btnUpdateData = tk.Button ( frmbtn1,name="btnUpdateData" ,text =fa.icons['pencil-alt'], relief='groove', width=3, font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda : self.fncOpenChildForm() )        
-        btnRemoveData = tk.Button ( frmbtn1,name="btnRemoveData", text =fa.icons['trash'], relief='groove', width=3, font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda : self.fncRemove() )
-        
+        btnReffreshData = tk.Button ( frmbtn1,name="btnReffreshData", text =fa.icons['sync'], relief='groove', width=3,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command = lambda :self.LoadAllJsonData() )                
         btnReffreshData.grid(row=0,column = 0, padx=(10,0),pady=(3,5))
-        btnUpdateData.grid(row=0,column = 1, padx=(10,0),pady=(3,5))
-        btnRemoveData.grid(row=0,column =2, padx=(10,0),pady=(3,5))        
+        
 
         self.treev = ttk.Treeview(frmBody, selectmode ='browse')
         # Constructing vertical scrollbar

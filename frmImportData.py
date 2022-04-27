@@ -13,7 +13,7 @@ from tkinter.filedialog import askopenfile, askopenfilename
 from tkinter import RAISED, ttk,messagebox
 import GenerateConfig as Gc
 import json
-from datetime import date
+from datetime import datetime
 
 
 
@@ -1152,12 +1152,12 @@ class ImportData:
         if(foundTable):
             Addressee = self.varApplicant1.get() if (
                 Applicantid == 1) else self.varApplicant2.get() if (Applicantid == 2) else ""
-            for ioindex, x in enumerate(self.config.IO_Name_Expenditure):
+            for ioindex, x in enumerate(self.config.IO_Name_Expenditure1):
                 foundItem = False
                 PreviousRowIndex = 0
                 if (not("[M]" in x)):
                     tempData = self.fnc_Read_Vertical_GetRowColumnIndex(
-                        DetailTable, 0, 1, Addressee, self.config.IO_Template_Expenditure[ioindex], 0)
+                        DetailTable, 0, 1, Addressee, self.config.IO_Template_Expenditure1[ioindex], 0)
                     foundItem = tempData["IsFound"]
                     if(foundItem):
                         membercounter=membercounter+1
@@ -1447,17 +1447,16 @@ class ImportData:
                 self.varAllDataFile=[]
 
         varAllDataFileDetails ={}   
-        varAllDataFileDetails.update({"FileName":self.varFileName.get(),"ApplicantType":self.varApplicantType.get(), "TemplateType":self.varTemplateType.get(),"CreationDt": date.now().strftime("%d-%b-%Y %H:%M:%S"),"ModifyDt": date.now().strftime("%d-%b-%Y %H:%M:%S")}) 
+        varAllDataFileDetails.update({"FileName":self.varFileName.get(),"ApplicantType":self.varApplicantType.get(), "TemplateType":self.varTemplateType.get(),"CreationDt": datetime.now().strftime("%d-%b-%Y %H:%M:%S"),"ModifyDt": datetime.now().strftime("%d-%b-%Y %H:%M:%S")}) 
         self.varAllDataFile.append(varAllDataFileDetails)
         
 
         TotalApplicant=1
-        if(self.varApplicantType=="Co Applicant"):
+        if(self.varApplicantType.get()=="Co Applicant"):
             TotalApplicant=2
         AllData=[]
-        for ApplicantId in range(1,TotalApplicant+1):
-            ApplicantData={}
-            ApplicantData
+        for ApplicantId in range(1,TotalApplicant+1):            
+            ApplicantData={}            
             ApplicantData.update({"ApplicantId":ApplicantId})                
             ApplicantData.update({"PersonalDetails":self.fnc_Save_PersonalDetails(ApplicantId)})
             ApplicantData.update({"ContactDetails":self.fnc_Save_ContactDetails(ApplicantId)})
@@ -1500,13 +1499,14 @@ class ImportData:
                 if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmDetailFrame_"+str(ApplicantId))):
                     if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children,"frmPersonalDetailsFrame_"+str(ApplicantId))):
                             frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["frmPersonalDetailsFrame_"+str(ApplicantId)]
-                            controlName,controlVal='',''
+                            controlName,controlVal,HeaderName='','',''
                             for  x in self.config.IO_Name_PersonalDetails: 
-                                controlName,controlVal='',''
+                                controlName,controlVal,HeaderName='','',''
                                 controlName= "txt_PersonalDetails_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                HeaderName=x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                                 if (self.checkKey(frmInnerContentFrame.children,controlName)):
                                     controlVal=frmInnerContentFrame.children[controlName].get()
-                                PersonalDetails.update({controlName:controlVal})                        
+                                PersonalDetails.update({HeaderName:controlVal})                        
         return PersonalDetails
 
     def fnc_Save_ContactDetails(self,ApplicantId):
@@ -1521,13 +1521,14 @@ class ImportData:
                 if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmDetailFrame_"+str(ApplicantId))):
                     if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children,"frmContactDetailFrame_"+str(ApplicantId))):
                             frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["frmContactDetailFrame_"+str(ApplicantId)]
-                            controlName,controlVal='',''
+                            controlName,controlVal,HeaderName='','',''
                             for  x in self.config.IO_Name_ContactDetails: 
-                                controlName,controlVal='',''
+                                controlName,controlVal,HeaderName='','',''
                                 controlName= "txt_ContactDetails_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                HeaderName=x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                                 if (self.checkKey(frmInnerContentFrame.children,controlName)):
                                     controlVal=frmInnerContentFrame.children[controlName].get()
-                                ContactDetails.update({controlName:controlVal})                
+                                ContactDetails.update({HeaderName:controlVal})                
         
         return ContactDetails
 
@@ -1544,13 +1545,14 @@ class ImportData:
                     if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children,"tab_Section_Address_"+str(ApplicantId))):
                         if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["tab_Section_Address_"+str(ApplicantId)].children,"frmCurrentAddressFrame_"+str(ApplicantId))):
                             frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["tab_Section_Address_"+str(ApplicantId)].children["frmCurrentAddressFrame_"+str(ApplicantId)]
-                            controlName,controlVal='',''
+                            controlName,controlVal,HeaderName='','',''
                             for  x in self.config.IO_Name_CurrentAddress: 
-                                controlName,controlVal='',''
+                                controlName,controlVal,HeaderName='','',''
                                 controlName= "txt_CurrentAddress_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                HeaderName=x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                                 if (self.checkKey(frmInnerContentFrame.children,controlName)):
                                     controlVal=frmInnerContentFrame.children[controlName].get()
-                                CurrentAddress.update({controlName:controlVal})                
+                                CurrentAddress.update({HeaderName:controlVal})                
         return CurrentAddress
 
     def fnc_Save_PreviousAddress(self,ApplicantId):
@@ -1575,16 +1577,17 @@ class ImportData:
                     if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children,"tab_Section_Address_"+str(ApplicantId))):
                         if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["tab_Section_Address_"+str(ApplicantId)].children,"frmPreviousAddressFrame_"+str(ApplicantId))):
                             frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["tab_Section_Address_"+str(ApplicantId)].children["frmPreviousAddressFrame_"+str(ApplicantId)]
-                            controlName,controlVal='',''
+                            controlName,controlVal,HeaderName='','',''
                             controlName= "txt_PreviousAddress_"+str(MemberId)+"_"+str(ApplicantId)+"Address Line 1".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                             if not (self.checkKey(frmInnerContentFrame.children,controlName)):
                                 return None
                             for  x in self.config.IO_Name_CurrentAddress: 
-                                controlName,controlVal='',''
+                                controlName,controlVal,HeaderName='','',''
                                 controlName= "txt_PreviousAddress_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                HeaderName=x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                                 if (self.checkKey(frmInnerContentFrame.children,controlName)):
                                     controlVal=frmInnerContentFrame.children[controlName].get()
-                                CurrentAddress.update({controlName:controlVal})                
+                                CurrentAddress.update({HeaderName:controlVal})                
         return CurrentAddress
 
     def fnc_Save_ProfessionalContacts(self,ApplicantId):
@@ -1609,16 +1612,17 @@ class ImportData:
                     if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children,"tab_Section_Address_"+str(ApplicantId))):
                         if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["tab_Section_Address_"+str(ApplicantId)].children,"frmProfessionalContactsFrame_"+str(ApplicantId))):
                             frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["tab_Section_Address_"+str(ApplicantId)].children["frmProfessionalContactsFrame_"+str(ApplicantId)]
-                            controlName,controlVal='',''
+                            controlName,controlVal,HeaderName='','',''
                             controlName= "txt_ProfessionalContacts_"+str(MemberId)+"_"+str(ApplicantId)+"Address Line 1".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                             if not (self.checkKey(frmInnerContentFrame.children,controlName)):
                                 return None
                             for  x in self.config.IO_Name_ProfessionalContacts: 
-                                controlName,controlVal='',''
+                                controlName,controlVal,HeaderName='','',''
                                 controlName= "txt_ProfessionalContacts_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                HeaderName=x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                                 if (self.checkKey(frmInnerContentFrame.children,controlName)):
                                     controlVal=frmInnerContentFrame.children[controlName].get()
-                                ProfessionalContacts.update({controlName:controlVal})                
+                                ProfessionalContacts.update({HeaderName:controlVal})                
         return ProfessionalContacts
 
     def fnc_Save_BankAccount(self,ApplicantId):
@@ -1643,16 +1647,17 @@ class ImportData:
                     if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children,"tab_Section_Address_"+str(ApplicantId))):
                         if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["tab_Section_Address_"+str(ApplicantId)].children,"frmBankDetailFrame_"+str(ApplicantId))):
                             frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmDetailFrame_"+str(ApplicantId)].children["tab_Section_Address_"+str(ApplicantId)].children["frmBankDetailFrame_"+str(ApplicantId)]
-                            controlName,controlVal='',''
+                            controlName,controlVal,HeaderName='','',''
                             controlName= "txt_BankAccountDetails_"+str(MemberId)+"_"+str(ApplicantId)+"Owner".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                             if not (self.checkKey(frmInnerContentFrame.children,controlName)):
                                 return None
                             for  x in self.config.IO_Name_BankAccountDetails: 
-                                controlName,controlVal='',''
+                                controlName,controlVal,HeaderName='','',''
                                 controlName= "txt_BankAccountDetails_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                HeaderName=x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                                 if (self.checkKey(frmInnerContentFrame.children,controlName)):
                                     controlVal=frmInnerContentFrame.children[controlName].get()
-                                BankAccount.update({controlName:controlVal})                
+                                BankAccount.update({HeaderName:controlVal})                
         return BankAccount
 
     def fnc_Save_FamilyAndDependants(self,ApplicantId):
@@ -1676,16 +1681,17 @@ class ImportData:
             if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children,"tab_Section_"+str(ApplicantId))):
                 if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmFamilyAndDependantsrame_"+str(ApplicantId))):
                             frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmFamilyAndDependantsrame_"+str(ApplicantId)]
-                            controlName,controlVal='',''
+                            controlName,controlVal,HeaderName='','',''
                             controlName= "txt_FamilyAndDependants_"+str(MemberId)+"_"+str(ApplicantId)+"Date of Birth".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                             if not (self.checkKey(frmInnerContentFrame.children,controlName)):
                                 return None
                             for  x in self.config.IO_Name_FamilyAndDependants: 
-                                controlName,controlVal='',''
+                                controlName,controlVal,HeaderName='','',''
                                 controlName= "txt_FamilyAndDependants_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                HeaderName=x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                                 if (self.checkKey(frmInnerContentFrame.children,controlName)):
                                     controlVal=frmInnerContentFrame.children[controlName].get()
-                                BankAccount.update({controlName:controlVal})                
+                                BankAccount.update({HeaderName:controlVal})                
         return BankAccount
 
     def fnc_Save_IDVerification(self,ApplicantId):
@@ -1699,13 +1705,14 @@ class ImportData:
             if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children,"tab_Section_"+str(ApplicantId))):
                 if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmIDVerificationFrame_"+str(ApplicantId))):                    
                             frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmIDVerificationFrame_"+str(ApplicantId)]
-                            controlName,controlVal='',''
+                            controlName,controlVal,HeaderName='','',''
                             for  x in self.config.IO_Name_IDVerification: 
-                                controlName,controlVal='',''
+                                controlName,controlVal,HeaderName='','',''
                                 controlName= "txt_IDVerification_1_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                HeaderName=x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                                 if (self.checkKey(frmInnerContentFrame.children,controlName)):
                                     controlVal=frmInnerContentFrame.children[controlName].get()
-                                IDVerification.update({controlName:controlVal})                
+                                IDVerification.update({HeaderName:controlVal})                
         return IDVerification
 
     def fnc_Save_CurrentEmployementDetails(self,ApplicantId):
@@ -1719,13 +1726,14 @@ class ImportData:
             if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children,"tab_Section_"+str(ApplicantId))):
                 if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmCurrentEmployementDetailsFrame_"+str(ApplicantId))):                    
                             frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmCurrentEmployementDetailsFrame_"+str(ApplicantId)]
-                            controlName,controlVal='',''
+                            controlName,controlVal,HeaderName='','',''
                             for  x in self.config.IO_Name_CurrentEmploymentDetails: 
-                                controlName,controlVal='',''
+                                controlName,controlVal,HeaderName='','',''
                                 controlName= "txt_CurrentEmploymentDetails_1_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                HeaderName=x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                                 if (self.checkKey(frmInnerContentFrame.children,controlName)):
                                     controlVal=frmInnerContentFrame.children[controlName].get()
-                                CurrentEmployementDetails.update({controlName:controlVal})                
+                                CurrentEmployementDetails.update({HeaderName:controlVal})                
         return CurrentEmployementDetails
 
     def fnc_Save_Assets(self,ApplicantId):
@@ -1749,16 +1757,18 @@ class ImportData:
                 if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmAssetsLiabilitiesFrame_"+str(ApplicantId))):
                     if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmAssetsLiabilitiesFrame_"+str(ApplicantId)].children,"frmAssetsFrame_"+str(ApplicantId))):
                             frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmAssetsLiabilitiesFrame_"+str(ApplicantId)].children["frmAssetsFrame_"+str(ApplicantId)]
-                            controlName,controlVal='',''
+                            controlName,controlVal,HeaderName='','',''
                             controlName= "txt_Assets_"+str(MemberId)+"_"+str(ApplicantId)+"Category".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                            
                             if not (self.checkKey(frmInnerContentFrame.children,controlName)):
                                 return None
                             for  x in self.config.IO_Name_Assets: 
-                                controlName,controlVal='',''
+                                controlName,controlVal,HeaderName='','',''
                                 controlName= "txt_Assets_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                HeaderName=x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                                 if (self.checkKey(frmInnerContentFrame.children,controlName)):
                                     controlVal=frmInnerContentFrame.children[controlName].get()
-                                AssetDetails.update({controlName:controlVal})                
+                                AssetDetails.update({HeaderName:controlVal})                
         return AssetDetails
 
     def fnc_Save_Liabilities(self,ApplicantId):
@@ -1782,16 +1792,17 @@ class ImportData:
                 if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmAssetsLiabilitiesFrame_"+str(ApplicantId))):
                     if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmAssetsLiabilitiesFrame_"+str(ApplicantId)].children,"frmLiabilitiesFrame_"+str(ApplicantId))):
                             frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmAssetsLiabilitiesFrame_"+str(ApplicantId)].children["frmLiabilitiesFrame_"+str(ApplicantId)]
-                            controlName,controlVal='',''
+                            controlName,controlVal,HeaderName='','',''
                             controlName= "txt_Liabilities_"+str(MemberId)+"_"+str(ApplicantId)+"Owner".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                             if not (self.checkKey(frmInnerContentFrame.children,controlName)):
                                 return None
                             for  x in self.config.IO_Name_Liabilities: 
-                                controlName,controlVal='',''
+                                controlName,controlVal,HeaderName='','',''
                                 controlName= "txt_Liabilities_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                HeaderName=x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                                 if (self.checkKey(frmInnerContentFrame.children,controlName)):
                                     controlVal=frmInnerContentFrame.children[controlName].get()
-                                LiabilitieDetails.update({controlName:controlVal})                
+                                LiabilitieDetails.update({HeaderName:controlVal})                
         return LiabilitieDetails
 
     def fnc_Save_Expenditure(self,ApplicantId):
@@ -1815,16 +1826,19 @@ class ImportData:
                 if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmAssetsLiabilitiesFrame_"+str(ApplicantId))):
                     if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmAssetsLiabilitiesFrame_"+str(ApplicantId)].children,"frmExpenditureFrame_"+str(ApplicantId))):
                             frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmAssetsLiabilitiesFrame_"+str(ApplicantId)].children["frmExpenditureFrame_"+str(ApplicantId)]
-                            controlName,controlVal='',''
-                            controlName= "txt_Expenditure_"+str(MemberId)+"_"+str(ApplicantId)+"Category".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                            controlName,controlVal,HeaderName='','',''
+                            controlName= "txt_Expenditure_"+str(MemberId)+"_"+str(ApplicantId)+"Owner".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                             if not (self.checkKey(frmInnerContentFrame.children,controlName)):
                                 return None
+                            elif(ApplicantId>1 and frmInnerContentFrame.children[controlName].get()=="Joint"):
+                                return None
                             for  x in self.config.IO_Name_Expenditure: 
-                                controlName,controlVal='',''
+                                controlName,controlVal,HeaderName='','',''
                                 controlName= "txt_Expenditure_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                HeaderName=x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                                 if (self.checkKey(frmInnerContentFrame.children,controlName)):
                                     controlVal=frmInnerContentFrame.children[controlName].get()
-                                ExpenditureDetails.update({controlName:controlVal})                
+                                ExpenditureDetails.update({HeaderName:controlVal})                
         return ExpenditureDetails
 
     def fnc_Save_ExistingMortgage(self,ApplicantId):
@@ -1848,16 +1862,17 @@ class ImportData:
                 if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmMortgageFrame_"+str(ApplicantId))):
                     if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmMortgageFrame_"+str(ApplicantId)].children,"frmExistingMortgageFrame_"+str(ApplicantId))):
                             frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmMortgageFrame_"+str(ApplicantId)].children["frmExistingMortgageFrame_"+str(ApplicantId)]
-                            controlName,controlVal='',''
+                            controlName,controlVal,HeaderName='','',''
                             controlName= "txt_ExistingMortgage_"+str(MemberId)+"_"+str(ApplicantId)+"Owner".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                             if not (self.checkKey(frmInnerContentFrame.children,controlName)):
                                 return None
                             for  x in self.config.IO_Name_ExistingMortgage: 
-                                controlName,controlVal='',''
+                                controlName,controlVal,HeaderName='','',''
                                 controlName= "txt_ExistingMortgage_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                HeaderName=x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                                 if (self.checkKey(frmInnerContentFrame.children,controlName)):
                                     controlVal=frmInnerContentFrame.children[controlName].get()
-                                ExpenditureDetails.update({controlName:controlVal})                
+                                ExpenditureDetails.update({HeaderName:controlVal})                
         return ExpenditureDetails
 
     def fnc_Save_MortgageRequirements(self,ApplicantId):
@@ -1881,16 +1896,18 @@ class ImportData:
                 if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmMortgageFrame_"+str(ApplicantId))):
                     if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmMortgageFrame_"+str(ApplicantId)].children,"frmMortgageRequirementsFrame_"+str(ApplicantId))):
                             frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmMortgageFrame_"+str(ApplicantId)].children["frmMortgageRequirementsFrame_"+str(ApplicantId)]
-                            controlName,controlVal='',''
+                            controlName,controlVal,HeaderName='','',''
                             controlName= "txt_MortgageRequirements_"+str(MemberId)+"_"+str(ApplicantId)+"Owner".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                            
                             if not (self.checkKey(frmInnerContentFrame.children,controlName)):
                                 return None
                             for  x in self.config.IO_Name_MortgageRequirements: 
-                                controlName,controlVal='',''
+                                controlName,controlVal,HeaderName='','',''
                                 controlName= "txt_MortgageRequirements_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
+                                HeaderName=x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                                 if (self.checkKey(frmInnerContentFrame.children,controlName)):
                                     controlVal=frmInnerContentFrame.children[controlName].get()
-                                ExpenditureDetails.update({controlName:controlVal})                
+                                ExpenditureDetails.update({HeaderName:controlVal})                
         return ExpenditureDetails
 
 

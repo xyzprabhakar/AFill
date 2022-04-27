@@ -54,28 +54,6 @@
                 "txt_PreviousAddress_2_1Postcode": "W4 2TW",
                 "txt_PreviousAddress_2_1Residency_Status": "Tenant - private",
                 "txt_PreviousAddress_2_1Date_From": "01/01/2018"
-            },
-            {
-                "txt_PreviousAddress_3_1Address_Line_1": "85",
-                "txt_PreviousAddress_3_1Address_Line_2": "Oxford Street",
-                "txt_PreviousAddress_3_1Address_Line_3": "",
-                "txt_PreviousAddress_3_1Address_Line_4": "",
-                "txt_PreviousAddress_3_1City": "London",
-                "txt_PreviousAddress_3_1Country": "United Kingdom",
-                "txt_PreviousAddress_3_1Postcode": "OX1 8HY",
-                "txt_PreviousAddress_3_1Residency_Status": "Tenant - private",
-                "txt_PreviousAddress_3_1Date_From": "01/07/2017"
-            },
-            {
-                "txt_PreviousAddress_4_1Address_Line_1": "17",
-                "txt_PreviousAddress_4_1Address_Line_2": "Harrison Road",
-                "txt_PreviousAddress_4_1Address_Line_3": "",
-                "txt_PreviousAddress_4_1Address_Line_4": "",
-                "txt_PreviousAddress_4_1City": "Feltham",
-                "txt_PreviousAddress_4_1Country": "United Kingdom",
-                "txt_PreviousAddress_4_1Postcode": "FN8 3UH",
-                "txt_PreviousAddress_4_1Residency_Status": "Tenant - private",
-                "txt_PreviousAddress_4_1Date_From": "01/01/2017"
             }
         ],
         "ProfessionalContacts": [
@@ -128,7 +106,7 @@
                 "txt_BankAccountDetails_1_1Sort_Code": "400300"
             },
             {
-                "txt_BankAccountDetails_2_1Owner": "Pankaj Aggarwal",
+                "txt_BankAccountDetails_2_1Owner": "Pankaj Aggarwal.1",
                 "txt_BankAccountDetails_2_1Bank_Name": "HSBC",
                 "txt_BankAccountDetails_2_1Account_Holder": "Pankaj Aggarwal",
                 "txt_BankAccountDetails_2_1Account_Number": "00290777",
@@ -137,7 +115,7 @@
             {
                 "txt_BankAccountDetails_3_1Owner": "Joint",
                 "txt_BankAccountDetails_3_1Bank_Name": "Bacrlays",
-                "txt_BankAccountDetails_3_1Account_Holder": "Pankaj Aggarwal and Nidhi Pankaj\rAggarwal",
+                "txt_BankAccountDetails_3_1Account_Holder": "Pankaj Aggarwal and Nidhi Pankaj",
                 "txt_BankAccountDetails_3_1Account_Number": "77558922",
                 "txt_BankAccountDetails_3_1Sort_Code": "204578"
             }
