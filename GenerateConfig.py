@@ -37,8 +37,17 @@ class GenerateConfig:
             self.customStyle.configure('Separator.TFrame', background = '#44a2d2')
             self.customStyle.configure('NormalSeparator.TFrame', background = '#343a40')
             self.customStyle.configure('Topframe.TFrame', background = '#44a2d2')
+            self.customStyle.configure('Dashboard1.TFrame', background = '#ffe763')
+            self.customStyle.configure('Dashboard2.TFrame', background = '#e3b2ac')
+            self.customStyle.configure('Dashboard3.TFrame', background = '#b9e3ac')
+            self.customStyle.configure('Dashboard4.TFrame', background = '#acdce3')
             self.customStyle.configure('TEntry', background = '#f2f5f7',font=("Verdana",10))
             self.customStyle.configure('Toplable.TLabel', background = '#44a2d2',font=("Verdana",15,'bold'),foreground="#ffffff")
+            self.customStyle.configure('Dashboard1.TLabel',background = '#ffe763', font=("Verdana",12,'bold'))
+            self.customStyle.configure('Dashboard2.TLabel',background = '#e3b2ac', font=("Verdana",12,'bold'))
+            self.customStyle.configure('Dashboard3.TLabel',background = '#b9e3ac', font=("Verdana",12,'bold'))
+            self.customStyle.configure('Dashboard4.TLabel',background = '#acdce3', font=("Verdana",12,'bold'))
+
             self.customStyle.configure('H1.TLabel', background = '#ffffff',font=("Verdana",12,'bold'))
             self.customStyle.configure('Menu.TRadiobutton',indicator=0, background = '#ffffff',font=("Verdana",10,'bold'),foreground="#343a40",selectcolor="#f2f5f7")
         else :

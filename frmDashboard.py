@@ -85,11 +85,31 @@ class Dashboard:
         self.frmHeader.rowconfigure(0, weight=1)
         self.frmHeader.rowconfigure(1, weight=100)        
         
-        frmbtn1 = ttk.Frame(self.frmHeader,name="frmTreeviewhandler1")        
+        frmbtn1 = ttk.Frame(self.frmHeader,name="frmTreeviewhandler1",style="Dashboard1.TFrame")        
         frmbtn1.grid(row=3,column = 1, columnspan=3, sticky=tk.N+tk.W+tk.E)
         btnReffreshData = tk.Button ( frmbtn1,name="btnReffreshData", text =fa.icons['sync'], relief='groove', width=3,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command = lambda :self.LoadAllJsonData() )                
         btnReffreshData.grid(row=0,column = 0, padx=(10,0),pady=(3,5))
         
+        frmBody.columnconfigure(0, weight=1)
+        frmBody.columnconfigure(1, weight=1)        
+        frmBody.rowconfigure(0, weight=1)
+        frmBody.rowconfigure(1, weight=1)
+        frmBody.rowconfigure(2, weight=1)
+        frmBody.rowconfigure(3, weight=1)        
+        
+        frmPanel1=ttk.Frame(frmBody,style="Dashboard1.TFrame")
+        frmPanel2=ttk.Frame(frmBody,style="Dashboard2.TFrame")
+        frmPanel3=ttk.Frame(frmBody,style="Dashboard3.TFrame")
+        frmPanel4=ttk.Frame(frmBody,style="Dashboard4.TFrame")
+        frmPanel5=ttk.Frame(frmBody)
+        frmPanel1.grid(row=0,column = 0, padx=(25,25),pady=(25,25),sticky=tk.N+tk.W)
+        frmPanel2.grid(row=0,column = 1, padx=(25,25),pady=(25,25))
+        frmPanel3.grid(row=1,column = 0, padx=(25,25),pady=(25,25))
+        frmPanel4.grid(row=1,column = 1, padx=(25,25),pady=(25,25))
+        frmPanel5.grid(row=2,column = 0,columnspan=2, padx=(25,25),pady=(25,25))
+        lblLabel1=ttk.Frame(frmPanel1,style="Dashboard1.TFrame")
+
+
 
         self.treev = ttk.Treeview(frmBody, selectmode ='browse')
         # Constructing vertical scrollbar
@@ -168,8 +188,7 @@ class Dashboard:
         chdFrm=ttk.Frame(containter)        
         chdFrm.pack(expand=tk.TRUE,fill=tk.BOTH)
         chdFrm.columnconfigure(0, weight=1)
-        chdFrm.columnconfigure(1, weight=1)
-        chdFrm.columnconfigure(2, weight=100)
+        chdFrm.columnconfigure(1, weight=1)        
         chdFrm.rowconfigure(0, weight=1)
         chdFrm.rowconfigure(1, weight=1)
         chdFrm.rowconfigure(2, weight=1)
@@ -183,7 +202,7 @@ class Dashboard:
         ttk.Entry(chdFrm, width = 26, textvariable = self.varCurrentTemplateType,state=tk.DISABLED).grid(row=2,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
         ttk.Label(chdFrm,text = "Data :",).grid(row=3,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)        
         ttk.Button (chdFrm, text ="Save", width=10, command =lambda: self.fncAddAction(chdFrm)).grid(row=3,column = 1 , padx=(10,0),pady=(3,5),sticky=tk.N+tk.W)
-        txtData=tk.Text(chdFrm, name="txtData")        
+        txtData=tk.Text(chdFrm, name="txtData")
         txtData.grid(row=4,column = 0,columnspan=3 ,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W+tk.E)
         txtData.insert(tk.END, self.varCurrentData)
         chdFrm.grab_set()
