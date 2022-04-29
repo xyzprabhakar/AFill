@@ -1581,7 +1581,7 @@ class ImportData:
                             controlName= "txt_PreviousAddress_"+str(MemberId)+"_"+str(ApplicantId)+"Address Line 1".strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                             if not (self.checkKey(frmInnerContentFrame.children,controlName)):
                                 return None
-                            for  x in self.config.IO_Name_CurrentAddress: 
+                            for  x in self.config.IO_Name_PreviousAddress: 
                                 controlName,controlVal,HeaderName='','',''
                                 controlName= "txt_PreviousAddress_"+str(MemberId)+"_"+str(ApplicantId)+x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                                 HeaderName=x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')

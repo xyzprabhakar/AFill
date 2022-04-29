@@ -7,6 +7,7 @@ import GenerateConfig as Gc
 import frmImportData as ImpData
 import frmAddTemplate as AddTmp
 import frmDataReport as DataReport
+import frmDashboard as Dash
 
 
 class AutoFill(tk.Frame):
@@ -49,6 +50,7 @@ class AutoFill(tk.Frame):
         #self.isapp = isapp                        
         #self.varMenu =tk.StringVar()
         self._create_Frame()
+        self._create_inner_content()
     
     def _create_Frame(self):
         self.columnconfigure(0, weight=1)
@@ -144,8 +146,12 @@ class AutoFill(tk.Frame):
             self.frmReport.pack_forget()
 
         if(self.varMenu.get()=="Dashboard"):            
-            print ("hello")
-            #self.frmLeftFrame.children["rdoDashBoard"].config(fg=self.config.COLOR_MENU_FOREGROUND)
+            if(self.frmDashBoard==None):
+                self.frmDashBoard=ttk.Frame(self.frmInnerDisplayContentFrame)
+                self.frmDashBoard.pack(fill=tk.BOTH,expand=tk.TRUE)
+                Dash.Dashboard(self.frmDashBoard,self.config)
+            else:
+                self.frmDashBoard.pack(fill=tk.BOTH,expand=tk.TRUE)
         elif(self.varMenu.get()=="Import Data"):
             if(self.frmImportData==None):
                 self.frmImportData=ttk.Frame(self.frmInnerDisplayContentFrame)
