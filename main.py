@@ -8,18 +8,16 @@ import frmImportData as ImpData
 import frmAddTemplate as AddTmp
 import frmDataReport as DataReport
 import frmDashboard as Dash
+import frmFillData as FillData
+
 
 
 class AutoFill(tk.Frame):
     config=None
     icon =None
     varMenu=None
-    frmDashBoard=None
-    frmTemplate=None
-    frmDataTemplate=None
-    frmImportData=None
-    frmReport=None
-    frmSetting=None
+    frmDashBoard,frmTemplate,frmFillData,frmImportData,frmReport,frmReport,frmSetting,frmChangePassword=None,None,None,None,None,None,None,None    
+    
     frmChangePassword=None
     #Left Menu Items
     MenuItems=[{"name":"rdoDashBoard", "text":"Dashboard","icon":"images\icons\cil-moon.png", "ficon":fa.icons['palette']},
@@ -140,6 +138,8 @@ class AutoFill(tk.Frame):
             self.frmTemplate.pack_forget()        
         if(self.frmDashBoard!=None):
             self.frmDashBoard.pack_forget()
+        if(self.frmFillData!=None):
+            self.frmFillData.pack_forget()
         if(self.frmImportData!=None):
             self.frmImportData.pack_forget()
         if(self.frmReport!=None):
@@ -159,6 +159,13 @@ class AutoFill(tk.Frame):
                 ImpData.ImportData(self.frmImportData,self.config)
             else:
                 self.frmImportData.pack(fill=tk.BOTH,expand=tk.TRUE)
+        elif(self.varMenu.get()=="Fill Data"):
+            if(self.frmFillData==None):
+                self.frmFillData=ttk.Frame(self.frmInnerDisplayContentFrame)
+                self.frmFillData.pack(fill=tk.BOTH,expand=tk.TRUE)
+                FillData.FillData(self.frmFillData,self.config)
+            else:
+                self.frmFillData.pack(fill=tk.BOTH,expand=tk.TRUE)
         elif(self.varMenu.get()=="Template"):
             if(self.frmTemplate==None):
                 self.frmTemplate=ttk.Frame(self.frmInnerDisplayContentFrame)

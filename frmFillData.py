@@ -1,6 +1,6 @@
 import fontawesome as fa
 from multiprocessing.sharedctypes import Value
-from tkinter import font
+from tkinter import TOP, font
 #import PyPDF2 as pdf
 #from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 #from pdfminer.converter import TextConverter
@@ -16,7 +16,7 @@ import tabula
 import io
 import tkinter as tk
 from tkinter.filedialog import askopenfile, askopenfilename
-from tkinter import ttk
+from tkinter import ttk,messagebox
 import GenerateConfig as Gc
 import json
 
@@ -30,11 +30,11 @@ from selenium.webdriver.support.ui import Select
 
 class FillData(ttk.Frame):
     config=None
-    ContainerFrame=None  
-    varCurrentTemplate,varCurrentDataFileName  = None,None
+    frm_Applicant1Canvas,ContainerFrame=None ,None 
+    varCurrentTemplateName,varCurrentDataFileName  = None,None
     varAllTemlateName,varAllTemlate,varAllJsonData,varAllJsonFileName=[],[],[],[]       
     frmLeftPanel,frmRightPanel,ddlTemplateName,ddlFileName=None,None,None,None
-    varCurrentData=None
+    varCurrentData,varCurrentTemplateData=None,None
     driver=None
 
 
@@ -42,7 +42,7 @@ class FillData(ttk.Frame):
         self.config=config   
         self.ContainerFrame=Container
         self.displayFont = ( "Verdana", 10)       
-        self.varCurrentTemplate,self.varCurrentDataFileName = tk.StringVar(), tk.StringVar()        
+        self.varCurrentTemplateName,self.varCurrentDataFileName = tk.StringVar(), tk.StringVar()        
         self.LoadAllJsonData()
         self.fncCreateItems()        
     
@@ -68,7 +68,8 @@ class FillData(ttk.Frame):
                 self.varAllTemlateName.clear()
                 for x in self.varAllTemlate:
                     self.varAllTemlateName.append(x["templateName"])
-        self.AppendDataToDropDown()        
+        self.AppendDataToDropDown()    
+           
     
     def AppendDataToDropDown(self):
         if(self.ddlFileName != None):
@@ -81,18 +82,81 @@ class FillData(ttk.Frame):
                     self.ddlTemplateName['values'] = (*self.ddlTemplateName['values'], x)
     
     def load_data(self):
-        self.varCurrentData=self.varAllJsonData[0]
-        self.varCurrentTemplate=self.varAllTemlate[0]
+        self.clear_frame(self.frmInnerContentFrame1)
+        if(self.varCurrentDataFileName.get()==""):
+            messagebox.showerror("Required", "Please select filename")
+            return
+        if(self.varCurrentTemplateName.get()==""):
+            messagebox.showerror("Required", "Please select template")
+            return
+        if(len(self.varAllTemlate)==0):
+            messagebox.showerror("Required", "could not find any template")
+            return
+        FoundTemplateName=False
+        for templ in  self.varAllTemlate:            
+            if templ["templateName"]==self.varCurrentTemplateName.get():
+                FoundTemplateName=True
+                self.varCurrentTemplateData=templ
+        if(not FoundTemplateName):
+            messagebox.showerror("Required", "Invalid template name")
+            return
+        
+        self.frm_Applicant1Canvas = tk.Canvas(self.frmInnerContentFrame1, bg=self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge',width=200)
+        scrollbar_y = ttk.Scrollbar(self.frmInnerContentFrame1, orient=tk.VERTICAL, command=self.frm_Applicant1Canvas.yview)        
+        scrollbar_y.pack(side=tk.RIGHT, fill="y")        
+        self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
+        self.frm_Applicant1 = ttk.Frame(self.frm_Applicant1Canvas)            
+
+        if not os.path.exists(self.config.FilePath):
+            os.makedirs(self.config.FilePath)
+        if os.path.isfile(os.path.join(self.config.FilePath, self.varCurrentDataFileName.get()+".json")) is False:
+            with io.open(os.path.join(self.config.FilePath, self.varCurrentDataFileName.get()+".json"), 'w') as fp:
+                print('Empty File Created')
+        else:
+            with io.open(os.path.join(self.config.FilePath, self.varCurrentDataFileName.get()+".json")) as fp:
+                self.varCurrentData=None
+                self.varCurrentData = json.load(fp)   
+                self.txtData.delete('1.0', tk.END)    
+                self.txtData.insert(tk.END,self.varCurrentData)
+        gridcounter=0
+        if (self.checkKey(self.varCurrentTemplateData,"sections")):
+            for sect in self.varCurrentTemplateData["sections"]:
+                
+                datacounter=0
+                if (self.checkKey(sect,"isMultiple")):
+                    if( bool(sect["isMultiple"])):
+                        if (self.checkKey(sect,"sectionCounter")):
+                           sectioncounter =sect["sectionCounter"]
+                           for ApplicantId,ApplicantData in enumerate(self.varCurrentData) :
+                               if(ApplicantId==0):
+                                   if (self.checkKey(ApplicantData,sectioncounter)):
+                                       datacounter=len(ApplicantData[sectioncounter]) 
+                                       for i in range(0,datacounter):
+                                           ttk.Button (self.frm_Applicant1, text =sect["sectionName"]+ " "+str(i+1) , command =lambda: self.fill_data(sect["sectionName"])).grid(row=gridcounter,column=0,pady=(8,3),padx=(10,10),sticky=tk.E+tk.W )
+                                           gridcounter=gridcounter+1
+
+                else:                    
+                    ttk.Button (self.frm_Applicant1, text =sect["sectionName"] ,  command =lambda: self.fill_data(sect["sectionName"])).grid(row=gridcounter,column=0,sticky=tk.E+tk.W ,pady=(8,3),padx=(10,10))
+                    gridcounter=gridcounter+1
+
+
+        self.frm_Applicant1Canvas.create_window((0, 0), window=self.frm_Applicant1, anchor='nw')
+        self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
+        self.frm_Applicant1Canvas.configure(yscrollcommand=scrollbar_y)
+
+        self.frm_Applicant1Canvas.bind("<Configure>",  lambda e: self.frm_Applicant1Canvas.configure(scrollregion=self.frm_Applicant1Canvas.bbox("all")))
+        self.frm_Applicant1Canvas.bind_all("<MouseWheel>",   lambda e: self.OnMouseWheel1(e))
+        
         #print(self.varCurrentData)
-        self.children["txtApplicantData"].delete('1.0', tk.END)
-        self.children["txtApplicantData"].insert('1.0', str(self.varCurrentData) )
+        # self.children["txtApplicantData"].delete('1.0', tk.END)
+        # self.children["txtApplicantData"].insert('1.0', str(self.varCurrentData) )
 
     
     def fill_data(self):
         timeout=30
         if(self.driver is None):
             self.driver = webdriver.Firefox()
-            self.driver.get(self.varCurrentTemplate["url"])
+            self.driver.get(self.varCurrentTemplateData["url"])
         
         element=None        
         controlId=None
@@ -102,7 +166,7 @@ class FillData(ttk.Frame):
         finalValue=None
         actionOn=None
         # get google.co.in
-        for action in self.varCurrentTemplate["actions"]:            
+        for action in self.varCurrentTemplateData["actions"]:            
             element=None
             actiontype=action["action_type"]
             IoName=action["io_name"]
@@ -182,9 +246,20 @@ class FillData(ttk.Frame):
             #self.driver.quit()
 
     def Open_Browser(self):
+        if(self.varCurrentTemplateName.get()==""):
+            messagebox.showerror("Required", "Please select template")
+            return
+        FoundTemplateName=False
+        for templ in  self.varAllTemlate:            
+            if templ["templateName"]==self.varCurrentTemplateName.get():
+                FoundTemplateName=True
+                self.varCurrentTemplateData=templ
+        if(not FoundTemplateName):
+            messagebox.showerror("Required", "Invalid template name")
+            return
         if(self.driver is None):
             self.driver = webdriver.Firefox()
-            self.driver.get(self.varCurrentTemplate["url"])
+            self.driver.get(self.varCurrentTemplateData["url"])
         
         
 
@@ -211,33 +286,49 @@ class FillData(ttk.Frame):
 
         
     
+    def OnMouseWheel1(self, event):        
+            self.frm_Applicant1Canvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
+    def clear_frame(self, frame):
+        for widgets in frame.winfo_children():
+            widgets.destroy()
+
+
+    def checkKey(self,dict, key):      
+        if key in dict.keys():
+            return True
+        else:
+            return False
+    
 
     def fncCreateItems(self):
-        self.frmHeader = ttk.Frame(self.ContainerFrame)        
-        frmBody = ttk.Frame(self.ContainerFrame)
+        frmHeader,frmBody  = ttk.Frame(self.ContainerFrame) ,ttk.Frame(self.ContainerFrame)        
         self.ContainerFrame.grid_columnconfigure(0, weight=100)
         self.ContainerFrame.grid_rowconfigure(0, weight=1)
         self.ContainerFrame.grid_rowconfigure(1, weight=100)
 
-        self.frmHeader.grid(row=0,column = 0, sticky=tk.N+tk.S+tk.W+tk.E)
+        frmHeader.grid(row=0,column = 0, sticky=tk.N+tk.S+tk.W+tk.E)
         frmBody.grid(row=1,column = 0,  sticky=tk.N+tk.S+tk.W+tk.E)
 
-        self.frmHeader.columnconfigure(0, weight=100)                
-        self.frmHeader.rowconfigure(0, weight=1)
-        self.frmHeader.rowconfigure(1, weight=100)        
-        
-        frmbtn1 = ttk.Frame(self.frmHeader,name="frmTreeviewhandler2")        
-        frmbtn1.grid(row=3,column = 1, columnspan=3, sticky=tk.N+tk.W+tk.E)
-        btnReffreshData = tk.Button ( frmbtn1,name="btnReffreshData", text =fa.icons['sync'], relief='groove', width=3,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command = lambda :self.LoadAllJsonData() )                
+        frmHeader.columnconfigure(0, weight=100)                
+        frmHeader.rowconfigure(0, weight=1)        
+        frmbtn1 = ttk.Frame(frmHeader)        
+        frmbtn1.grid(row=0,column = 1, columnspan=3, sticky=tk.N+tk.W+tk.E)
+        btnReffreshData = tk.Button ( frmbtn1,name="btnReffreshData", text =fa.icons['sync'], relief='groove', width=3,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command = lambda :self.LoadAllJsonData() )
         btnReffreshData.grid(row=0,column = 0, padx=(10,0),pady=(3,5))
+        
         
         frmBody.columnconfigure(0, weight=1)
         frmBody.columnconfigure(1, weight=100)  
         frmBody.rowconfigure(0, weight=100)  
         self.frmLeftPanel,self.frmRightPanel= ttk.Frame(frmBody,width=300),ttk.Frame(frmBody)
-        self.frmLeftPanel.grid(row=0,column=0,sticky=tk.N+tk.S+tk.W+tk.E)
-        self.frmRightPanel.grid(row=0,column=0,sticky=tk.N+tk.S+tk.W+tk.E)
+        
+        self.frmLeftPanel.grid(row=0,column=0,sticky=tk.N+tk.S+tk.W+tk.E,padx=(10,10))
+        self.frmRightPanel.grid(row=0,column=1,sticky=tk.N+tk.S+tk.W+tk.E,padx=(10,10))
+        self.txtData= tk.Text(self.frmRightPanel, name="txtData")
+        self.txtData.grid(row=0,column = 0,columnspan=3 ,padx=(0, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W+tk.E)
+
+        
         self.frmLeftPanel.columnconfigure(0, weight=1)
         self.frmLeftPanel.columnconfigure(1, weight=100)
         self.frmLeftPanel.rowconfigure(0, weight=1)
@@ -246,23 +337,29 @@ class FillData(ttk.Frame):
         self.frmLeftPanel.rowconfigure(3, weight=1)
         self.frmLeftPanel.rowconfigure(4, weight=1)
         self.frmLeftPanel.rowconfigure(5, weight=1)        
-        self.frmLeftPanel.rowconfigure(6, weight=100)        
-        ttk.Label(self.frmLeftPanel,text="Template").grid(row=0,column=0,sticky=tk.N+tk.S+tk.E)
-        ttk.Combobox(self.frmLeftPanel,textvariable = self.varCurrentTemplate,values=self.varAllTemlateName).grid(row=0,column=1,sticky=tk.N+tk.S+tk.W)
-        ttk.Label(self.frmLeftPanel,text="File Name").grid(row=1,column=0,sticky=tk.N+tk.S+tk.E)
-        ttk.Combobox(self.frmLeftPanel,textvariable = self.varCurrentTemplate,values=self.varAllTemlateName).grid(row=1,column=1,sticky=tk.N+tk.S+tk.W)
-        ttk.Button ( self.frmLeftPanel, text ="Open Browser", width=20, command =lambda: self.Open_Browser()).grid(row=2,column = 0 , sticky=tk.N+tk.W)
-        ttk.Button ( self.frmLeftPanel, text ="Load Data", width=20, command =lambda: self.load_data()).grid(row=2,column = 1 , sticky=tk.N+tk.W)
+        self.frmLeftPanel.rowconfigure(6, weight=100)
+
+        ttk.Label(self.frmLeftPanel,text="Template").grid(row=0,column=0,sticky=tk.N+tk.S+tk.W,pady=(10,3),padx=(10,10))
+        self.ddlTemplateName=ttk.Combobox(self.frmLeftPanel,textvariable = self.varCurrentTemplateName,values=self.varAllTemlateName,width=26)
+        self.ddlTemplateName.grid(row=0,column=1,sticky=tk.N+tk.S+tk.W,pady=(10,3))
+        ttk.Label(self.frmLeftPanel,text="File Name").grid(row=1,column=0,sticky=tk.N+tk.S+tk.W,pady=(10,3),padx=(10,10))
+        self.ddlFileName=ttk.Combobox(self.frmLeftPanel,textvariable = self.varCurrentDataFileName,values=self.varAllJsonFileName,width=26)
+        self.ddlFileName.grid(row=1,column=1,sticky=tk.N+tk.S+tk.W,pady=(10,3))
+        
+
+        self.frmInnerContentFrame1 = ttk.Frame(self.frmLeftPanel)
+        self.frmInnerContentFrame1.grid(row=6, column=0,columnspan=2, sticky=tk.E+tk.W+tk.N+tk.S)  
+        frmbtn2 = ttk.Frame(self.frmLeftPanel)        
+        frmbtn2.grid(row=2,column = 0,columnspan=2,pady=(10,3),padx=(10,10) )
+        ttk.Button (frmbtn2, text ="Open Browser", width=12, command =lambda: self.Open_Browser()).grid(row=0,column = 0,padx=(5,5) )
+        ttk.Button ( frmbtn2, text ="Load Data", width=12, command =lambda: self.load_data()).grid(row=0,column = 1 ,padx=(5,5))
+
         ttk.Frame(self.frmLeftPanel, height=10).grid(row=3, column=0,columnspan=2, sticky=tk.E+tk.W)
         ttk.Frame(self.frmLeftPanel, style="Separator.TFrame", height=1).grid(row=4, column=0,columnspan=2, sticky=tk.E+tk.W)
         ttk.Frame(self.frmLeftPanel, height=10).grid(row=5, column=0,columnspan=2, sticky=tk.E+tk.W)
-        frmInnerContentFrame1 = ttk.Frame(self.frmLeftPanel)
-        frmInnerContentFrame1.grid(row=6, column=0,columnspan=2, sticky=tk.E+tk.W+tk.N+tk.S)        
-        # scrollbar_y = ttk.Scrollbar(frmInnerContentFrame1, orient=tk.VERTICAL, command=self.frm_Applicant1Canvas.yview)
-        #     scrollbar_x_Applicant1 = ttk.Scrollbar(self.frm_Applicant1Parent, orient=tk.HORIZONTAL, command=self.frm_Applicant1Canvas.xview)
-        #     scrollbar_y_Applicant1.pack(side=tk.RIGHT, fill="y")
-        #     scrollbar_x_Applicant1.pack(side=tk.BOTTOM, fill="x")
-        #     self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
+              
+        
+        
 
 
 
@@ -317,7 +414,7 @@ if __name__ == '__main__':
     myframe=tk.Frame(root,relief=tk.GROOVE,width=500,height=600,bd=1)
     myframe.pack( fill="both" ,expand=tk.TRUE ,anchor=tk.N+tk.W)   
     FillData(myframe,config)
-    root.eval('tk::PlaceWindow . center')
+    #root.eval('tk::PlaceWindow . center')
     root.mainloop()
 
         

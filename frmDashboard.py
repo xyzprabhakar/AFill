@@ -68,7 +68,12 @@ class Dashboard:
         except Exception as ex:
             messagebox.showerror("Error", ex)
 
-
+    def checkKey(self,dict, key):      
+        if key in dict.keys():
+            return True
+        else:
+            return False
+            
     def fncCreateItems(self):              
         self.frmHeader = ttk.Frame(self.ContainerFrame)        
         frmBody = ttk.Frame(self.ContainerFrame)

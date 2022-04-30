@@ -1038,3 +1038,17 @@ console.error: Region.jsm: "Error fetching region" (new TypeError("NetworkError 
 console.error: Region.jsm: "Failed to fetch region" (new Error("NO_RESULT", "resource://gre/modules/Region.jsm", 419))
 1648896437417	Marionette	INFO	Stopped listening on port 63543
 console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+1651317206684	geckodriver	INFO	Listening on 127.0.0.1:56638
+1651317209834	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "56639" "-no-remote" "-profile" "C:\\Users\\PRABHA~1\\AppData\\Local\\Temp\\rust_mozprofilef9uZW4"
+1651317215385	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\prabhakarsingh\\AppData\\Local\\Temp\\rust_mozprofilef9uZW4\\search.json.mozlz4", (void 0)))
+console.error: Region.jsm: "Error fetching region" (new TypeError("NetworkError when attempting to fetch resource.", ""))
+console.error: Region.jsm: "Failed to fetch region" (new Error("NO_RESULT", "resource://gre/modules/Region.jsm", 419))
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+DevTools listening on ws://localhost:56639/devtools/browser/44f3b8f6-3032-45f6-83e8-67ad29bd7167
+1651317227606	Marionette	INFO	Listening on port 56645
+1651317227891	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1651317428399	Marionette	INFO	Stopped listening on port 56645
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+JavaScript error: chrome://remote/content/marionette/cert.js, line 55: NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsICertOverrideService.setDisableAllSecurityChecksAndLetAttackersInterceptMyData]
+1651317987860	geckodriver	INFO	Listening on 127.0.0.1:57858
