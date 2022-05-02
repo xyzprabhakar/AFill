@@ -30,12 +30,14 @@ class AutoFill(tk.Frame):
 
     def __init__(self,config,isapp=True, name='AutoFill'):
         tk.Frame.__init__(self)
+        
         #self.master.overrideredirect(True)
         self.config=config
-        self.config.set_theme(None,self)
-        #self.master.iconbitmap(r"logoIcon.ico")
+        self.config.set_theme(None,self)        
         self.master.geometry("900x600")
         self.master.minsize(900,600)
+        self.master.title("Auto Fill")
+        self.master.iconbitmap(r"logoIcon.ico")
         self.pack(expand=tk.Y, fill=tk.BOTH)
         self.master["bd"]=3
         self.master["relief"]=tk.RAISED
@@ -198,6 +200,8 @@ if __name__ == '__main__':
     # root.wm_title("This is my title")
     # AutoFill(root)
     # root.mainloop()
+
+
     config= Gc.GenerateConfig()
     if(config.Name==None):
         config.fnc_CreateDefaultFile();    
