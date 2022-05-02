@@ -1,3 +1,4 @@
+from curses import keyname
 import fontawesome as fa
 from multiprocessing.sharedctypes import Value
 from tkinter import TOP, font
@@ -120,8 +121,7 @@ class FillData(ttk.Frame):
                 self.txtData.insert(tk.END,self.varCurrentData)
         gridcounter=0
         if (self.checkKey(self.varCurrentTemplateData,"sections")):
-            for sect in self.varCurrentTemplateData["sections"]:
-                
+            for sect in self.varCurrentTemplateData["sections"]:                
                 datacounter=0
                 if (self.checkKey(sect,"isMultiple")):
                     if( bool(sect["isMultiple"])):
@@ -132,11 +132,11 @@ class FillData(ttk.Frame):
                                    if (self.checkKey(ApplicantData,sectioncounter)):
                                        datacounter=len(ApplicantData[sectioncounter]) 
                                        for i in range(0,datacounter):
-                                           ttk.Button (self.frm_Applicant1, text =sect["sectionName"]+ " "+str(i+1) , command =lambda: self.fill_data(sect["sectionName"])).grid(row=gridcounter,column=0,pady=(8,3),padx=(10,10),sticky=tk.E+tk.W )
+                                           ttk.Button (self.frm_Applicant1, text =sect["sectionName"]+ " "+str(i+1) , command =lambda: self.fill_data(sect["sectionName"],i)).grid(row=gridcounter,column=0,pady=(8,3),padx=(10,10),sticky=tk.E+tk.W )
                                            gridcounter=gridcounter+1
 
                 else:                    
-                    ttk.Button (self.frm_Applicant1, text =sect["sectionName"] ,  command =lambda: self.fill_data(sect["sectionName"])).grid(row=gridcounter,column=0,sticky=tk.E+tk.W ,pady=(8,3),padx=(10,10))
+                    ttk.Button (self.frm_Applicant1, text =sect["sectionName"] ,  command =lambda: self.fill_data(sect["sectionName"],0)).grid(row=gridcounter,column=0,sticky=tk.E+tk.W ,pady=(8,3),padx=(10,10))
                     gridcounter=gridcounter+1
 
 
@@ -151,8 +151,42 @@ class FillData(ttk.Frame):
         # self.children["txtApplicantData"].delete('1.0', tk.END)
         # self.children["txtApplicantData"].insert('1.0', str(self.varCurrentData) )
 
+    def Get_Action(self,section,actionId):
+        for action in section["actions"]:
+            if(actionId==None):
+                if(self.checkKey(action,"IsStartAction")):
+                    if(bool(action["IsStartAction"])):
+                        return action
+            else:
+                if(self.checkKey(action,"actionId")):
+                    if(str(action["actionId"]) ==str(actionId)):
+                        return action
+        return None
+
+    def Get_Element(self,actionOn,ControlName):
+        if(actionOn=="ByName"):
+           return self.driver.find_element(By.NAME,ControlName)
+        elif(actionOn=="ById") :
+            return self.driver.find_element(By.ID ,ControlName)
+        elif(actionOn=="ByXpath") :
+            return self.driver.find_element(By.XPATH ,ControlName)
     
-    def fill_data(self):
+    def Get_ActionValue(self,jsonKeyName,counter,ApplicantId):
+        keynames=jsonKeyName.split(":")
+        sectionkeyname,datakeyname='',''
+        if(len(keynames)>0):
+            sectionkeyname=keynames[0]
+        if(len(keynames)>1):
+            datakeyname=keynames[1]
+        
+
+        
+
+        #var temp1=self.varCurrentData[applicantId-1]
+        
+
+
+    def fill_data(self,sectionName,buttoncounter):
         timeout=30
         if(self.driver is None):
             self.driver = webdriver.Firefox()
@@ -165,78 +199,90 @@ class FillData(ttk.Frame):
         actiontype=None
         finalValue=None
         actionOn=None
-        # get google.co.in
-        for action in self.varCurrentTemplateData["actions"]:            
-            element=None
-            actiontype=action["action_type"]
-            IoName=action["io_name"]
-            controlValue=action["control_value"]
-            
-            controlId=action["control"]
-            actionOn=action["action_on"]            
-            if(len(IoName)>0):
-                finalValue=self.varCurrentData["applicantData"][action["io_name"].strip().replace(' ', '_')]
-            if(controlValue != None and len(str(controlValue))>0):
-                finalValue=str(controlValue)
+        CurrentActionId=None
+        CurrentAction=None
+        for section in self.varCurrentTemplateData["sections"]:         
+            if(section["sectionName"]!=sectionName):
+                continue
+            else :
+                CurrentAction=self.Get_Action(section,CurrentActionId)
+                while (CurrentAction !=None):
+                    if(CurrentAction["actionType"]=="Fill Input"):
+                        element=self.Get_Element(self,CurrentAction["controlSelectorType"],CurrentAction["control"])
+                        if(element != None):
+                            print (1)
+            return 
+            for action in section["actions"]:            
+                element=None
+                actiontype=action["action_type"]
+                IoName=action["io_name"]
+                controlValue=action["control_value"]
+                
+                controlId=action["control"]
+                actionOn=action["action_on"]            
+                if(len(IoName)>0):
+                    finalValue=self.varCurrentData["applicantData"][action["io_name"].strip().replace(' ', '_')]
+                if(controlValue != None and len(str(controlValue))>0):
+                    finalValue=str(controlValue)
 
-            if( actiontype=="Wait"):
-                timeout=int(controlValue)
-                self.driver.implicitly_wait(timeout) 
-            if(actiontype=="Fill Input" or actiontype=="Select Option" ):
-                if(actionOn=="ByName"):
-                    element=self.driver.find_element(By.NAME,controlId)
-                elif(actionOn=="ById") :
-                    element=self.driver.find_element(By.ID ,controlId)
-                elif(actionOn=="ByXpath") :
-                    element=self.driver.find_element(By.XPATH ,controlId)
-                if(element != None):
-                    if(actiontype=="Fill Input"):
-                        element.send_keys(finalValue)
-                    elif(actiontype=="Select Option"):
-                        select = Select(element)
-                        select.select_by_value(finalValue)
+                if( actiontype=="Wait"):
+                    timeout=int(controlValue)
+                    self.driver.implicitly_wait(timeout) 
+                if(actiontype=="Fill Input" or actiontype=="Select Option" ):
+                    if(actionOn=="ByName"):
+                        element=self.driver.find_element(By.NAME,controlId)
+                    elif(actionOn=="ById") :
+                        element=self.driver.find_element(By.ID ,controlId)
+                    elif(actionOn=="ByXpath") :
+                        element=self.driver.find_element(By.XPATH ,controlId)
+                    if(element != None):
+                        if(actiontype=="Fill Input"):
+                            element.send_keys(finalValue)
+                        elif(actiontype=="Select Option"):
+                            select = Select(element)
+                            select.select_by_value(finalValue)
 
-            if(actiontype=="Check Checkbox"):
-                if(actionOn=="ByName"):
-                    if(len(finalValue)>0 ):
-                        element=self.driver.find_element(By.XPATH,f"//input[@name='{controlId}'][@value='{finalValue}']")
-                    else:
-                        element=self.driver.find_element(By.XPATH,f"//input[@name='{controlId}']")
-                elif(actionOn=="ById") :
-                    if(len(finalValue)>0 ):
-                        element=self.driver.find_element(By.XPATH,f"//input[@id='{controlId}'][@value='{finalValue}']")
-                    else:
-                        element=self.driver.find_element(By.XPATH,f"//input[@id='{controlId}']")
-                elif(actionOn=="ByXpath") :
-                    if(len(finalValue)>0 ):
-                        element=self.driver.find_element(By.XPATH,controlId)
-                    else:
-                        element=self.driver.find_element(By.XPATH,controlId)
-                if(element != None):
-                    #self.driver.execute_script("arguments[0].scrollIntoView();",element )
-                    #self.driver.execute_script("arguments[0].click();",element )
-                    
-                    action=ActionChains(self.driver)
-                    action.move_to_element(element)
-                    action.click(on_element = element)
-                    #element.click()
-                    action.perform()
-            
-            if(actiontype=="Button Click" or actiontype=="Hover"):
-                if(actionOn=="ByName"):
-                    element=self.driver.find_element(By.NAME,controlId)
-                elif(actionOn=="ById") :
-                    element=self.driver.find_element(By.ID ,controlId)
-                elif(actionOn=="ByXpath") :
-                    element=self.driver.find_element(By.XPATH,controlId)
-
-                if(element != None):
-                    action=ActionChains(self.driver)
-                    action.move_to_element(element)
-                    if(actiontype=="Button Click"):
+                if(actiontype=="Check Checkbox"):
+                    if(actionOn=="ByName"):
+                        if(len(finalValue)>0 ):
+                            element=self.driver.find_element(By.XPATH,f"//input[@name='{controlId}'][@value='{finalValue}']")
+                        else:
+                            element=self.driver.find_element(By.XPATH,f"//input[@name='{controlId}']")
+                    elif(actionOn=="ById") :
+                        if(len(finalValue)>0 ):
+                            element=self.driver.find_element(By.XPATH,f"//input[@id='{controlId}'][@value='{finalValue}']")
+                        else:
+                            element=self.driver.find_element(By.XPATH,f"//input[@id='{controlId}']")
+                    elif(actionOn=="ByXpath") :
+                        if(len(finalValue)>0 ):
+                            element=self.driver.find_element(By.XPATH,controlId)
+                        else:
+                            element=self.driver.find_element(By.XPATH,controlId)
+                    if(element != None):
+                        #self.driver.execute_script("arguments[0].scrollIntoView();",element )
+                        #self.driver.execute_script("arguments[0].click();",element )
+                        
+                        action=ActionChains(self.driver)
+                        action.move_to_element(element)
                         action.click(on_element = element)
-                    #element.click()
-                    action.perform()
+                        #element.click()
+                        action.perform()
+                
+                if(actiontype=="Button Click" or actiontype=="Hover"):
+                    if(actionOn=="ByName"):
+                        element=self.driver.find_element(By.NAME,controlId)
+                    elif(actionOn=="ById") :
+                        element=self.driver.find_element(By.ID ,controlId)
+                    elif(actionOn=="ByXpath") :
+                        element=self.driver.find_element(By.XPATH,controlId)
+
+                    if(element != None):
+                        action=ActionChains(self.driver)
+                        action.move_to_element(element)
+                        if(actiontype=="Button Click"):
+                            action.click(on_element = element)
+                        #element.click()
+                        action.perform()
         try:
             print (1)
         except:
