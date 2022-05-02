@@ -9,7 +9,7 @@ import frmAddTemplate as AddTmp
 import frmDataReport as DataReport
 import frmDashboard as Dash
 import frmFillData as FillData
-
+import frmSetting as setting
 
 
 class AutoFill(tk.Frame):
@@ -144,6 +144,8 @@ class AutoFill(tk.Frame):
             self.frmImportData.pack_forget()
         if(self.frmReport!=None):
             self.frmReport.pack_forget()
+        if(self.frmSetting!=None):
+            self.frmSetting.pack_forget()
 
         if(self.varMenu.get()=="Dashboard"):            
             if(self.frmDashBoard==None):
@@ -180,6 +182,13 @@ class AutoFill(tk.Frame):
                 DataReport.DataReport(self.frmReport,self.config)
             else:
                 self.frmReport.pack(fill=tk.BOTH,expand=tk.TRUE)
+        elif(self.varMenu.get()=="Setting"):
+            if(self.frmSetting==None):
+                self.frmSetting=ttk.Frame(self.frmInnerDisplayContentFrame)
+                self.frmSetting.pack(fill=tk.BOTH,expand=tk.TRUE)
+                setting.Setting(self.frmSetting,self.config)
+            else:
+                self.frmSetting.pack(fill=tk.BOTH,expand=tk.TRUE)
             
             #self._create_Template(frmInnerDisplayContentFrame)
 
