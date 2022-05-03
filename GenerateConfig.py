@@ -21,7 +21,7 @@ class GenerateConfig:
     themeName=None
     customStyle=None
     headerFonts =None 
-
+    SecretKey ='fpxNyunUji5SJod5sK1dCwmovsukz1qLC1sJYOsVTzo='
     Action_Types=("Break","Check Checkbox","Click Button","Click Link","Click Submit","Click Reset","Fill Input","Select Option by Text","Select Option by Value" ,"Wait")
     Action_On=("ByName","ById","BySelector")
 
@@ -48,6 +48,9 @@ class GenerateConfig:
             self.customStyle.configure('Dashboard2.TLabel',background = '#e3b2ac', font=("Verdana",12,'bold'))
             self.customStyle.configure('Dashboard3.TLabel',background = '#b9e3ac', font=("Verdana",12,'bold'))
             self.customStyle.configure('Dashboard4.TLabel',background = '#acdce3', font=("Verdana",12,'bold'))
+
+            self.customStyle.configure('Login.TLabel',background = '#ffffff', font=("Verdana",11))
+            
 
             self.customStyle.configure('H1.TLabel', background = '#ffffff',font=("Verdana",12,'bold'))
             self.customStyle.configure('Menu.TRadiobutton',indicator=0, background = '#ffffff',font=("Verdana",10,'bold'),foreground="#343a40",selectcolor="#f2f5f7")
@@ -83,6 +86,7 @@ class GenerateConfig:
         if not os.path.exists(self.ConfigFileName):
             self.fnc_CreateDefaultFile()
         self.config_file.read(self.ConfigFileName)
+        
         self.Name = self.config_file['AFill_Register']['Name']
         self.Email = self.config_file['AFill_Register']['Email']
         self.ContactNo =self.config_file['AFill_Register']['ContactNo']
