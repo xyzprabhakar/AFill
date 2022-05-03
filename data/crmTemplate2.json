@@ -7,7 +7,7 @@
             "actions": [
                 {
                     "actionId":1,
-                    "actionType": "Select Value",
+                    "actionType": "Select Option",
                     "controlSelectorType":"ByName",
                     "control":"title",
                     "inputType":"IO Value",
@@ -96,7 +96,7 @@
                 },
                 {
                     "actionId":9,
-                    "actionType": "Select Value",
+                    "actionType": "Select Option",
                     "controlSelectorType":"ByName",
                     "control":"Gender",
                     "inputType":"IO Value",
@@ -106,7 +106,7 @@
                 },
                 {
                     "actionId":10,
-                    "actionType": "Select Value",
+                    "actionType": "Select Option",
                     "controlSelectorType":"ByName",
                     "control":"CountryOfBirth",
                     "inputType":"IO Value",
@@ -116,7 +116,7 @@
                 },
                 {
                     "actionId":11,
-                    "actionType":  "Select Value",
+                    "actionType":  "Select Option",
                     "controlSelectorType":"ByName",
                     "control":"Nationality",
                     "inputType":"IO Value",
@@ -131,7 +131,7 @@
             "actions": [
                 {
                     "actionId":1,
-                    "actionType": "Select Value",
+                    "actionType": "Select Option",
                     "controlSelectorType":"ByName",
                     "control":"AddressTpe",
                     "inputType":"IO Value",
@@ -253,7 +253,7 @@
             "actions": [
                 {
                     "actionId":1,
-                    "actionType": "Select Value",
+                    "actionType": "Select Option",
                     "controlSelectorType":"ByName",
                     "control":"AddressTpe",
                     "inputType":"IO Value",
@@ -264,7 +264,7 @@
                 },
                 {
                     "actionId":2,
-                    "actionType": "Select Value",
+                    "actionType": "Select Option",
                     "controlSelectorType":"ByName",
                     "control":"OccupancyType",
                     "inputType":"IO Value",
@@ -396,7 +396,7 @@
             "actions": [
                 {
                     "actionId":1,
-                    "actionType": "Select Value",
+                    "actionType": "Select Option",
                     "controlSelectorType":"ByName",
                     "control":"AddressTpe",
                     "inputType":"IO Value",
@@ -518,7 +518,7 @@
             "actions": [
                 {
                     "actionId":1,
-                    "actionType": "Select Value",
+                    "actionType": "Select Option",
                     "controlSelectorType":"ByName",
                     "control":"AddressTpe",
                     "inputType":"IO Value",
@@ -640,7 +640,7 @@
             "actions": [
                 {
                     "actionId":1,
-                    "actionType": "Select Value",
+                    "actionType": "Select Option",
                     "controlSelectorType":"ByName",
                     "control":"AddressTpe",
                     "inputType":"IO Value",
@@ -762,7 +762,7 @@
             "actions": [
                 {
                     "actionId":1,
-                    "actionType": "Select Value",
+                    "actionType": "Select Option",
                     "controlSelectorType":"ByName",
                     "control":"AddressTpe",
                     "inputType":"IO Value",
@@ -882,7 +882,7 @@
             "actions": [
                 {
                     "actionId":1,
-                    "actionType": "Select Value",
+                    "actionType": "Select Option",
                     "controlSelectorType":"ByName",
                     "control":"AddressTpe",
                     "inputType":"IO Value",
