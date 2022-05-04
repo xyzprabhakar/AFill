@@ -1353,14 +1353,15 @@ class ImportData:
         for widgets in frame.winfo_children():
             widgets.destroy()
 
+    
+
     def open_file(self):
         open_file = askopenfilename(initialdir="d:", title="Open Template", filetypes=[
                                     ('Pdf Files', '*.pdf')])
-        if open_file:
+        if open_file:            
             self.tables = tabula.read_pdf(open_file, pages="all")
             self.CurrentAddressFound = False
-            self.hide_unhide_applicant(None)
-            
+            self.hide_unhide_applicant(None)            
             
             self.frm_Applicant1Parent=ttk.Frame(self.ApplicantTab)
             self.frm_Applicant2Parent=ttk.Frame(self.ApplicantTab)

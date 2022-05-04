@@ -7,16 +7,15 @@ from cryptography.fernet import Fernet
 import tabula 
 #from tabula import read_pdf
 #from tabulate import tabulate
-
+import GenerateConfig as Gc
 import io
 import tkinter as tk
 from tkinter.filedialog import askopenfile, askopenfilename
 from tkinter import ttk,messagebox
-import GenerateConfig as Gc
+import hashlib
 import json
 import main as AFill
-
-
+import hashlib
 
 
 
@@ -43,14 +42,14 @@ class Login(ttk.Frame):
         self.varExistingPassword.set(self.config.Password)        
         self.logoicon = tk.PhotoImage(file="logoIcon64.png")
         #self.logoicon.subsample(10, 10)         
-    def Login_click(self):
-        fernet = Fernet(self.config.SecretKey)
-        print (self.varPassword.get())
-        print (self.varPassword.get().encode())
-        print(fernet.encrypt(self.varPassword.get().encode())) 
-        print(self.varExistingPassword.get()) 
-        if(self.varExistingPassword.get()==fernet.encrypt(self.varPassword.get())
+
+    def Login_click(self):        
+        a_string = self.varPassword.get() 
+        hashed_string = hashlib.sha256(a_string.encode('utf-8')).hexdigest()        
+        #print(self.varExistingPassword.get()) 
+        if(self.varExistingPassword.get()==hashed_string
         and self.varUserName.get()==self.varExistingUserName.get()):
+            root.destroy()
             AFill.AutoFill(self.config).mainloop()
         else:
             messagebox.showerror("Error", "Invalid Username or Password")
@@ -94,22 +93,37 @@ class Login(ttk.Frame):
         
 
 
-if __name__ == '__main__':
-    config= Gc.GenerateConfig()         
-    root = tk.Tk()    
-    sizex = 600
-    sizey = 400
-    posx  = 100
-    posy  = 100
-    root.wm_geometry("%dx%d+%d+%d" % (sizex, sizey, posx, posy))
-    config.set_theme(None,root)
-    myframe=ttk.Frame(root,relief=tk.GROOVE,width=500,height=600)
-    myframe.pack( fill="both" ,expand=tk.TRUE ,anchor=tk.N+tk.W)   
-    Login(myframe,config)
-    root.title("Login")
-    root.iconbitmap(r"logoIcon.ico")
-    root.eval('tk::PlaceWindow . center')
-    root.mainloop()
+# if __name__ == '__main__':
+#     config= Gc.GenerateConfig()         
+#     root = tk.Tk()    
+#     sizex = 600
+#     sizey = 400
+#     posx  = 100
+#     posy  = 100
+#     root.wm_geometry("%dx%d+%d+%d" % (sizex, sizey, posx, posy))
+#     config.set_theme(None,root)
+#     myframe=ttk.Frame(root,relief=tk.GROOVE,width=500,height=600)
+#     myframe.pack( fill="both" ,expand=tk.TRUE ,anchor=tk.N+tk.W)   
+#     Login(myframe,config)
+#     root.title("Login")
+#     root.iconbitmap(r"logoIcon.ico")
+#     root.eval('tk::PlaceWindow . center')
+#     root.mainloop()
+config= Gc.GenerateConfig()         
+root = tk.Tk()    
+sizex = 600
+sizey = 400
+posx  = 1
+posy  = 1
+root.wm_geometry("%dx%d+%d+%d" % (sizex, sizey, posx, posy))
+config.set_theme(None,root)
+myframe=ttk.Frame(root,relief=tk.GROOVE,width=500,height=600)
+myframe.pack( fill="both" ,expand=tk.TRUE ,anchor=tk.N+tk.W)   
+Login(myframe,config)
+root.title("Login")
+root.iconbitmap(r"logoIcon.ico")
+root.eval('tk::PlaceWindow . center')
+root.mainloop()
 
         
 

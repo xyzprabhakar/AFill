@@ -10,6 +10,7 @@ import frmDataReport as DataReport
 import frmDashboard as Dash
 import frmFillData as FillData
 import frmSetting as setting
+import _thread
 
 
 class AutoFill(tk.Frame):
@@ -29,28 +30,32 @@ class AutoFill(tk.Frame):
                 {"name":"rdoChangePassword", "text":"Change Password","icon":"images\icons\cil-moon.png", "ficon":fa.icons['user']}]
 
     def __init__(self,config,isapp=True, name='AutoFill'):
-        tk.Frame.__init__(self)
-        
-        #self.master.overrideredirect(True)
+        tk.Frame.__init__(self)        
         self.config=config
-        self.config.set_theme(None,self)        
         self.master.geometry("900x600")
         self.master.minsize(900,600)
+        self.config.set_theme(None,self) 
         self.master.title("Auto Fill")
         self.master.iconbitmap(r"logoIcon.ico")
         self.pack(expand=tk.Y, fill=tk.BOTH)
         self.master["bd"]=3
-        self.master["relief"]=tk.RAISED
-        self.master.title('')        
-        self.master.unbind("<FocusIn>")
+        self.master["relief"]=tk.RAISED        
+        self.master.unbind("<FocusIn>")             
+        
+        _thread.start_new_thread(self.intlizeform,())   
+
         
 
+    def intlizeform(self):
+        #self.master.overrideredirect(True)
         self.varMenu= tk.StringVar()
         self.varMenu.set("Dashboard")
         #self.isapp = isapp                        
         #self.varMenu =tk.StringVar()
         self._create_Frame()
         self._create_inner_content()
+        #self.master.eval('tk::PlaceWindow . center')
+        
     
     def _create_Frame(self):
         self.columnconfigure(0, weight=1)
@@ -68,7 +73,7 @@ class AutoFill(tk.Frame):
         frmStatusFrame = tk.Frame(self)        
         frmStatusFrame.grid(row=2, column=0, sticky=tk.W+tk.E+tk.S)
 
-        btnClose = tk.Button(frmTopFrame, text = fa.icons['trash'],font= self.config.headerFonts ,command =self.master.destroy, bg=self.config.COLOR_TOP_BACKGROUND,fg=self.config.COLOR_MENU_BACKGROUND,relief=tk.FLAT)
+        btnClose = tk.Button(frmTopFrame, text = fa.icons['trash'],font= self.config.headerFonts ,command =lambda: self.master.destroy(), bg=self.config.COLOR_TOP_BACKGROUND,fg=self.config.COLOR_MENU_BACKGROUND,relief=tk.FLAT)
         btnClose.pack(side=tk.RIGHT, pady=7,padx=5)
         self.icon = tk.PhotoImage(file="logoIcon32.png")
         self.icon.subsample(1, 2)
