@@ -22,27 +22,29 @@ class AddTemplate:
     varCurrentTemplate=None
     varCurrentTemplateName=None
     varCurrentUrl=None    
-    var_action_type=None
-    var_action_on=None
-    var_control=None
-    var_io_name=None
-    var_control_value=None
 
-    treev=None;
+    var_allSectionName,var_allSectionType,var_allSectionCategory,var_allSectionCategoryType,var_allSelectorType, var_allActionType,var_allInputType,var_allConditionType=None,None,None,None,None, None,None,None
+    
+    var_sectionName,var_sectionType,var_sectionCategory=None,None,None
+    var_actionId,var_actionType,var_controlSelectorType,var_control,var_inputType,var_manualValue,var_ioValue,var_nextActionId,var_IsStartAction,var_conditionType,var_leftInputType,var_leftManualValue,var_leftIOValue,var_rightInputType,var_rightManualValue,var_rightIOValue,var_trueActionId,var_falseActionId=None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
+
+    
+    treev1,treev2=None,None;
 
     def __init__(self,Container,config):
         self.config=config        
         self.varActionType= tk.StringVar()        
         self.varCurrentTemplateName= tk.StringVar()
-        self.varCurrentUrl= tk.StringVar() 
-        self.var_action_type= tk.StringVar()
-        self.var_action_on= tk.StringVar()
-        self.var_control= tk.StringVar()
-        self.var_io_name= tk.StringVar()
-        self.var_control_value= tk.StringVar()                
+        self.varCurrentUrl= tk.StringVar()         
         self.ContainerFrame=Container        
+        self.LoadFromConfig()
         self.LoadAllJsonData()
         self.fncCreateItems()
+    
+    def LoadFromConfig(self):
+        self.var_allSectionName,self.var_allSectionType,self.var_allSectionCategory,self.var_allSectionCategoryType,self.var_allSelectorType, self.var_allActionType,self.var_allInputType,self.var_allConditionType=self.config.SectionName,self.config.SectionType,self.config.SectionCategory,self.config.SectionCategoryType,self.config.SelectorType,self.config.ActionType,self.config.InputType,self.config.ConditionType
+        self.var_actionId,self.var_actionType,self.var_controlSelectorType,self.var_control,self.var_inputType,self.var_manualValue,self.var_ioValue,self.var_nextActionId,self.var_IsStartAction,self.var_conditionType,self.var_leftInputType,self.var_leftManualValue,self.var_leftIOValue,self.var_rightInputType,self.var_rightManualValue,self.var_rightIOValue,self.var_trueActionId,self.var_falseActionId = tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar(),tk.StringVar()
+        
     
     def fncChangeTemplateType(self,event):
         if(self.varActionType.get()=="Add Template"):
@@ -285,6 +287,50 @@ class AddTemplate:
         ttk.Button ( chdFrm, text ="Save", width=10, command =lambda: self.fncAddAction(chdFrm)).grid(row=5,column = 1 , padx=(10,0),pady=(3,5),sticky=tk.N+tk.W)
         chdFrm.grab_set()
     
+    def fncOpenInnerChildForm(self):    
+        containter = tk.Toplevel(self.ContainerFrame)        
+        containter.title("Add Action")
+        containter.geometry("300x210")
+        chdFrm=ttk.Frame(containter)        
+        chdFrm.pack(expand=tk.TRUE,fill=tk.BOTH)
+
+        chdFrm.columnconfigure(0, weight=1)
+        chdFrm.columnconfigure(1, weight=1)
+        chdFrm.columnconfigure(2, weight=1)
+        chdFrm.columnconfigure(3, weight=1)
+
+
+        chdFrm.rowconfigure(0, weight=1)
+        chdFrm.rowconfigure(1, weight=1)
+        chdFrm.rowconfigure(2, weight=1)
+        chdFrm.rowconfigure(3, weight=1)
+        chdFrm.rowconfigure(4, weight=1)
+        chdFrm.rowconfigure(5, weight=1)
+        chdFrm.rowconfigure(6, weight=100)
+
+        ttk.Label(chdFrm,text = "Action ID :").grid(row=0,column = 0,padx=(10, 10), pady=(20, 2), sticky=tk.N+tk.S+tk.E)
+        ttk.Entry(chdFrm, width = 26, textvariable = self.var_actionId).grid(row=0,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        ttk.Label(chdFrm,text = "Action Type :").grid(row=0,column = 3,padx=(10, 10), pady=(20, 2), sticky=tk.N+tk.S+tk.E)        
+        ttk.Combobox(chdFrm, width = 24,state="readonly" , textvariable = self.var_actionType, values=self.var_allActionType).grid(row=0,column = 1,padx=(10, 10), pady=(20, 2), sticky=tk.N+tk.S+tk.W)
+
+        
+        
+
+
+        
+        ttk.Label(chdFrm,text = "Action On :").grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)        
+        ttk.Combobox(chdFrm, width = 24,state="readonly", textvariable = self.var_action_on, values=self.config.Action_On).grid(row=1,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        ttk.Label(chdFrm,text = "Control :",name="txtControl" ).grid(row=2,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        ttk.Entry(chdFrm, width = 26, textvariable = self.var_control).grid(row=2,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        ttk.Label(chdFrm,text = "IO Name :",).grid(row=3,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        ttk.Combobox(chdFrm, width = 24,state="readonly", textvariable = self.var_io_name, values=self.config.IO_Name).grid(row=3,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        ttk.Label(chdFrm,text = "Default Value :" ).grid(row=4,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        ttk.Entry(chdFrm, width = 26, textvariable = self.var_control_value).grid(row=4,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        ttk.Button ( chdFrm, text ="Save", width=10, command =lambda: self.fncAddAction(chdFrm)).grid(row=5,column = 1 , padx=(10,0),pady=(3,5),sticky=tk.N+tk.W)
+        chdFrm.grab_set()
+
+    
+
     def fncAddAction(self,container):
         if(self.var_action_type==None or self.var_action_type.get()=="" ):
             messagebox.showerror("Required", "Required Action Type")

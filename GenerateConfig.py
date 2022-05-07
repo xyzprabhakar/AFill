@@ -22,8 +22,15 @@ class GenerateConfig:
     customStyle=None
     headerFonts =None 
     SecretKey ='fpxNyunUji5SJod5sK1dCwmovsukz1qLC1sJYOsVTzo='
-    Action_Types=("Break","Check Checkbox","Click Button","Click Link","Click Submit","Click Reset","Fill Input","Select Option by Text","Select Option by Value" ,"Wait")
-    Action_On=("ByName","ById","BySelector")
+    ActionTypes=("Wait","Check Checkbox","Click Button","Click Link","Click Submit","Fill Input","Select Option by Text","Select Option by Value")
+    SelectorType=("ByName","ById","BySelector")
+    InputType=("IOValue","ManualValue")
+    ConditionType=("eq","nq","gt","ge","lt","le")
+    SectionNames=("Personal Details","Current Address","Previous Address","Contact Details","Professional Contacts","Bank Account Details","Family And Dependants","ID Verification","Current Employment Details","Assets","Liabilities","Existing Mortgage","Mortgage Requirements","Expenditure")
+    SectionType=("Multiple","Single")
+    SectionCategory=("PersonalDetails","CurrentAddress","PreviousAddress","ContactDetails","ProfessionalContacts","BankAccount","FamilyAndDependants","IDVerification","CurrentEmployementDetails","Assets","Liabilities","Expenditure","ExistingMortgage","MortgageRequirements")
+    SectionCategoryType=("Single","Single","Multiple","Single","Multiple","Multiple","Multiple","Single","Single","Multiple","Multiple","Multiple","Multiple","Multiple")
+    
 
     def set_theme(self,event,frameData):
         self.customStyle= ThemedStyle(frameData)
