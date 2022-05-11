@@ -1,0 +1,1002 @@
+[
+    {
+        "templateName": "Barclays",
+        "url": "https://intermediaries.uk.barclays/",
+        "sections":[{
+            "sectionName":"Customer Details",            
+            "actions": [
+                {
+                    "actionId":1,
+                    "actionType": "Select Option",
+                    "controlSelectorType":"ByName",
+                    "control":"title",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"PersonalDetails:Title",
+                    "nextActionId":2,
+                    "IsStartAction":true
+                },
+                {
+                    "actionId":2,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"FirstName",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"PersonalDetails:First_Name",
+                    "nextActionId":3                    
+                }, 
+                {
+                    "actionId":3,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"MiddleName",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"PersonalDetails:Middle_Name",
+                    "nextActionId":4
+                    
+                }, 
+                {
+                    "actionId":4,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Surnname",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"PersonalDetails:Last_Name",
+                    "nextActionId":5                    
+                }, 
+                {
+                    "actionId":5,
+                    "actionType": "Condition",                    
+                    "conditionType":"eq",
+                    "leftInputType":"IO Value",                    
+                    "leftManualValue":"",
+                    "leftIOValue":"PersonalDetails:Middle_Name",
+                    "rightInputType":"Manual Value",
+                    "rightManualValue":"",
+                    "rightIOValue":"",
+                    "controlSelector":"",
+                    "inputType":"",
+                    "manualValue":"",
+                    "ioValue":"",
+                    "trueActionId":6,
+                    "falseActionId":7
+                }                ,
+                {
+                    "actionId":6,
+                    "actionType": "Check Checkbox",
+                    "controlSelectorType":"ByName",
+                    "control":"NoMiddleName",
+                    "inputType":"Manual Value",
+                    "manualValue":"true",
+                    "ioValue":"",
+                    "nextActionId":7
+                },
+                {
+                    "actionId":7,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"FullName",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"function_concate_WithSpace(PersonalDetails:First_Name,PersonalDetails:Middle_Name,PersonalDetails:Last_Name)",
+                    "nextActionId":8
+                },
+                {
+                    "actionId":8,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Dateofbirth",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"PersonalDetails:Date_of_Birth",
+                    "nextActionId":9                    
+                },
+                {
+                    "actionId":9,
+                    "actionType": "Select Option",
+                    "controlSelectorType":"ByName",
+                    "control":"Gender",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"PersonalDetails:Gender",
+                    "nextActionId":10                    
+                },
+                {
+                    "actionId":10,
+                    "actionType": "Select Option",
+                    "controlSelectorType":"ByName",
+                    "control":"CountryOfBirth",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"PersonalDetails:Country_of_Birth",
+                    "nextActionId":11                    
+                },
+                {
+                    "actionId":11,
+                    "actionType":  "Select Option",
+                    "controlSelectorType":"ByName",
+                    "control":"Nationality",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"PersonalDetails:Nationality",
+                    "nextActionId":12                    
+                } 
+            ]
+        },
+        {
+            "sectionName":"Current Address",            
+            "actions": [
+                {
+                    "actionId":1,
+                    "actionType": "Select Option",
+                    "controlSelectorType":"ByName",
+                    "control":"AddressTpe",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Country",
+                    "nextActionId":2,
+                    "IsStartAction":true
+                },
+                {
+                    "actionId":2,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"BuildingNumber",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"function_get_Numeric(CurrentAddress:Address_Line_1)",
+                    "nextActionId":3                    
+                }, 
+                {
+                    "actionId":3,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Postcode",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Postcode",
+                    "nextActionId":4
+                    
+                }, 
+                {
+                    "actionId":4,
+                    "actionType": "Button Click",
+                    "controlSelectorType":"ByName",
+                    "control":"Search",                    
+                    "nextActionId":5                    
+                },
+                {
+                    "actionId":5,
+                    "actionType": "Wait",
+                    "manualValue":"10",
+                    "nextActionId":6                    
+                },                 
+                {
+                    "actionId":6,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"HouserName",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_1",
+                    "nextActionId":7
+                },
+                {
+                    "actionId":7,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Street",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress.Address_Line_2",
+                    "nextActionId":8
+                },
+                {
+                    "actionId":8,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"District",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_3",
+                    "nextActionId":9                    
+                },
+                {
+                    "actionId":9,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Town",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_4",
+                    "nextActionId":10                    
+                },
+                {
+                    "actionId":10,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Country",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Country",
+                    "nextActionId":11                    
+                },
+                {
+                    "actionId":11,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Postcode",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Postcode",
+                    "nextActionId":12                    
+                },
+                {
+                    "actionId":12,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"DateMovedin",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Date_From",
+                    "nextActionId":12                    
+                } 
+            ]
+        },
+        {
+            "sectionName":"Previous Address",
+            "isMultiple"  :true,
+            "sectionCounter" :"PreviousAddress",          
+            "actions": [
+                {
+                    "actionId":1,
+                    "actionType": "Select Option",
+                    "controlSelectorType":"ByName",
+                    "control":"AddressTpe",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"PreviousAddress[]:Country",
+                    "nextActionId":2,
+                    "IsStartAction":true
+                },
+                {
+                    "actionId":2,
+                    "actionType": "Select Option",
+                    "controlSelectorType":"ByName",
+                    "control":"OccupancyType",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"PreviousAddress[]:Residency_Status",
+                    "nextActionId":3,
+                    "IsStartAction":true
+                },                
+                {
+                    "actionId":3,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Building Number",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"PreviousAddress[]:Address_Line_1",
+                    "nextActionId":4                    
+                }, 
+                {
+                    "actionId":4,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Postcode",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"PreviousAddress[]:Postcode",
+                    "nextActionId":5
+                    
+                }, 
+                {
+                    "actionId":5,
+                    "actionType": "Button Click",
+                    "controlSelectorType":"ByName",
+                    "control":"Search",                    
+                    "nextActionId":6
+                },
+                {
+                    "actionId":6,
+                    "actionType": "Wait",
+                    "manualValue":"10",
+                    "nextActionId":7
+                },                 
+                {
+                    "actionId":7,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"HouserName",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_1",
+                    "nextActionId":8
+                },
+                {
+                    "actionId":8,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Street",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress.Address_Line_2",
+                    "nextActionId":9
+                },
+                {
+                    "actionId":9,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"District",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_3",
+                    "nextActionId":10                    
+                },
+                {
+                    "actionId":10,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Town",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_4",
+                    "nextActionId":11
+                },
+                {
+                    "actionId":11,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Country",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Country",
+                    "nextActionId":12
+                },
+                {
+                    "actionId":12,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Postcode",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Postcode",
+                    "nextActionId":13
+                },
+                {
+                    "actionId":13,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"DateMovedin",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Date_From",
+                    "nextActionId":14
+                } ,
+                {
+                    "actionId":14,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"DateMovedout",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Date_To",
+                    "nextActionId":15
+                } 
+            ]
+        },
+        {
+            "sectionName":"Liabilities",            
+            "isMultiple"  :true,
+            "sectionCounter" :"Liabilities",          
+            "actions": [
+                {
+                    "actionId":1,
+                    "actionType": "Select Option",
+                    "controlSelectorType":"ByName",
+                    "control":"AddressTpe",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Country",
+                    "nextActionId":2,
+                    "IsStartAction":true
+                },
+                {
+                    "actionId":2,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"BuildingNumber",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"function_get_Numeric(CurrentAddress:Address_Line_1)",
+                    "nextActionId":3                    
+                }, 
+                {
+                    "actionId":3,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Postcode",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Postcode",
+                    "nextActionId":4
+                    
+                }, 
+                {
+                    "actionId":4,
+                    "actionType": "Button Click",
+                    "controlSelectorType":"ByName",
+                    "control":"Search",                    
+                    "nextActionId":5                    
+                },
+                {
+                    "actionId":5,
+                    "actionType": "Wait",
+                    "manualValue":"10",
+                    "nextActionId":6                    
+                },                 
+                {
+                    "actionId":6,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"HouserName",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_1",
+                    "nextActionId":7
+                },
+                {
+                    "actionId":7,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Street",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress.Address_Line_2",
+                    "nextActionId":8
+                },
+                {
+                    "actionId":8,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"District",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_3",
+                    "nextActionId":9                    
+                },
+                {
+                    "actionId":9,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Town",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_4",
+                    "nextActionId":10                    
+                },
+                {
+                    "actionId":10,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Country",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Country",
+                    "nextActionId":11                    
+                },
+                {
+                    "actionId":11,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Postcode",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Postcode",
+                    "nextActionId":12                    
+                },
+                {
+                    "actionId":12,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"DateMovedin",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Date_From",
+                    "nextActionId":12                    
+                } 
+            ]
+        }, 
+        {
+            "sectionName":"Dependants",            
+            "isMultiple"  :true,
+            "sectionCounter" :"Dependants",          
+            "actions": [
+                {
+                    "actionId":1,
+                    "actionType": "Select Option",
+                    "controlSelectorType":"ByName",
+                    "control":"AddressTpe",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Country",
+                    "nextActionId":2,
+                    "IsStartAction":true
+                },
+                {
+                    "actionId":2,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"BuildingNumber",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"function_get_Numeric(CurrentAddress:Address_Line_1)",
+                    "nextActionId":3                    
+                }, 
+                {
+                    "actionId":3,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Postcode",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Postcode",
+                    "nextActionId":4
+                    
+                }, 
+                {
+                    "actionId":4,
+                    "actionType": "Button Click",
+                    "controlSelectorType":"ByName",
+                    "control":"Search",                    
+                    "nextActionId":5                    
+                },
+                {
+                    "actionId":5,
+                    "actionType": "Wait",
+                    "manualValue":"10",
+                    "nextActionId":6                    
+                },                 
+                {
+                    "actionId":6,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"HouserName",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_1",
+                    "nextActionId":7
+                },
+                {
+                    "actionId":7,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Street",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress.Address_Line_2",
+                    "nextActionId":8
+                },
+                {
+                    "actionId":8,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"District",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_3",
+                    "nextActionId":9                    
+                },
+                {
+                    "actionId":9,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Town",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_4",
+                    "nextActionId":10                    
+                },
+                {
+                    "actionId":10,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Country",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Country",
+                    "nextActionId":11                    
+                },
+                {
+                    "actionId":11,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Postcode",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Postcode",
+                    "nextActionId":12                    
+                },
+                {
+                    "actionId":12,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"DateMovedin",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Date_From",
+                    "nextActionId":12                    
+                } 
+            ]
+        },
+        {
+            "sectionName":"Existing Mortage",            
+            "isMultiple"  :true,
+            "sectionCounter" :"ExistingMortgage",          
+            "actions": [
+                {
+                    "actionId":1,
+                    "actionType": "Select Option",
+                    "controlSelectorType":"ByName",
+                    "control":"AddressTpe",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Country",
+                    "nextActionId":2,
+                    "IsStartAction":true
+                },
+                {
+                    "actionId":2,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"BuildingNumber",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"function_get_Numeric(CurrentAddress:Address_Line_1)",
+                    "nextActionId":3                    
+                }, 
+                {
+                    "actionId":3,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Postcode",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Postcode",
+                    "nextActionId":4
+                    
+                }, 
+                {
+                    "actionId":4,
+                    "actionType": "Button Click",
+                    "controlSelectorType":"ByName",
+                    "control":"Search",                    
+                    "nextActionId":5                    
+                },
+                {
+                    "actionId":5,
+                    "actionType": "Wait",
+                    "manualValue":"10",
+                    "nextActionId":6                    
+                },                 
+                {
+                    "actionId":6,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"HouserName",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_1",
+                    "nextActionId":7
+                },
+                {
+                    "actionId":7,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Street",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress.Address_Line_2",
+                    "nextActionId":8
+                },
+                {
+                    "actionId":8,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"District",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_3",
+                    "nextActionId":9                    
+                },
+                {
+                    "actionId":9,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Town",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_4",
+                    "nextActionId":10                    
+                },
+                {
+                    "actionId":10,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Country",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Country",
+                    "nextActionId":11                    
+                },
+                {
+                    "actionId":11,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Postcode",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Postcode",
+                    "nextActionId":12                    
+                },
+                {
+                    "actionId":12,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"DateMovedin",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Date_From",
+                    "nextActionId":12                    
+                } 
+            ]
+        },
+        {
+            "sectionName":"Requirements",            
+            "isMultiple"  :true,
+            "sectionCounter" :"MortgageRequirements",          
+            "actions": [
+                {
+                    "actionId":1,
+                    "actionType": "Select Option",
+                    "controlSelectorType":"ByName",
+                    "control":"AddressTpe",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Country",
+                    "nextActionId":2,
+                    "IsStartAction":true
+                },
+                {
+                    "actionId":2,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"BuildingNumber",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"function_get_Numeric(CurrentAddress:Address_Line_1)",
+                    "nextActionId":3                    
+                }, 
+                {
+                    "actionId":3,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Postcode",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Postcode",
+                    "nextActionId":4
+                    
+                }, 
+                {
+                    "actionId":4,
+                    "actionType": "Button Click",
+                    "controlSelectorType":"ByName",
+                    "control":"Search",                    
+                    "nextActionId":5                    
+                },
+                {
+                    "actionId":5,
+                    "actionType": "Wait",
+                    "manualValue":"10",
+                    "nextActionId":6                    
+                },                 
+                {
+                    "actionId":6,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"HouserName",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_1",
+                    "nextActionId":7
+                },
+                {
+                    "actionId":7,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Street",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress.Address_Line_2",
+                    "nextActionId":8
+                },
+                {
+                    "actionId":8,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"District",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_3",
+                    "nextActionId":9                    
+                },
+                {
+                    "actionId":9,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Town",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_4",
+                    "nextActionId":10                    
+                },
+                {
+                    "actionId":10,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Country",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Country",
+                    "nextActionId":11                    
+                },
+                {
+                    "actionId":11,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Postcode",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Postcode",
+                    "nextActionId":12                    
+                },
+                {
+                    "actionId":12,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"DateMovedin",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Date_From",
+                    "nextActionId":12                    
+                } 
+            ]
+        },        
+        {
+            "sectionName":"Employment Details",            
+            "actions": [
+                {
+                    "actionId":1,
+                    "actionType": "Select Option",
+                    "controlSelectorType":"ByName",
+                    "control":"AddressTpe",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Country",
+                    "nextActionId":2,
+                    "IsStartAction":true
+                },
+                {
+                    "actionId":2,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"BuildingNumber",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"function_get_Numeric(CurrentAddress:Address_Line_1)",
+                    "nextActionId":3                    
+                }, 
+                {
+                    "actionId":3,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Postcode",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Postcode",
+                    "nextActionId":4
+                    
+                }, 
+                {
+                    "actionId":4,
+                    "actionType": "Button Click",
+                    "controlSelectorType":"ByName",
+                    "control":"Search",                    
+                    "nextActionId":5                    
+                },
+                {
+                    "actionId":5,
+                    "actionType": "Wait",
+                    "manualValue":"10",
+                    "nextActionId":6                    
+                },                 
+                {
+                    "actionId":6,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"HouserName",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_1",
+                    "nextActionId":7
+                },
+                {
+                    "actionId":7,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Street",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress.Address_Line_2",
+                    "nextActionId":8
+                },
+                {
+                    "actionId":8,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"District",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_3",
+                    "nextActionId":9                    
+                },
+                {
+                    "actionId":9,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Town",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Address_Line_4",
+                    "nextActionId":10                    
+                },
+                {
+                    "actionId":10,
+                    "actionType": "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Country",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Country",
+                    "nextActionId":11                    
+                },
+                {
+                    "actionId":11,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"Postcode",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Postcode",
+                    "nextActionId":12                    
+                },
+                {
+                    "actionId":12,
+                    "actionType":  "Fill Input",
+                    "controlSelectorType":"ByName",
+                    "control":"DateMovedin",
+                    "inputType":"IO Value",
+                    "manualValue":"",
+                    "ioValue":"CurrentAddress:Date_From",
+                    "nextActionId":12                    
+                } 
+            ]
+        }
+    ]             
+    }   
+]

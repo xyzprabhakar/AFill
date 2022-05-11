@@ -36,7 +36,7 @@ class AutoFill(tk.Frame):
         self.master.minsize(900,600)
         self.config.set_theme(None,self) 
         self.master.title("Auto Fill")
-        self.master.iconbitmap(r"logoIcon.ico")
+        #self.master.iconbitmap("logoIcon.ico")
         self.pack(expand=tk.Y, fill=tk.BOTH)
         self.master["bd"]=3
         self.master["relief"]=tk.RAISED        

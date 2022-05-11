@@ -3,7 +3,6 @@ from ast import Return
 import ctypes
 from email.headerregistry import Address
 import os
-from cv2 import merge
 from numpy import pad
 import tabula
 import pandas as pd
