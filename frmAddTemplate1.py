@@ -19,6 +19,7 @@ class AddTemplate:
     combostyle=None
     treeViewStyle=None
     varAllTemlate,varAllTemlateName,varCurrentTemplate,varAllSection,varCurrentSection,varAllAction=[],[],None,[],None,[]    
+    IsUpdateSection=False,False
     
     varActionType= None    
     varCurrentTemplateName=None
@@ -88,9 +89,11 @@ class AddTemplate:
             return True
         else:
             return False
+
     def BindExistingTreeview(self,event,procType=1):
         if(procType==1):
             self.varCurrentTemplate=None        
+            self.var_allSectionName=[]
             self.clear_all_gridview(procType)        
             for template in self.varAllTemlate:
                 if template["templateName"]==self.varCurrentTemplateName.get():
@@ -108,26 +111,64 @@ class AddTemplate:
                     if(self.checkKey(sections,"actions")):
                         actionCount=len(sections["actions"]) 
                     self.treev1.insert("", 'end',values =(sectionName, sectionType,sectionCategory,actionCount))
+                    self.var_allSectionName.append(sectionName)
         elif(procType==2):
             self.varCurrentSection=None        
-            self.clear_all_gridview(procType)        
+            self.clear_all_gridview(procType)              
+            for sections in self.varCurrentTemplate["sections"]:                 
+                if sections["sectionName"]==self.var_sectionName.get():
+                    self.varCurrentSection=sections
+            if(self.varCurrentSection != None):
+                if( self.checkKey(self.varCurrentSection,"sectionCategory")) :
+                    self.var_sectionCategory.set(self.varCurrentSection["sectionCategory"])
+                if( self.checkKey(self.varCurrentSection,"sectionType")) :
+                    self.var_sectionType.set(self.varCurrentSection["sectionType"])
+                for actions in self.varCurrentSection["actions"]:                
+                    ActionId,ActionType,StartupType,SelectorType,Control_,InputType,ManualValue,IOValue,NextActionId='','','','','','','','',''
+                    conditionType,leftInputType,leftManualValue,leftIOValue,trueActionId,rightInputType,rightManualValue,rightIOValue,falseActionId='','','','','','','','',''
+                    if(self.checkKey(actions,"actionId")):
+                        ActionId=actions["actionId"]
+                    if(self.checkKey(actions,"actionType")):
+                        ActionType=actions["actionType"]
+                    if(self.checkKey(actions,"startupType")):
+                        StartupType=actions["startupType"]
+                    if(self.checkKey(actions,"selectorType")):
+                        SelectorType=actions["selectorType"]
+                    if(self.checkKey(actions,"control")):
+                        Control_=actions["control"]
+                    if(self.checkKey(actions,"inputType")):
+                        InputType=actions["inputType"]
+                    if(self.checkKey(actions,"manualValue")):
+                        ManualValue=actions["manualValue"]
+                    if(self.checkKey(actions,"ioValue")):
+                        IOValue=actions["ioValue"]
+                    if(self.checkKey(actions,"nextActionId")):
+                        NextActionId=actions["nextActionId"]
 
-            for template in self.varAllTemlate:
-                if template["templateName"]==self.varCurrentTemplateName.get():
-                    self.varCurrentTemplate=template
-            if(self.varCurrentTemplate != None):
-                self.varCurrentUrl.set(self.varCurrentTemplate["url"])
-                for sections in self.varCurrentTemplate["sections"]:                
-                    sectionName,sectionType,sectionCategory,actionCount='','','',0
-                    if(self.checkKey(sections,"sectionName")):
-                        sectionName=sections["sectionName"]
-                    if(self.checkKey(sections,"sectionType")):
-                        sectionType=sections["sectionType"]
-                    if(self.checkKey(sections,"sectionCategory")):
-                        sectionCategory=sections["sectionCategory"]
-                    if(self.checkKey(sections,"actions")):
-                        actionCount=len(sections["actions"]) 
-                    self.treev1.insert("", 'end',values =(sectionName, sectionType,sectionCategory,actionCount))
+                    if(self.checkKey(actions,"conditionType")):
+                        conditionType=actions["conditionType"]
+                    if(self.checkKey(actions,"leftInputType")):
+                        leftInputType=actions["leftInputType"]
+                    if(self.checkKey(actions,"leftManualValue")):
+                        leftManualValue=actions["leftManualValue"]
+                    if(self.checkKey(actions,"leftIOValue")):
+                        leftIOValue=actions["leftIOValue"]
+                    if(self.checkKey(actions,"trueActionId")):
+                        trueActionId=actions["trueActionId"]
+                    if(self.checkKey(actions,"rightInputType")):
+                        rightInputType=actions["rightInputType"]
+                    if(self.checkKey(actions,"rightManualValue")):
+                        rightManualValue=actions["rightManualValue"]
+                    if(self.checkKey(actions,"rightIOValue")):
+                        rightIOValue=actions["rightIOValue"]
+                    if(self.checkKey(actions,"falseActionId")):
+                        falseActionId=actions["falseActionId"]
+
+                    
+                    self.treev2.insert("", 'end',values =(ActionId,ActionType,StartupType,SelectorType,Control_,InputType,ManualValue,IOValue,NextActionId,
+                    conditionType,leftInputType,leftManualValue,leftIOValue,trueActionId,rightInputType,rightManualValue,rightIOValue,falseActionId))
+                self.treev2.pack_forget()
+                self.treev2.pack(fill=tk.BOTH,expand=True,pady=(10,10))
     
     def clear_all_gridview(self,ProcType=1):
         if(ProcType==1):
@@ -214,7 +255,7 @@ class AddTemplate:
         horscrlbar.pack(side ='bottom', fill ='x')
         self.treev1.pack(fill=tk.BOTH,expand=True,pady=(10,10))
         # Configuring treeview
-        self.treev1.configure(xscrollcommand = verscrlbar.set, yscrollcommand=horscrlbar.set)
+        self.treev1.configure(xscrollcommand = horscrlbar.set, yscrollcommand=verscrlbar.set)
 
         # Defining number of columns
         self.treev1["columns"] = ("sectionName", "sectionType", "sectionCategory","actionCount")
@@ -234,31 +275,48 @@ class AddTemplate:
         self.treev1.heading("sectionCategory", text ="Category")
         self.treev1.heading("actionCount", text ="Action Count")
         
-        self.treev1.bind("<ButtonRelease-1>",self.fncMoveItems)
-        cmbAllTemplate.bind("<<ComboboxSelected>>", self.BindExistingTreeview)
+        self.treev1.bind("<ButtonRelease-1>",lambda event:self.fncMoveItems(event,1))
+        cmbAllTemplate.bind("<<ComboboxSelected>>",lambda event:self.BindExistingTreeview(event,1))
 
-    def fnc_Select_Record(self):
-        selected=self.treev1.focus()
-        #values= self.treev1.item(selected,'values')
-        #print(values)
-        self.frmHeader.children["frmTreeviewhandler"].children["btnEditAction"]["state"]=tk.NORMAL
-        self.frmHeader.children["frmTreeviewhandler"].children["btnRemoveAction"]["state"]=tk.NORMAL
-        self.frmHeader.children["frmTreeviewhandler"].children["btnMoveUpAction"]["state"]=tk.NORMAL
-        self.frmHeader.children["frmTreeviewhandler"].children["btnMoveDownAction"]["state"]=tk.NORMAL
+    def fnc_Select_Record(self,procType):
+        if(procType==1):
+            selected=self.treev1.focus()        
+            if(len(selected)>0):
+                self.frmHeader.children["frmTreeviewhandler"].children["btnEditAction"]["state"]=tk.NORMAL
+                self.frmHeader.children["frmTreeviewhandler"].children["btnRemoveAction"]["state"]=tk.NORMAL
+                self.frmHeader.children["frmTreeviewhandler"].children["btnMoveUpAction"]["state"]=tk.NORMAL
+                self.frmHeader.children["frmTreeviewhandler"].children["btnMoveDownAction"]["state"]=tk.NORMAL
+        elif (procType==2):
+            selected=self.treev2.focus()        
+            if(len(selected)>0):                
+                self.frmHeader1.children["frmTreeviewhandler1"].children["btnRemoveAction"]["state"]=tk.NORMAL
+                self.frmHeader1.children["frmTreeviewhandler1"].children["btnMoveUpAction"]["state"]=tk.NORMAL
+                self.frmHeader1.children["frmTreeviewhandler1"].children["btnMoveDownAction"]["state"]=tk.NORMAL
 
 
-    def fncMoveItems(self,e):
-        self.fnc_Select_Record()
+    def fncMoveItems(self,e,procType=1):
+        self.fnc_Select_Record(procType)
 
-    def fncMoveUp(self):
-        rows=self.treev1.selection()
-        for row in rows:
-            self.treev1.move(row,self.treev1.parent(row),self.treev1.index(row)-1)
+    def fncMoveUp(self,procType=1):
+        if(procType==1):
+            rows=self.treev1.selection()
+            for row in rows:
+                self.treev1.move(row,self.treev1.parent(row),self.treev1.index(row)-1)
+        elif(procType==2):
+            rows=self.treev2.selection()
+            for row in rows:
+                self.treev2.move(row,self.treev2.parent(row),self.treev2.index(row)-1)
+            
 
-    def fncMoveDown(self):
-        rows=self.treev1.selection()
-        for row in reversed(rows):
-            self.treev1.move(row,self.treev.parent(row),self.treev1.index(row)+1)
+    def fncMoveDown(self,procType=1):
+        if(procType==1):
+            rows=self.treev1.selection()
+            for row in reversed(rows):
+                self.treev1.move(row,self.treev1.parent(row),self.treev1.index(row)+1)
+        if(procType==2):
+            rows=self.treev2.selection()
+            for row in reversed(rows):
+                self.treev2.move(row,self.treev2.parent(row),self.treev2.index(row)+1)
         
 
     def fncRemove(self,ProcType=1):        
@@ -290,9 +348,13 @@ class AddTemplate:
         self.clear_all_gridview()
         self.fncChangeTemplateType(None)
                 
-    def fncSaveData(self):
+    def fncSaveData(self,ProcType):
+
         list_of_bool = [True for elem in  self.varAllTemlate
                             if self.varCurrentTemplateName.get() in elem["templateName"]]
+        tempSection=None
+        self.varAllSection=[]
+        
         if(self.varActionType.get()=="Add Template"):
             if any(list_of_bool):
                 messagebox.showerror("Already Exists", "Template Name already exists")
@@ -301,24 +363,68 @@ class AddTemplate:
             if not any(list_of_bool):
                 messagebox.showerror("Not Exists", "Invalid template name")
                 return
+            self.varAllSection=self.varCurrentTemplate["sections"]
         if(self.varCurrentUrl==None or self.varCurrentUrl.get()==""):
             messagebox.showerror("Required", "Required URL")
             return
-        
-        AllAction=[]
-        for item in self.treev1.get_children():            
-            aDict = {"action_type":self.treev1.item(item)["values"][0] , "action_on":self.treev1.item(item)["values"][1],
-             "control":self.treev1.item(item)["values"][2],"io_name":self.treev1.item(item)["values"][3],"control_value":self.treev1.item(item)["values"][4]}
-            AllAction.append(aDict)
-        if(len(AllAction)==0):
-            messagebox.showerror("Required", "Please add actions")
-            return
-        
-        AllData={"templateName":self.varCurrentTemplateName.get(),"url":self.varCurrentUrl.get(),"actions":AllAction}
 
+        if(ProcType==2):
+            FoundSection=False
+            if(self.var_sectionName==None or self.var_sectionName.get()==""):
+                messagebox.showerror("Required", "Section Section Name")
+                return
+            for sections in self.varAllSection:                                    
+                    if(self.checkKey(sections,"sectionName")):
+                        if(sections["sectionName"]==self.var_sectionName.get()): 
+                            FoundSection=True
+                            break
+            if(self.IsUpdateSection and not FoundSection):
+                messagebox.showerror("Required", "Invalid Section Name")
+                return
+            if(not self.IsUpdateSection and FoundSection):
+                messagebox.showerror("Required", "Section Name already Exists")
+                return
+            if(self.var_sectionType==None or self.var_sectionType.get()==""):
+                messagebox.showerror("Required", "Required Section Type")
+                return
+            if(self.var_sectionCategory==None or self.var_sectionCategory.get()==""):
+                messagebox.showerror("Required", "Required Section Category")
+                return
+            if(self.treev2==None):
+                messagebox.showerror("Required", "Required Actions")
+                return
+            AllAction=[]
+            for item in self.treev2.get_children():            
+                aDict = {"actionId":self.treev2.item(item)["values"][0] , "actionType":self.treev2.item(item)["values"][1],
+                "startupType":self.treev2.item(item)["values"][2],"selectorType":self.treev2.item(item)["values"][3],"control":self.treev2.item(item)["values"][4],
+                "inputType":self.treev2.item(item)["values"][5],"manualValue":self.treev2.item(item)["values"][6],"ioValue":self.treev2.item(item)["values"][7],
+                "nextActionId":self.treev2.item(item)["values"][8],"conditionType":self.treev2.item(item)["values"][9],"leftInputType":self.treev2.item(item)["values"][10],
+                "leftManualValue":self.treev2.item(item)["values"][11],"leftIOValue":self.treev2.item(item)["values"][12],"trueActionId":self.treev2.item(item)["values"][13],
+                "rightInputType":self.treev2.item(item)["values"][14],"rightManualValue":self.treev2.item(item)["values"][15],"rightIOValue":self.treev2.item(item)["values"][16],
+                "falseActionId":self.treev2.item(item)["values"][17]}
+                AllAction.append(aDict)
+            if(len(AllAction)==0):
+                messagebox.showerror("Required", "Required Actions")
+                return
+            tempSection={"sectionName":self.var_sectionName.get(),"sectionCategory":self.var_sectionCategory.get(),
+            "sectionType":self.var_sectionType.get(),"actions":AllAction}
+            for index,sections in  enumerate(self.varAllSection) : 
+                    if(self.checkKey(sections,"sectionName")):
+                        if(sections["sectionName"]==self.var_sectionName.get()): 
+                            self.varAllSection[index]=tempSection
+        
+
+        AllData=None
         if(self.varActionType.get()=="Add Template"):
+            AllData={"templateName":self.varCurrentTemplateName.get(),"url":self.varCurrentUrl.get(),"section":self.varAllSection}
             self.varAllTemlate.append(AllData)
         elif (self.varActionType.get()=="Update Template"): 
+            AllSection=[]
+            for titem in self.treev1.get_children():
+                for vitem in self.varAllSection:
+                    if(self.treev1.item(titem)["values"][0] ==vitem["sectionName"]):
+                        AllSection.append(vitem)
+            AllData={"templateName":self.varCurrentTemplateName.get(),"url":self.varCurrentUrl.get(),"section":AllSection}
             for i, item in enumerate(self.varAllTemlate):
                 if item["templateName"] == self.varCurrentTemplateName.get():
                     self.varAllTemlate[i] = AllData
@@ -326,18 +432,26 @@ class AddTemplate:
         with open(os.path.join(self.config.FilePath, self.config.TemplateFileName), 'w', encoding='utf-8') as f:
             json.dump(self.varAllTemlate, f, ensure_ascii=False, indent=4,separators=(',',': '))            
             tk.messagebox.showinfo("showinfo", "Save Successfully")
-            self.fncResetData()
+            self.BindExistingTreeview(1)
+            self.BindExistingTreeview(2)
+            
             
     def fncOpenChildForm(self,IsUpdate):    
         if(IsUpdate):
             selected_items = self.treev1.selection()        
             if(selected_items==None or len(selected_items)==0):
                 tk.messagebox.showerror("Error", "Select the section")
+                self.IsUpdateSection=False
                 return
             else:
-                print(1)
+                for x in selected_items:
+                    print(self.treev1.item(x)["values"][0])                    
+                    self.var_sectionName.set(self.treev1.item(x)["values"][0])  
+                    self.IsUpdateSection=True
+                
         else:
             self.varCurrentSection=None
+            self.IsUpdateSection=False
         containter = tk.Toplevel(self.ContainerFrame)        
         if(IsUpdate):
             containter.title("Update Section")
@@ -375,8 +489,10 @@ class AddTemplate:
         ttk.Label(self.frmHeader1,text = "Section Category :").grid(row=2,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)        
         ttk.Combobox(self.frmHeader1, width = 24,state="readonly", textvariable = self.var_sectionCategory, values=self.var_allSectionCategory).grid(row=2,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
 
+        ttk.Button(self.frmHeader1, text ="Save", width=10, command =lambda: self.fncSaveData(2)).grid(row=5,column = 1 , padx=(10,0),pady=(3,5),sticky=tk.N+tk.W)
+
         frmbtn1 = ttk.Frame(self.frmHeader1,name="frmTreeviewhandler1")
-        frmbtn1.grid(row=3,column = 1, columnspan=3, sticky=tk.N+tk.W+tk.E)
+        frmbtn1.grid(row=3,column = 1, columnspan=4, sticky=tk.N+tk.W+tk.E)
         btnAddAction = tk.Button ( frmbtn1,name="btnAddAction" ,text =fa.icons['plus'], relief='groove', width=3, font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda: self.fncOpenInnerChildForm() )        
         btnRemoveAction = tk.Button ( frmbtn1,name="btnRemoveAction", text =fa.icons['trash'], relief='groove', width=3, state=tk.DISABLED,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda: self.fncRemove(2) )
         btnMoveUpAction = tk.Button ( frmbtn1,name="btnMoveUpAction", text =fa.icons['arrow-up'], relief='groove', width=3, state=tk.DISABLED,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda: self.fncMoveUp(2) )
@@ -400,30 +516,61 @@ class AddTemplate:
         horscrlbar.pack(side ='bottom', fill ='x')
         self.treev2.pack(fill=tk.BOTH,expand=True,pady=(10,10))
         # Configuring treeview
-        self.treev2.configure(xscrollcommand = verscrlbar.set, yscrollcommand=horscrlbar.set)
+        self.treev2.configure(xscrollcommand = horscrlbar.set, yscrollcommand=verscrlbar.set)
 
         # Defining number of columns
-        self.treev2["columns"] = ("action_type", "action_on", "control","io_name","control_value")
+        self.treev2["columns"] = ("actionId", "actionType", "startupType","selectorType","control","inputType","manualValue","ioValue","nextActionId",
+        "conditionType","leftInputType","leftManualValue","leftIOValue","trueActionId",
+        "rightInputType","rightManualValue","rightIOValue","falseActionId")
         # Defining heading
         self.treev2['show'] = 'headings'
         # Assigning the width and anchor to the
         # respective columns
-        self.treev2.column("action_type", width = 50, anchor ='nw')
-        self.treev2.column("action_on", width = 50, anchor ='nw')
-        self.treev2.column("control", width = 50, anchor ='nw')
-        self.treev2.column("io_name", width = 50, anchor ='nw')
-        self.treev2.column("control_value", width = 50, anchor ='nw')        
+        self.treev2.column("actionId",  stretch=tk.NO, width = 50, anchor ='nw')
+        self.treev2.column("actionType",  stretch=tk.NO, width = 100, anchor ='nw')
+        self.treev2.column("startupType",  stretch=tk.NO, width = 100, anchor ='nw')
+        self.treev2.column("selectorType",  stretch=tk.NO, width = 100, anchor ='nw')
+        self.treev2.column("control",  stretch=tk.NO, width = 100, anchor ='nw')
+        self.treev2.column("inputType",  stretch=tk.NO, width = 100, anchor ='nw')
+        self.treev2.column("manualValue",  stretch=tk.NO, width = 100, anchor ='nw')
+        self.treev2.column("ioValue",  stretch=tk.NO, width = 150, anchor ='nw')
+        self.treev2.column("nextActionId",  stretch=tk.NO, width = 50, anchor ='nw')
+        self.treev2.column("conditionType",  stretch=tk.NO, width = 50, anchor ='nw')
+        self.treev2.column("leftInputType",  stretch=tk.NO, width = 100, anchor ='nw')
+        self.treev2.column("leftManualValue",  stretch=tk.NO, width = 100, anchor ='nw')
+        self.treev2.column("leftIOValue",  stretch=tk.NO, width = 100, anchor ='nw')
+        self.treev2.column("trueActionId",  stretch=tk.NO, width = 100, anchor ='nw')
+        self.treev2.column("rightInputType",  stretch=tk.NO, width = 100, anchor ='nw')
+        self.treev2.column("rightManualValue",  stretch=tk.NO, width = 100, anchor ='nw')
+        self.treev2.column("rightIOValue",  stretch=tk.NO, width = 100, anchor ='nw')
+        self.treev2.column("falseActionId",  stretch=tk.NO, width = 50, anchor ='nw')
+        
         # Assigning the heading names to the
         # respective columns
-        self.treev2.heading("action_type", text ="Action Type")
-        self.treev2.heading("action_on", text ="Action on")
+        self.treev2.heading("actionId", text ="Id")
+        self.treev2.heading("actionType", text ="Action Type")
+        self.treev2.heading("startupType", text ="Startup Type")
+        self.treev2.heading("selectorType", text ="Selector Type")
         self.treev2.heading("control", text ="Control")
-        self.treev2.heading("io_name", text ="IO Name")
-        self.treev2.heading("control_value", text ="Default Value")        
+        self.treev2.heading("inputType", text ="Input Type")
+        self.treev2.heading("manualValue", text ="manualValue")
+        self.treev2.heading("ioValue", text ="IO Value")
+        self.treev2.heading("nextActionId", text ="Next Action")  
 
-        self.treev2.bind("<ButtonRelease-1>",self.fncMoveItems)
+        self.treev2.heading("conditionType", text ="Condition Type")  
+        self.treev2.heading("leftInputType", text ="Left Input Type")  
+        self.treev2.heading("rightInputType", text ="Right Input Type")  
+        self.treev2.heading("leftManualValue", text ="Left Manual Value")  
+        self.treev2.heading("rightManualValue", text ="Right Manual Value")  
+        self.treev2.heading("leftIOValue", text ="left IO Value")  
+        self.treev2.heading("rightIOValue", text ="right IO Value")  
+        self.treev2.heading("trueActionId", text ="True Action Id")         
+        self.treev2.heading("falseActionId", text ="False Action Id")         
+
+        self.treev2.bind("<ButtonRelease-1>", lambda event: self.fncMoveItems(event,2))
         if(cmbSectionName!=None):
-            cmbSectionName.bind("<<ComboboxSelected>>", self.BindExistingTreeview)
+            self.BindExistingTreeview(None,2)
+            cmbSectionName.bind("<<ComboboxSelected>>", lambda event: self.BindExistingTreeview(event,2))
     
     def fncChangeActionType(self,event):
         if(self.var_actionType.get()=="Condition"):
@@ -472,7 +619,7 @@ class AddTemplate:
         cmbActionType.grid(row=0,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
         
          
-        ttk.Label(chdFrm,text = "StartupType :").grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        ttk.Label(chdFrm,text = "Startup Type :").grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
         rdoFrm=ttk.Frame(chdFrm)
         rdoFrm.grid(row=1,column = 1,padx=(10, 10),columnspan=3, pady=(5, 2), sticky=tk.N+tk.S+tk.W)
         ttk.Radiobutton(rdoFrm,text="Strat",value="Start",variable = self.var_ActionStartupType).grid(row=0,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
@@ -541,31 +688,85 @@ class AddTemplate:
         ttk.Label(self.chdFrm2,text = "False Next ActionId :" ).grid(row=4,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
         ttk.Entry(self.chdFrm2, width = 26, textvariable = self.var_falseActionId).grid(row=4,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
 
-        ttk.Button ( chdFrm, text ="Save", width=10, command =lambda: self.fncAddAction(chdFrm)).grid(row=5,column = 1 , padx=(10,0),pady=(3,5),sticky=tk.N+tk.W)
+        ttk.Button(chdFrm, text ="Save", width=10, command =lambda: self.fncAddAction(chdFrm)).grid(row=5,column = 1 , padx=(10,0),pady=(3,5),sticky=tk.N+tk.W)
         chdFrm.grab_set()
         self.fncChangeActionType(None)
         cmbActionType.bind("<<ComboboxSelected>>", lambda event: self.fncChangeActionType(event))
         cmbInputType.bind("<<ComboboxSelected>>", lambda event: self.fncChangeInputType(event))
 
     def fncAddAction(self,container):
-        if(self.var_action_type==None or self.var_action_type.get()=="" ):
+        if(self.var_actionId==None or self.var_actionId.get()=="" ):
+            messagebox.showerror("Required", "Required Action Id")
+            return
+        if(self.var_actionType==None or self.var_actionType.get()=="" ):
             messagebox.showerror("Required", "Required Action Type")
             return
-        if(self.var_action_on==None or self.var_action_on.get()==""):
-            messagebox.showerror("Required", "Required Action On")
+        if(self.var_ActionStartupType==None or self.var_ActionStartupType.get()==""):
+            messagebox.showerror("Required", "Required startup type")
             return
-        if(self.var_control==None or self.var_control.get()==""):
-            messagebox.showerror("Required", "Required Control")
-            return
-        if((self.var_io_name==None or self.var_io_name.get()=="" ) and  (self.var_control_value==None or self.var_control_value.get()=="" ) 
-        and (not(self.var_action_type.get() =="Wait" or self.var_action_type.get() =="Break") )):
-            messagebox.showerror("Required", "Required IO Name or Default Value")
-            return
-        
-        self.treev1.insert("", 'end',values =(self.var_action_type.get(), self.var_action_on.get(),self.var_control.get(),self.var_io_name.get(),self.var_control_value.get()))
-        self.var_io_name.set("")
-        self.var_control_value.set("")
-        self.var_control.set("")
+        if(self.var_actionType.get()!="Wait"):
+            if(self.var_manualValue==None or self.var_manualValue.get()==""):
+                    messagebox.showerror("Required", "Required Manual Value")
+                    return
+        elif(self.var_actionType.get()!="Condition"):
+            if(self.var_controlSelectorType==None or self.var_controlSelectorType.get()==""):
+                messagebox.showerror("Required", "Required Selector Type")
+                return
+            if(self.var_control==None or self.var_control.get()==""):
+                messagebox.showerror("Required", "Required Control")
+                return
+            if(self.var_inputType==None or self.var_inputType.get()==""):
+                messagebox.showerror("Required", "Required Input Type")
+                return
+            if(self.var_inputType.get()=="ManualValue"):
+                if(self.var_manualValue==None or self.var_manualValue.get()==""):
+                    messagebox.showerror("Required", "Required Manual Value")
+                    return
+            else:
+                if(self.var_ioValue==None or self.var_ioValue.get()==""):
+                    messagebox.showerror("Required", "Required IO Value")
+                    return
+            if(self.var_nextActionId==None or self.var_nextActionId.get()==""):
+                messagebox.showerror("Required", "Required Next Action Id")
+                return
+        else:
+            if(self.var_conditionType==None or self.var_conditionType.get()==""):
+                messagebox.showerror("Required", "Required Condition Type")
+                return
+            if(self.var_leftInputType==None or self.var_leftInputType.get()==""):
+                messagebox.showerror("Required", "Required Left Input Type")
+                return
+            if(self.var_leftInputType.get()=="ManualValue"):
+                if(self.var_leftManualValue==None or self.var_leftManualValue.get()==""):
+                    messagebox.showerror("Required", "Required Left Manual Value")
+                    return
+            else:
+                if(self.var_leftIOValue==None or self.var_leftIOValue.get()==""):
+                    messagebox.showerror("Required", "Required Left IO Value")
+                    return
+            if(self.var_rightInputType==None or self.var_rightInputType.get()==""):
+                messagebox.showerror("Required", "Required Right Input Type")
+                return
+            if(self.var_rightInputType.get()=="ManualValue"):
+                if(self.var_rightManualValue==None or self.var_rightManualValue.get()==""):
+                    messagebox.showerror("Required", "Required Right Manual Value")
+                    return
+            else:
+                if(self.var_rightIOValue==None or self.var_rightIOValue.get()==""):
+                    messagebox.showerror("Required", "Required Right IO Value")
+                    return
+
+            if(self.var_trueActionId==None or self.var_trueActionId.get()==""):
+                messagebox.showerror("Required", "Required True Action Id")
+                return
+            if(self.var_falseActionId==None or self.var_falseActionId.get()==""):
+                messagebox.showerror("Required", "Required False Action Id")
+                return
+        self.treev2.insert("", 'end',values =(self.var_actionId.get(), self.var_actionType.get(),self.var_ActionStartupType.get(),
+        self.var_controlSelectorType.get(),self.var_control.get(),self.var_inputType.get(),self.var_manualValue.get(),self.var_ioValue.get(),self.var_nextActionId.get(),
+        self.var_conditionType.get(),self.var_leftInputType.get(),self.var_leftManualValue.get(),self.var_leftIOValue.get(),self.var_trueActionId.get(),
+        self.var_rightInputType.get(),self.var_rightManualValue.get(),self.var_rightIOValue.get(),self.var_falseActionId.get()
+        ))
         container.children["txtControl"].focus_set()
         messagebox.showinfo("Success", "Action added successfully")
 

@@ -1082,3 +1082,4 @@ JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: uncaught e
 JavaScript error: resource://gre/modules/CrashManager.jsm, line 898: AbortError: IOUtils: Shutting down and refusing additional I/O tasks
 RunWatchdog: Mainthread nested event loops during hang: 
  --- (no nested event loop active)
+1652248681380	geckodriver	INFO	Listening on 127.0.0.1:57255
