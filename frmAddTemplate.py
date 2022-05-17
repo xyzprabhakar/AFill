@@ -733,7 +733,7 @@ class AddTemplate:
         if(self.var_ActionStartupType==None or self.var_ActionStartupType.get()==""):
             messagebox.showerror("Required", "Required startup type")
             return
-        if(self.var_actionType.get()!="Wait"):
+        if(self.var_actionType.get()=="Wait"):
             if(self.var_manualValue==None or self.var_manualValue.get()==""):
                     messagebox.showerror("Required", "Required Manual Value")
                     return

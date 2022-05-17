@@ -105,6 +105,9 @@ class FillData(ttk.Frame):
         self.frm_Applicant1Canvas = tk.Canvas(self.frmInnerContentFrame1, bg=self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge',width=200)
         scrollbar_y = ttk.Scrollbar(self.frmInnerContentFrame1, orient=tk.VERTICAL, command=self.frm_Applicant1Canvas.yview)        
         scrollbar_y.pack(side=tk.RIGHT, fill="y")        
+        scrollbar_x = ttk.Scrollbar(self.frmInnerContentFrame1, orient=tk.HORIZONTAL, command=self.frm_Applicant1Canvas.xview)        
+        scrollbar_x.pack(side=tk.BOTTOM, fill="x")        
+
         self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
         self.frm_Applicant1 = ttk.Frame(self.frm_Applicant1Canvas)            
 
@@ -116,33 +119,31 @@ class FillData(ttk.Frame):
         else:
             with io.open(os.path.join(self.config.FilePath, self.varCurrentDataFileName.get()+".json")) as fp:
                 self.varCurrentData=None
-                self.varCurrentData = json.load(fp)   
+                self.varCurrentData = json.load(fp)                   
                 self.txtData.delete('1.0', tk.END)    
                 self.txtData.insert(tk.END,self.varCurrentData)
-        gridcounter=0
         if (self.checkKey(self.varCurrentTemplateData,"sections")):
-            for sect in self.varCurrentTemplateData["sections"]:                
-                datacounter=0
-                if (self.checkKey(sect,"isMultiple")):
-                    if( bool(sect["isMultiple"])):
-                        if (self.checkKey(sect,"sectionCounter")):
-                           sectioncounter =sect["sectionCounter"]
-                           for ApplicantId,ApplicantData in enumerate(self.varCurrentData) :
-                               if(ApplicantId==0):
-                                   if (self.checkKey(ApplicantData,sectioncounter)):
-                                       datacounter=len(ApplicantData[sectioncounter]) 
-                                       for i in range(0,datacounter):
-                                           ttk.Button (self.frm_Applicant1, text =sect["sectionName"]+ " "+str(i+1) , command =lambda: self.fill_data(sect["sectionName"],i)).grid(row=gridcounter,column=0,pady=(8,3),padx=(10,10),sticky=tk.E+tk.W )
-                                           gridcounter=gridcounter+1
-
-                else:                    
-                    ttk.Button (self.frm_Applicant1, text =sect["sectionName"] ,  command =lambda: self.fill_data(sect["sectionName"],0)).grid(row=gridcounter,column=0,sticky=tk.E+tk.W ,pady=(8,3),padx=(10,10))
-                    gridcounter=gridcounter+1
-
-
+            for sectCounter, sect in enumerate(self.varCurrentTemplateData["sections"]) :     
+                if (self.checkKey(sect,"sectionType")):                    
+                    if (self.checkKey(sect,"sectionCategory")):
+                        sectioncounter =sect["sectionCategory"]
+                        for ApplicantId,ApplicantData in enumerate(self.varCurrentData) :
+                            if(sectCounter==0):
+                                ttk.Label(self.frm_Applicant1,text="Applicant "+str(ApplicantId)).grid(row=sectCounter,column=ApplicantId,padx=(2,2))
+                            if (self.checkKey(ApplicantData,sectioncounter)):                                                                    
+                                tempFrame=ttk.Frame(self.frm_Applicant1)
+                                tempFrame.grid(row=sectCounter+1,column=ApplicantId,padx=(2,2))
+                                gridcounter=0
+                                if(sect["sectionType"]=="Multiple"):
+                                    datacounter=len(ApplicantData[sectioncounter])                                         
+                                    for i in range(0,datacounter):
+                                        ttk.Button (tempFrame, text =sect["sectionName"]+ " "+str(i+1) , command =lambda: self.fill_data(sect["sectionName"],i)).grid(row=gridcounter+i,column=ApplicantId,pady=(8,3),padx=(2,2))
+                                else:                    
+                                    ttk.Button(tempFrame, text =sect["sectionName"] ,  command =lambda: self.fill_data(sect["sectionName"],0)).grid(row=gridcounter,column=ApplicantId,pady=(8,3),padx=(2,2))
+                                gridcounter=gridcounter+1
         self.frm_Applicant1Canvas.create_window((0, 0), window=self.frm_Applicant1, anchor='nw')
         self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
-        self.frm_Applicant1Canvas.configure(yscrollcommand=scrollbar_y)
+        self.frm_Applicant1Canvas.configure(yscrollcommand=scrollbar_y,xscrollcommand=scrollbar_x)
 
         self.frm_Applicant1Canvas.bind("<Configure>",  lambda e: self.frm_Applicant1Canvas.configure(scrollregion=self.frm_Applicant1Canvas.bbox("all")))
         self.frm_Applicant1Canvas.bind_all("<MouseWheel>",   lambda e: self.OnMouseWheel1(e))
@@ -405,10 +406,12 @@ class FillData(ttk.Frame):
         frmBody.columnconfigure(0, weight=1)
         frmBody.columnconfigure(1, weight=100)  
         frmBody.rowconfigure(0, weight=100)  
-        self.frmLeftPanel,self.frmRightPanel= ttk.Frame(frmBody,width=300),ttk.Frame(frmBody)
+        self.frmLeftPanel,self.frmRightPanel= ttk.Frame(frmBody,width=350),ttk.Frame(frmBody)
         
         self.frmLeftPanel.grid(row=0,column=0,sticky=tk.N+tk.S+tk.W+tk.E,padx=(10,10))
         self.frmRightPanel.grid(row=0,column=1,sticky=tk.N+tk.S+tk.W+tk.E,padx=(10,10))
+        self.frmRightPanel.columnconfigure(0, weight=100)  
+        self.frmRightPanel.rowconfigure(0, weight=100)  
         self.txtData= tk.Text(self.frmRightPanel, name="txtData")
         self.txtData.grid(row=0,column = 0,columnspan=3 ,padx=(0, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W+tk.E)
 
