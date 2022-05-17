@@ -2,7 +2,7 @@
     {
         "templateName": "axis",
         "url": "https://retail.axisbank.co.in/",
-        "section": [
+        "sections": [
             {
                 "sectionName": "Login",
                 "sectionCategory": "PersonalDetails",
@@ -47,6 +47,26 @@
                         "rightManualValue": "",
                         "rightIOValue": "",
                         "falseActionId": ""
+                    },
+                    {
+                        "actionId": "3",
+                        "actionType": "Fill Input",
+                        "startupType": "Middle",
+                        "selectorType": "ByName",
+                        "control": "sdf",
+                        "inputType": "ManualValue",
+                        "manualValue": "sdfsdf",
+                        "ioValue": "dfsdf",
+                        "nextActionId": "ssadf",
+                        "conditionType": "",
+                        "leftInputType": "",
+                        "leftManualValue": "",
+                        "leftIOValue": "",
+                        "trueActionId": "",
+                        "rightInputType": "IOValue",
+                        "rightManualValue": "",
+                        "rightIOValue": "",
+                        "falseActionId": ""
                     }
                 ]
             }
@@ -55,7 +75,7 @@
     {
         "templateName": "axis1",
         "url": "https://retail.axisbank.co.in/",
-        "section": [
+        "sections": [
             {
                 "sectionName": "Login",
                 "sectionCategory": "PersonalDetails",
@@ -108,7 +128,7 @@
     {
         "templateName": "SBI",
         "url": "OnlineSbi.com",
-        "section": [
+        "sections": [
             {
                 "sectionName": "Login",
                 "sectionCategory": "PersonalDetails",
@@ -161,7 +181,7 @@
     {
         "templateName": "HDFC",
         "url": "hdfc.com",
-        "section": [
+        "sections": [
             {
                 "sectionName": "Login",
                 "sectionCategory": "PersonalDetails",
@@ -206,6 +226,26 @@
                         "rightManualValue": "",
                         "rightIOValue": "",
                         "falseActionId": ""
+                    },
+                    {
+                        "actionId": "3",
+                        "actionType": "Fill Input",
+                        "startupType": "Middle",
+                        "selectorType": "ByName",
+                        "control": "Captcha",
+                        "inputType": "ManualValue",
+                        "manualValue": "sdasd",
+                        "ioValue": "",
+                        "nextActionId": "4",
+                        "conditionType": "",
+                        "leftInputType": "",
+                        "leftManualValue": "",
+                        "leftIOValue": "",
+                        "trueActionId": "",
+                        "rightInputType": "IOValue",
+                        "rightManualValue": "",
+                        "rightIOValue": "",
+                        "falseActionId": ""
                     }
                 ]
             }
@@ -214,7 +254,7 @@
     {
         "templateName": "kotak",
         "url": "http.kotakbank.com",
-        "section": [
+        "sections": [
             {
                 "sectionName": "Login",
                 "sectionCategory": "PersonalDetails",

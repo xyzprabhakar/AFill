@@ -432,7 +432,7 @@ class AddTemplate:
 
         AllData=None
         if(self.varActionType.get()=="Add Template"):
-            AllData={"templateName":str(self.varCurrentTemplateName.get()) ,"url":str(self.varCurrentUrl.get()) ,"section":self.varAllSection}
+            AllData={"templateName":str(self.varCurrentTemplateName.get()) ,"url":str(self.varCurrentUrl.get()) ,"sections":self.varAllSection}
             self.varAllTemlate.append(AllData)
         elif (self.varActionType.get()=="Update Template"): 
             AllSection=[]
@@ -440,7 +440,7 @@ class AddTemplate:
                 for vitem in self.varAllSection:
                     if(self.treev1.item(titem)["values"][0] ==vitem["sectionName"]):
                         AllSection.append(vitem)
-            AllData={"templateName":str( self.varCurrentTemplateName.get()),"url": str(self.varCurrentUrl.get()) ,"section":AllSection}
+            AllData={"templateName":str( self.varCurrentTemplateName.get()),"url": str(self.varCurrentUrl.get()) ,"sections":AllSection}
             for i, item in enumerate(self.varAllTemlate):
                 if item["templateName"] == self.varCurrentTemplateName.get():
                     self.varAllTemlate[i] = AllData
@@ -474,7 +474,7 @@ class AddTemplate:
         else:
             self.varCurrentSection=None
             self.IsUpdateSection=False
-        containter = tk.Toplevel(self.ContainerFrame)        
+        containter = tk.Toplevel(self.ContainerFrame,name="frmChildForm")        
         if(IsUpdate):
             containter.title("Update Section")
         else:
@@ -711,11 +711,17 @@ class AddTemplate:
         ttk.Label(self.chdFrm2,text = "False Next ActionId :" ).grid(row=4,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
         ttk.Entry(self.chdFrm2, width = 26, textvariable = self.var_falseActionId).grid(row=4,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
 
-        ttk.Button(chdFrm, text ="Save", width=10, command =lambda: self.fncAddAction(chdFrm)).grid(row=5,column = 1 , padx=(10,0),pady=(3,5),sticky=tk.N+tk.W)
+        ttk.Button(chdFrm, text ="Save", width=10, command =lambda: self.fncAddAction(containter)).grid(row=5,column = 1 , padx=(10,0),pady=(3,5),sticky=tk.N+tk.W)        
         containter.grab_set()
-        self.fncChangeActionType(None)
+        self.fncChangeActionType(None)        
+        containter.protocol("WM_DELETE_WINDOW", lambda :self.fncCloseInnerChild(containter))
         cmbActionType.bind("<<ComboboxSelected>>", lambda event: self.fncChangeActionType(event))
         cmbInputType.bind("<<ComboboxSelected>>", lambda event: self.fncChangeInputType(event))
+
+    def fncCloseInnerChild(self,container):        
+        self.ContainerFrame.children["frmChildForm"].focus_set()
+        self.ContainerFrame.children["frmChildForm"].grab_set()
+        container.destroy()
 
     def fncAddAction(self,container):
         if(self.var_actionId==None or self.var_actionId.get()=="" ):
@@ -801,6 +807,7 @@ class AddTemplate:
         self.var_falseActionId.set("")
         self.var_ActionStartupType.set("Middle")
         self.chdFrm1.children["txtControl"].focus_set()        
+
         messagebox.showinfo("Success", "Action added successfully")
 
 
