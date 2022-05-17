@@ -10,6 +10,7 @@ import GenerateConfig as Gc
 import json,io,os
 import fontawesome as fa
 from ttkthemes import ThemedStyle
+import time
 
 
 class AddTemplate:
@@ -41,8 +42,7 @@ class AddTemplate:
         self.varCurrentTemplateName= tk.StringVar()
         self.varCurrentUrl= tk.StringVar()         
         self.ContainerFrame=Container        
-        self.LoadFromConfig()
-        self.LoadAllJsonData()
+        self.LoadFromConfig()        
         self.fncCreateItems()
     
     def LoadFromConfig(self):
@@ -62,6 +62,7 @@ class AddTemplate:
         elif(self.varActionType.get()=="Update Template"):
             self.frmHeader.children["txtTemplateName"].grid_forget()
             self.frmHeader.children["cmbTemplateName"].grid(row=1,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        self.BindDropDownTemplateName()
             
     def LoadAllJsonData(self):
         try:
@@ -72,6 +73,7 @@ class AddTemplate:
                     print('Empty File Created')
             else:
                 with io.open(os.path.join(self.config.FilePath, self.config.TemplateFileName)) as fp:
+                    self.varAllTemlate=[]
                     self.varAllTemlate = json.load(fp)
                     self.varAllTemlateName=[]
                     for x in self.varAllTemlate:
@@ -82,7 +84,8 @@ class AddTemplate:
     
     def BindDropDownTemplateName(self ):
         self.LoadAllJsonData()
-        self.frmHeader.children["cmbTemplateName"].configure(values=self.varAllTemlateName)
+        if(self.checkKey(self.frmHeader.children,"cmbTemplateName")):
+            self.frmHeader.children["cmbTemplateName"].configure(values=self.varAllTemlateName)
 
     def checkKey(self,dict, key):      
         if key in dict.keys():
@@ -114,7 +117,9 @@ class AddTemplate:
                     self.var_allSectionName.append(sectionName)
         elif(procType==2):
             self.varCurrentSection=None        
-            self.clear_all_gridview(procType)              
+            self.clear_all_gridview(procType)       
+            if(not self.checkKey(self.varCurrentTemplate,"sections")):       
+                return
             for sections in self.varCurrentTemplate["sections"]:                 
                 if sections["sectionName"]==self.var_sectionName.get():
                     self.varCurrentSection=sections
@@ -210,7 +215,7 @@ class AddTemplate:
         cmbType=ttk.Combobox(self.frmHeader,state="readonly", width = 24, textvariable = self.varActionType, values=("Add Template","Update Template"))
         
         cmbType.grid(row=0,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-        cmbType.bind("<<ComboboxSelected>>", self.fncChangeTemplateType)
+        
 
         ttk.Label(self.frmHeader,text = "Template Name").grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)        
         cmbAllTemplate=ttk.Combobox(self.frmHeader,name="cmbTemplateName",state="readonly", width = 24, textvariable = self.varCurrentTemplateName)
@@ -218,7 +223,7 @@ class AddTemplate:
         
         ttk.Label(self.frmHeader,text = "Url" ,font=self.displayFont).grid(row=2,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
         ttk.Entry(self.frmHeader,name="txtUrl",textvariable =self.varCurrentUrl, width = 26).grid(row=2,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-        self.BindDropDownTemplateName()
+        
 
         
         frmbtn = ttk.Frame(self.frmHeader)        
@@ -276,6 +281,7 @@ class AddTemplate:
         self.treev1.heading("actionCount", text ="Action Count")
         
         self.treev1.bind("<ButtonRelease-1>",lambda event:self.fncMoveItems(event,1))
+        cmbType.bind("<<ComboboxSelected>>", lambda event:self.fncChangeTemplateType(event))
         cmbAllTemplate.bind("<<ComboboxSelected>>",lambda event:self.BindExistingTreeview(event,1))
 
     def fnc_Select_Record(self,procType):
@@ -347,6 +353,7 @@ class AddTemplate:
         self.varCurrentUrl.set("")
         self.clear_all_gridview()
         self.fncChangeTemplateType(None)
+        self.BindDropDownTemplateName()
                 
     def fncSaveData(self,ProcType):
 
@@ -395,28 +402,37 @@ class AddTemplate:
                 return
             AllAction=[]
             for item in self.treev2.get_children():            
-                aDict = {"actionId":self.treev2.item(item)["values"][0] , "actionType":self.treev2.item(item)["values"][1],
-                "startupType":self.treev2.item(item)["values"][2],"selectorType":self.treev2.item(item)["values"][3],"control":self.treev2.item(item)["values"][4],
-                "inputType":self.treev2.item(item)["values"][5],"manualValue":self.treev2.item(item)["values"][6],"ioValue":self.treev2.item(item)["values"][7],
-                "nextActionId":self.treev2.item(item)["values"][8],"conditionType":self.treev2.item(item)["values"][9],"leftInputType":self.treev2.item(item)["values"][10],
-                "leftManualValue":self.treev2.item(item)["values"][11],"leftIOValue":self.treev2.item(item)["values"][12],"trueActionId":self.treev2.item(item)["values"][13],
-                "rightInputType":self.treev2.item(item)["values"][14],"rightManualValue":self.treev2.item(item)["values"][15],"rightIOValue":self.treev2.item(item)["values"][16],
-                "falseActionId":self.treev2.item(item)["values"][17]}
+                aDict = {"actionId": str(self.treev2.item(item)["values"][0])  , "actionType":str(self.treev2.item(item)["values"][1]) ,
+                "startupType":str( self.treev2.item(item)["values"][2]),"selectorType":str(self.treev2.item(item)["values"][3]) ,"control":str( self.treev2.item(item)["values"][4]),
+                "inputType":str(self.treev2.item(item)["values"][5]) ,"manualValue":str( self.treev2.item(item)["values"][6]),"ioValue":str(self.treev2.item(item)["values"][7]) ,
+                "nextActionId":str(self.treev2.item(item)["values"][8]) ,"conditionType": str(self.treev2.item(item)["values"][9]) ,"leftInputType":str(self.treev2.item(item)["values"][10]) ,
+                "leftManualValue":str(self.treev2.item(item)["values"][11]) ,"leftIOValue":str(self.treev2.item(item)["values"][12]) ,"trueActionId":str(self.treev2.item(item)["values"][13]) ,
+                "rightInputType":str(self.treev2.item(item)["values"][14]) ,"rightManualValue":str(self.treev2.item(item)["values"][15]) ,"rightIOValue":str(self.treev2.item(item)["values"][16]),
+                "falseActionId": str(self.treev2.item(item)["values"][17]) }
                 AllAction.append(aDict)
             if(len(AllAction)==0):
                 messagebox.showerror("Required", "Required Actions")
                 return
-            tempSection={"sectionName":self.var_sectionName.get(),"sectionCategory":self.var_sectionCategory.get(),
-            "sectionType":self.var_sectionType.get(),"actions":AllAction}
-            for index,sections in  enumerate(self.varAllSection) : 
-                    if(self.checkKey(sections,"sectionName")):
-                        if(sections["sectionName"]==self.var_sectionName.get()): 
-                            self.varAllSection[index]=tempSection
-        
+            tempSection={"sectionName":str( self.var_sectionName.get()),"sectionCategory":str(self.var_sectionCategory.get()) ,
+            "sectionType":str( self.var_sectionType.get()),"actions":AllAction}
+            
+
+            if(self.IsUpdateSection):
+                for index,sections in  enumerate(self.varAllSection) : 
+                        if(self.checkKey(sections,"sectionName")):
+                            if(sections["sectionName"]==self.var_sectionName.get()): 
+                                self.varAllSection[index]=tempSection
+            else:
+                if (self.varAllSection==None):
+                    self.varAllSection=[]
+                self.varAllSection.append(tempSection)
+            if(len(self.varAllSection) ==0):
+                messagebox.showerror("Required", "Required Section")
+                return
 
         AllData=None
         if(self.varActionType.get()=="Add Template"):
-            AllData={"templateName":self.varCurrentTemplateName.get(),"url":self.varCurrentUrl.get(),"section":self.varAllSection}
+            AllData={"templateName":str(self.varCurrentTemplateName.get()) ,"url":str(self.varCurrentUrl.get()) ,"section":self.varAllSection}
             self.varAllTemlate.append(AllData)
         elif (self.varActionType.get()=="Update Template"): 
             AllSection=[]
@@ -424,16 +440,22 @@ class AddTemplate:
                 for vitem in self.varAllSection:
                     if(self.treev1.item(titem)["values"][0] ==vitem["sectionName"]):
                         AllSection.append(vitem)
-            AllData={"templateName":self.varCurrentTemplateName.get(),"url":self.varCurrentUrl.get(),"section":AllSection}
+            AllData={"templateName":str( self.varCurrentTemplateName.get()),"url": str(self.varCurrentUrl.get()) ,"section":AllSection}
             for i, item in enumerate(self.varAllTemlate):
                 if item["templateName"] == self.varCurrentTemplateName.get():
                     self.varAllTemlate[i] = AllData
         
         with open(os.path.join(self.config.FilePath, self.config.TemplateFileName), 'w', encoding='utf-8') as f:
             json.dump(self.varAllTemlate, f, ensure_ascii=False, indent=4,separators=(',',': '))            
-            tk.messagebox.showinfo("showinfo", "Save Successfully")
-            self.BindExistingTreeview(1)
-            self.BindExistingTreeview(2)
+            tk.messagebox.showinfo("showinfo", "Save Successfully")            
+            if(ProcType==2):
+                if(self.checkKey(self.frmHeader1.children,"cmbSectionName")):
+                    self.frmHeader1.children["cmbSectionName"].focus_set()
+                if(self.checkKey(self.frmHeader1.children,"txtSectionName")):
+                    self.frmHeader1.children["txtSectionName"].focus_set()     
+
+            
+            
             
             
     def fncOpenChildForm(self,IsUpdate):    
@@ -478,10 +500,10 @@ class AddTemplate:
         cmbSectionName=None
         ttk.Label(self.frmHeader1,text = "Section Name :").grid(row=0,column = 0,padx=(10, 10), pady=(20, 2), sticky=tk.N+tk.S+tk.E)        
         if(IsUpdate):
-            cmbSectionName=ttk.Combobox(self.frmHeader1, width = 24,state="readonly" , textvariable = self.var_sectionName, values=self.var_allSectionName)
+            cmbSectionName=ttk.Combobox(self.frmHeader1, name="cmbSectionName", width = 24,state="readonly" , textvariable = self.var_sectionName, values=self.var_allSectionName)
             cmbSectionName.grid(row=0,column = 1,padx=(10, 10), pady=(20, 2), sticky=tk.N+tk.S+tk.W)
         else:
-            ttk.Entry(self.frmHeader1, width = 26, textvariable = self.var_sectionName).grid(row=0,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)    
+            ttk.Entry(self.frmHeader1, width = 26, name="txtSectionName", textvariable = self.var_sectionName).grid(row=0,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)    
 
         ttk.Label(self.frmHeader1,text = "Section Type :").grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)        
         ttk.Combobox(self.frmHeader1, width = 24,state="readonly", textvariable = self.var_sectionType, values=self.var_allSectionType).grid(row=1,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
@@ -571,6 +593,7 @@ class AddTemplate:
         if(cmbSectionName!=None):
             self.BindExistingTreeview(None,2)
             cmbSectionName.bind("<<ComboboxSelected>>", lambda event: self.BindExistingTreeview(event,2))
+        containter.grab_set()
     
     def fncChangeActionType(self,event):
         if(self.var_actionType.get()=="Condition"):
@@ -593,7 +616,7 @@ class AddTemplate:
             self.txtManualValue.config(state="disabled")
     
     def fncOpenInnerChildForm(self):    
-        containter = tk.Toplevel(self.ContainerFrame)        
+        containter = tk.Toplevel(self.frmHeader1)        
         containter.title("Add Action")
         containter.geometry("650x300")
         innercontainter=ttk.Frame(containter)        
@@ -639,7 +662,7 @@ class AddTemplate:
         ttk.Label(self.chdFrm1,text = "Selector Type :").grid(row=0,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
         ttk.Combobox(self.chdFrm1, width = 24,state="readonly" , textvariable = self.var_controlSelectorType, values=self.var_allSelectorType).grid(row=0,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
         ttk.Label(self.chdFrm1,text = "Control :" ).grid(row=0,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-        ttk.Entry(self.chdFrm1, width = 26, textvariable = self.var_control).grid(row=0,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        ttk.Entry(self.chdFrm1, name="txtControl",width = 26, textvariable = self.var_control).grid(row=0,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
 
         ttk.Label(self.chdFrm1,text = "Input Type :").grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
         cmbInputType =ttk.Combobox(self.chdFrm1, width = 24,state="readonly" , textvariable = self.var_inputType, values=self.var_allInputType)
@@ -689,7 +712,7 @@ class AddTemplate:
         ttk.Entry(self.chdFrm2, width = 26, textvariable = self.var_falseActionId).grid(row=4,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
 
         ttk.Button(chdFrm, text ="Save", width=10, command =lambda: self.fncAddAction(chdFrm)).grid(row=5,column = 1 , padx=(10,0),pady=(3,5),sticky=tk.N+tk.W)
-        chdFrm.grab_set()
+        containter.grab_set()
         self.fncChangeActionType(None)
         cmbActionType.bind("<<ComboboxSelected>>", lambda event: self.fncChangeActionType(event))
         cmbInputType.bind("<<ComboboxSelected>>", lambda event: self.fncChangeInputType(event))
@@ -767,7 +790,17 @@ class AddTemplate:
         self.var_conditionType.get(),self.var_leftInputType.get(),self.var_leftManualValue.get(),self.var_leftIOValue.get(),self.var_trueActionId.get(),
         self.var_rightInputType.get(),self.var_rightManualValue.get(),self.var_rightIOValue.get(),self.var_falseActionId.get()
         ))
-        container.children["txtControl"].focus_set()
+        #reset the data
+        self.var_control.set("")
+        self.var_manualValue.set("")
+        self.var_leftManualValue.set("")
+        self.var_rightInputType.set("")
+        self.var_actionId.set("")
+        self.var_nextActionId.set("")
+        self.var_trueActionId.set("")
+        self.var_falseActionId.set("")
+        self.var_ActionStartupType.set("Middle")
+        self.chdFrm1.children["txtControl"].focus_set()        
         messagebox.showinfo("Success", "Action added successfully")
 
 
