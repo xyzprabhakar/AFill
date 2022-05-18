@@ -596,7 +596,7 @@ class AddTemplate:
         containter.grab_set()
     
     def fncChangeActionType(self,event):
-        if(self.var_actionType.get()=="Condition"):
+        if(self.var_actionType.get()=="Condition" or self.var_actionType.get()=="Find Index"):
             if(self.chdFrm1 != None):
                 self.chdFrm1.grid_forget()
             if(self.chdFrm2 != None):
@@ -737,7 +737,7 @@ class AddTemplate:
             if(self.var_manualValue==None or self.var_manualValue.get()==""):
                     messagebox.showerror("Required", "Required Manual Value")
                     return
-        elif(self.var_actionType.get()!="Condition"):
+        elif(not (self.var_actionType.get()=="Condition" or self.var_actionType.get()=="Find Index")) :
             if(self.var_controlSelectorType==None or self.var_controlSelectorType.get()==""):
                 messagebox.showerror("Required", "Required Selector Type")
                 return

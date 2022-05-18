@@ -22,7 +22,7 @@ class GenerateConfig:
     customStyle=None
     headerFonts =None 
     SecretKey ='fpxNyunUji5SJod5sK1dCwmovsukz1qLC1sJYOsVTzo='
-    ActionTypes=("Wait","Check Checkbox","Click Button","Click Link","Click Submit","Fill Input","Select Option by Text","Select Option by Value","Condition")
+    ActionTypes=("Wait","Check Checkbox","Click Button","Click Link","Click Submit","Fill Input","Select Text","Select Option","Condition","Find Index")
     ActionStartTypes=("Start","End","Middle")
     SelectorType=("ByName","ById","BySelector")
     InputType=("IOValue","ManualValue")
