@@ -87,6 +87,8 @@ class GenerateConfig:
     def __init__(self):   
         self.headerFonts= ("Verdana", 15, "bold")             
         self.LoadAllData()
+        if(self.FilePath ==None or self.FilePath==""):
+            os.getcwd()+"/data"
         
         
     
