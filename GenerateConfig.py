@@ -64,7 +64,7 @@ class GenerateConfig:
             self.customStyle.configure('Menu.TRadiobutton',indicator=0, background = '#ffffff',font=("Verdana",10,'bold'),foreground="#343a40",selectcolor="#f2f5f7")
         else :
             self.customStyle.theme_use('default')
-        print (self.customStyle.theme_use())
+        #print (self.customStyle.theme_use())
 
 
 
@@ -88,7 +88,7 @@ class GenerateConfig:
         self.headerFonts= ("Verdana", 15, "bold")             
         self.LoadAllData()
         if(self.FilePath ==None or self.FilePath==""):
-            os.getcwd()+"/data"
+            self.FilePath=os.getcwd()+"/data"
         
         
     
