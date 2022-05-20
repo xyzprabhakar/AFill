@@ -252,7 +252,7 @@ class FillData(ttk.Frame):
                 ActionCounter=0
                 CurrentActionId=None
                 CurrentAction=self.Get_Action(section,CurrentActionId)
-                while (CurrentAction !=None or ActionCounter<1000):
+                while (CurrentAction !=None and ActionCounter<1000):
                     ActionCounter=ActionCounter+1
                     if(CurrentAction["actionType"]=="Fill Input"):
                         element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
