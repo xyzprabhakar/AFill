@@ -67,10 +67,10 @@ class AutoFill(tk.Frame):
         frmTopFrame.bind("<B1-Motion>",lambda e: self.move_app(e,self.master)) 
         frmTopFrame.grid(row=0, column=0, sticky=tk.N+tk.W+tk.E)        
         
-        frmBottomFrame = tk.Frame(self)        
+        frmBottomFrame = ttk.Frame(self,style="DashboardContent.TFrame")        
         frmBottomFrame.grid(row=1, column=0, sticky=tk.N+tk.W+tk.E+tk.S)
 
-        frmStatusFrame = tk.Frame(self)        
+        frmStatusFrame = ttk.Frame(self,style="DashboardContent.TFrame")        
         frmStatusFrame.grid(row=2, column=0, sticky=tk.W+tk.E+tk.S)
 
         btnClose = tk.Button(frmTopFrame, text = fa.icons['trash'],font= self.config.headerFonts ,command =lambda: self.master.destroy(), bg=self.config.COLOR_TOP_BACKGROUND,fg=self.config.COLOR_MENU_BACKGROUND,relief=tk.FLAT)
@@ -91,7 +91,7 @@ class AutoFill(tk.Frame):
         self.frmLeftFrame.grid(row=0, column=0, sticky=tk.N+tk.W+tk.E)
         #frmLeftFrame.pack(side=tk.LEFT, fill=tk.Y, anchor=tk.NW, expand=tk.TRUE)
         
-        frmContentFrame = tk.Frame(frmBottomFrame)   
+        frmContentFrame = ttk.Frame(frmBottomFrame,style="DashboardContent.TFrame")   
         frmContentFrame.grid(row=0, column=1, sticky=tk.N+tk.W+tk.E+tk.S)
         #frmContentFrame.pack(side=tk.RIGHT, fill=tk.BOTH, anchor=tk.NW, expand=tk.TRUE)
 
@@ -156,42 +156,42 @@ class AutoFill(tk.Frame):
 
         if(self.varMenu.get()=="Dashboard"):            
             if(self.frmDashBoard==None):
-                self.frmDashBoard=ttk.Frame(self.frmInnerDisplayContentFrame)
+                self.frmDashBoard=ttk.Frame(self.frmInnerDisplayContentFrame,style="DashboardContent.TFrame")
                 self.frmDashBoard.pack(fill=tk.BOTH,expand=tk.TRUE)
                 Dash.Dashboard(self.frmDashBoard,self.config)
             else:
                 self.frmDashBoard.pack(fill=tk.BOTH,expand=tk.TRUE)
         elif(self.varMenu.get()=="Import Data"):
             if(self.frmImportData==None):
-                self.frmImportData=ttk.Frame(self.frmInnerDisplayContentFrame)
+                self.frmImportData=ttk.Frame(self.frmInnerDisplayContentFrame,style="DashboardContent.TFrame")
                 self.frmImportData.pack(fill=tk.BOTH,expand=tk.TRUE)
                 ImpData.ImportData(self.frmImportData,self.config)
             else:
                 self.frmImportData.pack(fill=tk.BOTH,expand=tk.TRUE)
         elif(self.varMenu.get()=="Fill Data"):
             if(self.frmFillData==None):
-                self.frmFillData=ttk.Frame(self.frmInnerDisplayContentFrame)
+                self.frmFillData=ttk.Frame(self.frmInnerDisplayContentFrame,style="DashboardContent.TFrame")
                 self.frmFillData.pack(fill=tk.BOTH,expand=tk.TRUE)
                 FillData.FillData(self.frmFillData,self.config)
             else:
                 self.frmFillData.pack(fill=tk.BOTH,expand=tk.TRUE)
         elif(self.varMenu.get()=="Template"):
             if(self.frmTemplate==None):
-                self.frmTemplate=ttk.Frame(self.frmInnerDisplayContentFrame)
+                self.frmTemplate=ttk.Frame(self.frmInnerDisplayContentFrame,style="DashboardContent.TFrame")
                 self.frmTemplate.pack(fill=tk.BOTH,expand=tk.TRUE)
                 AddTmp.AddTemplate(self.frmTemplate,self.config)
             else:
                 self.frmTemplate.pack(fill=tk.BOTH,expand=tk.TRUE)
         elif(self.varMenu.get()=="Report"):
             if(self.frmReport==None):
-                self.frmReport=ttk.Frame(self.frmInnerDisplayContentFrame)
+                self.frmReport=ttk.Frame(self.frmInnerDisplayContentFrame,style="DashboardContent.TFrame")
                 self.frmReport.pack(fill=tk.BOTH,expand=tk.TRUE)
                 DataReport.DataReport(self.frmReport,self.config)
             else:
                 self.frmReport.pack(fill=tk.BOTH,expand=tk.TRUE)
         elif(self.varMenu.get()=="Setting"):
             if(self.frmSetting==None):
-                self.frmSetting=ttk.Frame(self.frmInnerDisplayContentFrame)
+                self.frmSetting=ttk.Frame(self.frmInnerDisplayContentFrame,style="DashboardContent.TFrame")
                 self.frmSetting.pack(fill=tk.BOTH,expand=tk.TRUE)
                 setting.Setting(self.frmSetting,self.config)
             else:

@@ -46,6 +46,7 @@ class GenerateConfig:
             self.customStyle.configure('Separator.TFrame', background = '#44a2d2')
             self.customStyle.configure('NormalSeparator.TFrame', background = '#343a40')
             self.customStyle.configure('Topframe.TFrame', background = '#44a2d2')
+            self.customStyle.configure('DashboardContent.TFrame', background = '#f2f5f7')
             self.customStyle.configure('Dashboard1.TFrame', background = '#ffe763')
             self.customStyle.configure('Dashboard2.TFrame', background = '#e3b2ac')
             self.customStyle.configure('Dashboard3.TFrame', background = '#b9e3ac')
