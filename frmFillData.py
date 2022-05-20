@@ -252,11 +252,11 @@ class FillData(ttk.Frame):
                 while (CurrentAction !=None or ActionCounter<1000):
                     ActionCounter=ActionCounter+1
                     if(CurrentAction["actionType"]=="Fill Input"):
-                        element=self.Get_Element(self,CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
+                        element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
                         if(element != None):
                             finalValue=""
                             if(CurrentAction["inputType"]=="IOValue"):
-                                finalValue=self.Get_ActionValue(self,CurrentAction["ioValue"],buttoncounter,applicantId)
+                                finalValue=self.Get_ActionValue(CurrentAction["ioValue"],buttoncounter,applicantId)
                             else:
                                 finalValue=CurrentAction["manualValue"]
                         element.send_keys(finalValue)
@@ -266,7 +266,7 @@ class FillData(ttk.Frame):
                         if(element != None):
                             finalValue=""
                             if(CurrentAction["inputType"]=="IOValue"):
-                                finalValue=self.Get_ActionValue(self,CurrentAction["ioValue"],buttoncounter,applicantId)
+                                finalValue=self.Get_ActionValue(CurrentAction["ioValue"],buttoncounter,applicantId)
                             else:
                                 finalValue=CurrentAction["manualValue"]
                             select = Select(element)
@@ -276,7 +276,7 @@ class FillData(ttk.Frame):
                                 select.select_by_visible_text(finalValue)
                         CurrentActionId=CurrentAction["nextActionId"]
                     elif(CurrentAction["actionType"]=="Button Click"):
-                        element=self.Get_Element(self,CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
+                        element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
                         if(element != None):                            
                             element.send_keys(finalValue)
                             action=ActionChains(self.driver)
@@ -289,7 +289,7 @@ class FillData(ttk.Frame):
                         self.driver.implicitly_wait(finalValue)
                         CurrentActionId=CurrentAction["nextActionId"]
                     elif(CurrentAction["Check Checkbox"]=="Fill Input"):
-                        element=self.Get_Element(self,CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter)
+                        element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter)
                         if(element != None):
                             action=ActionChains(self.driver)
                             action.move_to_element(element)
@@ -299,11 +299,11 @@ class FillData(ttk.Frame):
                         leftfinalValue,rightfinalValue="",""
                         
                         if(CurrentAction["leftInputType"]=="IOValue"):
-                            leftfinalValue=self.Get_ActionValue(self,CurrentAction["leftIOValue"],buttoncounter,applicantId)
+                            leftfinalValue=self.Get_ActionValue(CurrentAction["leftIOValue"],buttoncounter,applicantId)
                         else:
                             leftfinalValue=CurrentAction["leftManualValue"]                        
                         if(CurrentAction["rightInputType"]=="IOValue"):
-                            rightfinalValue=self.Get_ActionValue(self,CurrentAction["rightIOValue"],buttoncounter,applicantId)
+                            rightfinalValue=self.Get_ActionValue(CurrentAction["rightIOValue"],buttoncounter,applicantId)
                         else:
                             rightfinalValue=CurrentAction["rightManualValue"]
                         if(str(leftfinalValue)==str(rightfinalValue)):
@@ -314,9 +314,9 @@ class FillData(ttk.Frame):
                         self.FindIndex=-1
                         
                         if(CurrentAction["leftInputType"]=="IOValue"):
-                            self.FindIndex==self.fncFindIndex(self,CurrentAction["leftIOValue"],CurrentAction["rightManualValue"])
+                            self.FindIndex==self.fncFindIndex(CurrentAction["leftIOValue"],CurrentAction["rightManualValue"])
                         else:
-                            self.FindIndex==self.fncFindIndex(self,CurrentAction["rightIOValue"],CurrentAction["leftManualValue"])
+                            self.FindIndex==self.fncFindIndex(CurrentAction["rightIOValue"],CurrentAction["leftManualValue"])
                         if(self.FindIndex!=-1):
                             CurrentActionId=CurrentAction["trueActionId"]
                         else:
