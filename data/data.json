@@ -1,44 +1,11 @@
 [
-    {
-        "FileName": "PankajAggarwal1",
-        "ApplicantType": "Co Applicant",
-        "TemplateType": "IO Template",
-        "CreationDt": "27-Apr-2022 12:01:35",
-        "ModifyDt": "27-Apr-2022 13:44:26"
-    },
-    {
-        "FileName": "NidhiAggarwal",
-        "ApplicantType": "Co Applicant",
-        "TemplateType": "IO Template",
-        "CreationDt": "27-Apr-2022 12:02:16",
-        "ModifyDt": "27-Apr-2022 12:02:16"
-    },
-    {
-        "FileName": "ShivarPaul",
-        "ApplicantType": "Single",
-        "TemplateType": "IO Template",
-        "CreationDt": "27-Apr-2022 12:02:48",
-        "ModifyDt": "27-Apr-2022 12:02:48"
-    },
-    {
-        "FileName": "pankajAggarwal2",
-        "ApplicantType": "Co Applicant",
-        "TemplateType": "IO Template",
-        "CreationDt": "27-Apr-2022 13:49:16",
-        "ModifyDt": "27-Apr-2022 13:49:16"
-    },
+    
     {
         "FileName": "PankajAggarwal3",
         "ApplicantType": "Co Applicant",
         "TemplateType": "IO Template",
         "CreationDt": "27-Apr-2022 13:50:19",
         "ModifyDt": "27-Apr-2022 13:50:19"
-    },
-    {
-        "FileName": "test",
-        "ApplicantType": "Single",
-        "TemplateType": "IO Template",
-        "CreationDt": "04-May-2022 18:03:37",
-        "ModifyDt": "04-May-2022 18:03:37"
     }
+    
 ]

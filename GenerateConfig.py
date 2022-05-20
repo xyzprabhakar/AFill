@@ -263,6 +263,8 @@ class GenerateConfig:
         wget.download(url, out=dirpath)
         url="http://wms.galway.in/afill/data.json"
         wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/PankajAggarwal.json"
+        wget.download(url, out=dirpath)
         url="http://wms.galway.in/afill/logo.png"
         wget.download(url, out=filepath)
         url="http://wms.galway.in/afill/logoicon.png"
