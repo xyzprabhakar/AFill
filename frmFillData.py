@@ -157,10 +157,12 @@ class FillData(ttk.Frame):
 
     def Get_Action(self,section,actionId):
         for action in section["actions"]:
-            if(actionId==None or actionId==""):
+            if(actionId==None ):
                 if(self.checkKey(action,"startupType")):
                     if(action["startupType"]=="Start"):
                         return action
+            elif(actionId==""):
+                return None
             else:
                 if(self.checkKey(action,"actionId")):
                     if(str(action["actionId"]) ==str(actionId)):
@@ -248,6 +250,7 @@ class FillData(ttk.Frame):
                 continue
             else :
                 ActionCounter=0
+                CurrentActionId=None
                 CurrentAction=self.Get_Action(section,CurrentActionId)
                 while (CurrentAction !=None or ActionCounter<1000):
                     ActionCounter=ActionCounter+1
@@ -321,6 +324,8 @@ class FillData(ttk.Frame):
                             CurrentActionId=CurrentAction["trueActionId"]
                         else:
                             CurrentActionId=CurrentAction["falseActionId"]
+                    
+                    CurrentAction=self.Get_Action(section,CurrentActionId)
 
     def Open_Browser(self):
         if(self.varCurrentTemplateName.get()==""):
