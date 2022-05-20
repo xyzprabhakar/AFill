@@ -156,6 +156,7 @@ class GenerateConfig:
         self.config_file.set("AFill_FileSetting", "FilePath", os.getcwd()+"/data")
         self.config_file.set("AFill_FileSetting", "TemplateFileName", "template.json")
         self.config_file.set("AFill_FileSetting", "DataFileName", "data.json")
+        self.config_file.set("AFill_FileSetting", "ChromeDriver", "chromedriver.exe")         
 
         self.config_file.add_section("AFill_Users")
         # ADD SETTINGS TO SECTION        
