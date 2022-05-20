@@ -1,6 +1,6 @@
 import wget
 import configparser,os
-from msilib.schema import Directory
+#from msilib.schema import Directory
 from ttkthemes import ThemedStyle
 
 
