@@ -24,6 +24,7 @@ import json
 
 # import webdriver
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
@@ -236,7 +237,8 @@ class FillData(ttk.Frame):
     def fill_data(self,sectionName,buttoncounter,applicantId=0):
         
         if(self.driver is None):
-            self.driver = webdriver.Firefox()
+            #self.driver = webdriver.Firefox()
+            self.driver = webdriver.Chrome(ChromeDriverManager().install())
             self.driver.get(self.varCurrentTemplateData["url"])
         
         element,controlId,IoName,controlValue,actiontype,finalValue,actionOn,CurrentActionId,CurrentAction=None,None,None,None,None,None,None,None,None
@@ -320,11 +322,6 @@ class FillData(ttk.Frame):
                         else:
                             CurrentActionId=CurrentAction["falseActionId"]
 
-
-
-        
-            
-
     def Open_Browser(self):
         if(self.varCurrentTemplateName.get()==""):
             messagebox.showerror("Required", "Please select template")
@@ -338,7 +335,8 @@ class FillData(ttk.Frame):
             messagebox.showerror("Required", "Invalid template name")
             return
         if(self.driver is None):
-            self.driver = webdriver.Firefox()
+            #self.driver = webdriver.Firefox()
+            self.driver = webdriver.Chrome(ChromeDriverManager().install())
             self.driver.get(self.varCurrentTemplateData["url"])
         
         

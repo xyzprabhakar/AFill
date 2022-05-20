@@ -1,4 +1,6 @@
+import wget
 import configparser,os
+from msilib.schema import Directory
 from ttkthemes import ThemedStyle
 
 
@@ -147,21 +149,22 @@ class GenerateConfig:
         
 
     def fnc_CreateDefaultFile(self):    
+        
         # ADD SECTION
         self.config_file.add_section("AFill_FileSetting")
         # ADD SETTINGS TO SECTION
-        self.config_file.set("AFill_FileSetting", "FilePath", "")
-        self.config_file.set("AFill_FileSetting", "TemplateFileName", "")
-        self.config_file.set("AFill_FileSetting", "DataFileName", "")
+        self.config_file.set("AFill_FileSetting", "FilePath", os.getcwd()+"/data")
+        self.config_file.set("AFill_FileSetting", "TemplateFileName", "template.json")
+        self.config_file.set("AFill_FileSetting", "DataFileName", "data.json")
 
         self.config_file.add_section("AFill_Users")
         # ADD SETTINGS TO SECTION        
-        self.config_file.set("AFill_Users", "UserName", "Admin")
-        self.config_file.set("AFill_Users", "Password", "afill123")
+        self.config_file.set("AFill_Users", "UserName", "admin")
+        self.config_file.set("AFill_Users", "Password", "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92")
 
         self.config_file.add_section("AFill_Register")
         # ADD SETTINGS TO SECTION        
-        self.config_file.set("AFill_Register", "Name", "")
+        self.config_file.set("AFill_Register", "Name", "Prabhakar Kumar Singh")
         self.config_file.set("AFill_Register", "Email", "")
         self.config_file.set("AFill_Register", "ContactNo", "")
 
@@ -245,13 +248,17 @@ class GenerateConfig:
 
         self.config_file.add_section("Themes")
         self.config_file.set("Themes", "Theme_Name", "arc")
-        
-
         # SAVE CONFIG FILE
         with open(self.ConfigFileName, 'w') as configfileObj:
             self.config_file.write(configfileObj)
             configfileObj.flush()
             configfileObj.close()
+        
+        dirpath=os.getcwd()+"/data"
+        if not os.path.exists(dirpath):
+            os.makedirs(dirpath)
+        url="http://wms.galway.in/template.json"
+        wget.download(url, out=dirpath)
         self.LoadAllData()
         print("Config file 'configurations.ini' created")
 
@@ -264,7 +271,7 @@ class GenerateConfig:
         # ADD A NEW FIELD UNDER A SECTION
         #self.config_file["AFill_Register"].update({"Format":"(message)"})
 
-        # SAVE THE SETTINGS TO THE FILE
+        # Create Directory
         with open(self.ConfigFileName,"w") as file_object:
             self.config_file.write(file_object)
         self.LoadAllData()
