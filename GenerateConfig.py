@@ -255,11 +255,22 @@ class GenerateConfig:
             configfileObj.flush()
             configfileObj.close()
         
-        dirpath=os.getcwd()+"/data"
+        filepath=os.getcwd()
+        dirpath=filepath+"/data"
         if not os.path.exists(dirpath):
             os.makedirs(dirpath)
-        url="http://wms.galway.in/template.json"
+        url="http://wms.galway.in/afill/template.json"
         wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/logo.png"
+        wget.download(url, out=filepath)
+        url="http://wms.galway.in/afill/logoicon.png"
+        wget.download(url, out=filepath)
+        url="http://wms.galway.in/afill/logoIcon.ico"
+        wget.download(url, out=filepath)
+        url="http://wms.galway.in/afill/logoIcon32.png"
+        wget.download(url, out=filepath)
+        url="http://wms.galway.in/afill/logoIcon64.png"
+        wget.download(url, out=filepath)
         self.LoadAllData()
         print("Config file 'configurations.ini' created")
 
