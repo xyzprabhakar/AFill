@@ -770,252 +770,20 @@
                     },
                     {
                         "actionId": "3",
-                        "actionType": "Fill Input",
+                        "actionType": "Button Click",
                         "startupType": "Middle",
                         "selectorType": "ByName",
-                        "control": "sdf",
-                        "inputType": "ManualValue",
-                        "manualValue": "sdfsdf",
-                        "ioValue": "dfsdf",
-                        "nextActionId": "ssadf",
+                        "control": "ABCustomLoginPortletFormSubmit",
+                        "inputType": "",
+                        "manualValue": "",
+                        "ioValue": "",
+                        "nextActionId": "",
                         "conditionType": "",
                         "leftInputType": "",
                         "leftManualValue": "",
                         "leftIOValue": "",
                         "trueActionId": "",
                         "rightInputType": "IOValue",
-                        "rightManualValue": "",
-                        "rightIOValue": "",
-                        "falseActionId": ""
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "templateName": "axis1",
-        "url": "https://retail.axisbank.co.in/",
-        "sections": [
-            {
-                "sectionName": "Login",
-                "sectionCategory": "PersonalDetails",
-                "sectionType": "Single",
-                "actions": [
-                    {
-                        "actionId": "1",
-                        "actionType": "Fill Input",
-                        "startupType": "Start",
-                        "selectorType": "ByName",
-                        "control": "FORM_LOGINID",
-                        "inputType": "ManualValue",
-                        "manualValue": "ADmin",
-                        "ioValue": "",
-                        "nextActionId": "2",
-                        "conditionType": "",
-                        "leftInputType": "",
-                        "leftManualValue": "",
-                        "leftIOValue": "",
-                        "trueActionId": "",
-                        "rightInputType": "IOValue",
-                        "rightManualValue": "",
-                        "rightIOValue": "",
-                        "falseActionId": ""
-                    },
-                    {
-                        "actionId": "2",
-                        "actionType": "Fill Input",
-                        "startupType": "Middle",
-                        "selectorType": "ByName",
-                        "control": "pwd",
-                        "inputType": "ManualValue",
-                        "manualValue": "wer",
-                        "ioValue": "",
-                        "nextActionId": "2",
-                        "conditionType": "",
-                        "leftInputType": "",
-                        "leftManualValue": "",
-                        "leftIOValue": "",
-                        "trueActionId": "",
-                        "rightInputType": "",
-                        "rightManualValue": "",
-                        "rightIOValue": "",
-                        "falseActionId": ""
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "templateName": "SBI",
-        "url": "OnlineSbi.com",
-        "sections": [
-            {
-                "sectionName": "Login",
-                "sectionCategory": "PersonalDetails",
-                "sectionType": "Single",
-                "actions": [
-                    {
-                        "actionId": "1",
-                        "actionType": "Fill Input",
-                        "startupType": "Start",
-                        "selectorType": "ByName",
-                        "control": "UserName",
-                        "inputType": "ManualValue",
-                        "manualValue": "prabhakar",
-                        "ioValue": "",
-                        "nextActionId": "2",
-                        "conditionType": "",
-                        "leftInputType": "",
-                        "leftManualValue": "",
-                        "leftIOValue": "",
-                        "trueActionId": "",
-                        "rightInputType": "IOValue",
-                        "rightManualValue": "",
-                        "rightIOValue": "",
-                        "falseActionId": ""
-                    },
-                    {
-                        "actionId": "2",
-                        "actionType": "Fill Input",
-                        "startupType": "Middle",
-                        "selectorType": "ByName",
-                        "control": "Password",
-                        "inputType": "ManualValue",
-                        "manualValue": "12346",
-                        "ioValue": "",
-                        "nextActionId": "3",
-                        "conditionType": "",
-                        "leftInputType": "",
-                        "leftManualValue": "",
-                        "leftIOValue": "",
-                        "trueActionId": "",
-                        "rightInputType": "",
-                        "rightManualValue": "",
-                        "rightIOValue": "",
-                        "falseActionId": ""
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "templateName": "HDFC",
-        "url": "hdfc.com",
-        "sections": [
-            {
-                "sectionName": "Login",
-                "sectionCategory": "PersonalDetails",
-                "sectionType": "Single",
-                "actions": [
-                    {
-                        "actionId": "1",
-                        "actionType": "Fill Input",
-                        "startupType": "Start",
-                        "selectorType": "ByName",
-                        "control": "Username",
-                        "inputType": "ManualValue",
-                        "manualValue": "10",
-                        "ioValue": "",
-                        "nextActionId": "2",
-                        "conditionType": "",
-                        "leftInputType": "",
-                        "leftManualValue": "",
-                        "leftIOValue": "",
-                        "trueActionId": "",
-                        "rightInputType": "IOValue",
-                        "rightManualValue": "",
-                        "rightIOValue": "",
-                        "falseActionId": ""
-                    },
-                    {
-                        "actionId": "2",
-                        "actionType": "Fill Input",
-                        "startupType": "Middle",
-                        "selectorType": "ByName",
-                        "control": "password",
-                        "inputType": "ManualValue",
-                        "manualValue": "123456",
-                        "ioValue": "",
-                        "nextActionId": "3",
-                        "conditionType": "",
-                        "leftInputType": "",
-                        "leftManualValue": "",
-                        "leftIOValue": "",
-                        "trueActionId": "",
-                        "rightInputType": "",
-                        "rightManualValue": "",
-                        "rightIOValue": "",
-                        "falseActionId": ""
-                    },
-                    {
-                        "actionId": "3",
-                        "actionType": "Fill Input",
-                        "startupType": "Middle",
-                        "selectorType": "ByName",
-                        "control": "Captcha",
-                        "inputType": "ManualValue",
-                        "manualValue": "sdasd",
-                        "ioValue": "",
-                        "nextActionId": "4",
-                        "conditionType": "",
-                        "leftInputType": "",
-                        "leftManualValue": "",
-                        "leftIOValue": "",
-                        "trueActionId": "",
-                        "rightInputType": "IOValue",
-                        "rightManualValue": "",
-                        "rightIOValue": "",
-                        "falseActionId": ""
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "templateName": "kotak",
-        "url": "http.kotakbank.com",
-        "sections": [
-            {
-                "sectionName": "Login",
-                "sectionCategory": "PersonalDetails",
-                "sectionType": "Single",
-                "actions": [
-                    {
-                        "actionId": "1",
-                        "actionType": "Fill Input",
-                        "startupType": "Start",
-                        "selectorType": "ByName",
-                        "control": "username",
-                        "inputType": "ManualValue",
-                        "manualValue": "prabhakar",
-                        "ioValue": "",
-                        "nextActionId": "2",
-                        "conditionType": "",
-                        "leftInputType": "",
-                        "leftManualValue": "",
-                        "leftIOValue": "",
-                        "trueActionId": "",
-                        "rightInputType": "IOValue",
-                        "rightManualValue": "",
-                        "rightIOValue": "",
-                        "falseActionId": ""
-                    },
-                    {
-                        "actionId": "2",
-                        "actionType": "Fill Input",
-                        "startupType": "Middle",
-                        "selectorType": "ByName",
-                        "control": "password",
-                        "inputType": "ManualValue",
-                        "manualValue": "12345",
-                        "ioValue": "",
-                        "nextActionId": "3",
-                        "conditionType": "",
-                        "leftInputType": "",
-                        "leftManualValue": "",
-                        "leftIOValue": "",
-                        "trueActionId": "",
-                        "rightInputType": "",
                         "rightManualValue": "",
                         "rightIOValue": "",
                         "falseActionId": ""
@@ -1024,4 +792,5 @@
             }
         ]
     }
+    
 ]
