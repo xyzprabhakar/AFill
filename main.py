@@ -70,7 +70,7 @@ class AutoFill(tk.Frame):
         frmStatusFrame = ttk.Frame(self,style="DashboardContent.TFrame")        
         frmStatusFrame.grid(row=2, column=0, sticky=tk.W+tk.E+tk.S)
 
-        btnClose = ttk.Button(frmTopFrame, text = "Close",style="Dashboard.TButton",image=self.config.ico_delete1,command =lambda: self.master.destroy())
+        btnClose = ttk.Button(frmTopFrame, text = "Close",image=self.config.ico_delete1,command =lambda: self.master.destroy())
         btnClose.pack(side=tk.RIGHT, pady=7,padx=5)
         self.icon = tk.PhotoImage(file="logoIcon32.png")
         self.icon.subsample(1, 2)

@@ -54,8 +54,7 @@ class GenerateConfig:
         if(self.themeName=="arc"):
             self.customStyle.theme_use('arc')
             self.customStyle.configure('TButton', foreground = '#343a40', background = '#44a2d2', font=("Verdana",10))
-            self.customStyle.configure('TLabel', foreground = '#343a40', background = '#ffffff', font=("Verdana",10))
-            self.customStyle.configure('Dashboard.TButton', foreground = '#343a40', background = 'red', font=("Verdana",10))
+            self.customStyle.configure('TLabel', foreground = '#343a40', background = '#ffffff', font=("Verdana",10))            
             self.customStyle.configure('TreeViewAction.TButton', foreground = '#44a2d2', background = '#ffffff',font=("Verdana",10))
             self.customStyle.configure('TCombobox', background = '#f2f5f7',font=("Verdana",10))
             self.customStyle.configure('TFrame', background = '#ffffff')

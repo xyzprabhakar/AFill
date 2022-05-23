@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from turtle import left
+from numpy import imag
 
 from setuptools import Command
 import GenerateConfig as Gc
@@ -237,11 +238,11 @@ class AddTemplate:
 
         frmbtn1 = ttk.Frame(self.frmHeader,name="frmTreeviewhandler")        
         frmbtn1.grid(row=3,column = 1, columnspan=3, sticky=tk.N+tk.W+tk.E)
-        btnAddAction = tk.Button ( frmbtn1,name="btnAddAction" ,text =fa.icons['plus'], relief='groove', width=3, font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda: self.fncOpenChildForm(False) )        
-        btnEditAction = tk.Button ( frmbtn1,name="btnEditAction" ,text =fa.icons['pen'], relief='groove', width=3, state=tk.DISABLED, font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda: self.fncOpenChildForm(True) )        
-        btnRemoveAction = tk.Button ( frmbtn1,name="btnRemoveAction", text =fa.icons['trash'], relief='groove', width=3, state=tk.DISABLED,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda: self.fncRemove() )
-        btnMoveUpAction = tk.Button ( frmbtn1,name="btnMoveUpAction", text =fa.icons['arrow-up'], relief='groove', width=3, state=tk.DISABLED,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda: self.fncMoveUp() )
-        btnMoveDownAction = tk.Button ( frmbtn1,name="btnMoveDownAction", text =fa.icons['arrow-down'], relief='groove', width=3, state=tk.DISABLED,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda: self.fncMoveDown() )
+        btnAddAction = ttk.Button ( frmbtn1,name="btnAddAction" , image=self.config.ico_add ,command =lambda: self.fncOpenChildForm(False) )        
+        btnEditAction = ttk.Button ( frmbtn1,name="btnEditAction" , image=self.config.ico_edit , state=tk.DISABLED,  command =lambda: self.fncOpenChildForm(True) )        
+        btnRemoveAction = ttk.Button ( frmbtn1,name="btnRemoveAction",image=self.config.ico_delete ,  state=tk.DISABLED,command =lambda: self.fncRemove() )
+        btnMoveUpAction = ttk.Button ( frmbtn1,name="btnMoveUpAction",image=self.config.ico_up ,  state=tk.DISABLED,command =lambda: self.fncMoveUp() )
+        btnMoveDownAction = ttk.Button ( frmbtn1,name="btnMoveDownAction",image=self.config.ico_down , state=tk.DISABLED,command =lambda: self.fncMoveDown() )
         btnAddAction.grid(row=0,column = 0, padx=(10,0),pady=(3,5))
         btnEditAction.grid(row=0,column = 1, padx=(10,0),pady=(3,5))
         btnRemoveAction.grid(row=0,column =2, padx=(10,0),pady=(3,5))
@@ -515,10 +516,10 @@ class AddTemplate:
 
         frmbtn1 = ttk.Frame(self.frmHeader1,name="frmTreeviewhandler1")
         frmbtn1.grid(row=3,column = 1, columnspan=4, sticky=tk.N+tk.W+tk.E)
-        btnAddAction = tk.Button ( frmbtn1,name="btnAddAction" ,text =fa.icons['plus'], relief='groove', width=3, font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda: self.fncOpenInnerChildForm() )        
-        btnRemoveAction = tk.Button ( frmbtn1,name="btnRemoveAction", text =fa.icons['trash'], relief='groove', width=3, state=tk.DISABLED,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda: self.fncRemove(2) )
-        btnMoveUpAction = tk.Button ( frmbtn1,name="btnMoveUpAction", text =fa.icons['arrow-up'], relief='groove', width=3, state=tk.DISABLED,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda: self.fncMoveUp(2) )
-        btnMoveDownAction = tk.Button ( frmbtn1,name="btnMoveDownAction", text =fa.icons['arrow-down'], relief='groove', width=3, state=tk.DISABLED,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda: self.fncMoveDown(2) )
+        btnAddAction = ttk.Button ( frmbtn1,name="btnAddAction" , image=self.config.ico_add ,command =lambda: self.fncOpenInnerChildForm() )        
+        btnRemoveAction = ttk.Button ( frmbtn1,name="btnRemoveAction", image=self.config.ico_delete, state=tk.DISABLED, command =lambda: self.fncRemove(2) )
+        btnMoveUpAction = ttk.Button ( frmbtn1,name="btnMoveUpAction", image=self.config.ico_up,  state=tk.DISABLED,  command =lambda: self.fncMoveUp(2) )
+        btnMoveDownAction = ttk.Button ( frmbtn1,name="btnMoveDownAction",  image=self.config.ico_down,state=tk.DISABLED,  command =lambda: self.fncMoveDown(2) )
         btnAddAction.grid(row=0,column = 0, padx=(10,0),pady=(3,5))
         btnRemoveAction.grid(row=0,column =1, padx=(10,0),pady=(3,5))
         btnMoveUpAction.grid(row=0,column =2, padx=(10,0),pady=(3,5))

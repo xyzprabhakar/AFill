@@ -90,7 +90,7 @@ class Dashboard:
         
         frmbtn1 = ttk.Frame(self.frmHeader,name="frmTreeviewhandler1")        
         frmbtn1.grid(row=3,column = 1, columnspan=3, sticky=tk.N+tk.W+tk.E)
-        btnReffreshData = tk.Button ( frmbtn1,name="btnReffreshData", image=self.config.ico_sync, relief='groove', width=3,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command = lambda :self.LoadAllJsonData() )                
+        btnReffreshData = ttk.Button ( frmbtn1,name="btnReffreshData", image=self.config.ico_sync, command = lambda :self.LoadAllJsonData() )                
         btnReffreshData.grid(row=0,column = 0, padx=(10,0),pady=(3,5))
         
         frmBody.columnconfigure(0, weight=1)
