@@ -1,3 +1,4 @@
+from tkinter import PhotoImage
 import wget
 import configparser,os
 #from msilib.schema import Directory
@@ -35,11 +36,24 @@ class GenerateConfig:
     SectionCategoryType=("Single","Single","Multiple","Single","Multiple","Multiple","Multiple","Single","Single","Multiple","Multiple","Multiple","Multiple","Multiple")
     
 
+    def set_icons(self):
+        self.ico_delete=PhotoImage(file="images/icons/cil-remove.png")
+        # Resizing image to fit on button
+        self.ico_delete1 = self.ico_delete.subsample(1, 1)
+        self.ico_add=PhotoImage(file="images/icons/cil-plus.png")
+        self.ico_edit=PhotoImage(file="images/icons/cil-pencil.png")
+        self.ico_up=PhotoImage(file="images/icons/cil-arrow-top.png")
+        self.ico_down=PhotoImage(file="images/icons/cil-arrow-bottom.png")
+        
+        
+
     def set_theme(self,event,frameData):
         self.customStyle= ThemedStyle(frameData)
         if(self.themeName=="arc"):
             self.customStyle.theme_use('arc')
             self.customStyle.configure('TButton', foreground = '#343a40', background = '#44a2d2', font=("Verdana",10))
+            self.customStyle.configure('TLabel', foreground = '#343a40', background = '#ffffff', font=("Verdana",10))
+            self.customStyle.configure('Dashboard.TButton', foreground = '#343a40', background = 'red', font=("Verdana",10))
             self.customStyle.configure('TreeViewAction.TButton', foreground = '#44a2d2', background = '#ffffff',font=("Verdana",10))
             self.customStyle.configure('TCombobox', background = '#f2f5f7',font=("Verdana",10))
             self.customStyle.configure('TFrame', background = '#ffffff')
@@ -89,7 +103,7 @@ class GenerateConfig:
 
     def __init__(self):   
         self.headerFonts= ("Verdana", 15, "bold")             
-        self.LoadAllData()
+        self.LoadAllData()        
         if(self.FilePath ==None or self.FilePath==""):
             self.FilePath=os.getcwd()+"/data"
         

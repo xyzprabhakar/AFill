@@ -32,6 +32,7 @@ class AutoFill(tk.Frame):
     def __init__(self,config,isapp=True, name='AutoFill'):
         tk.Frame.__init__(self)        
         self.config=config
+        self.config.set_icons()
         self.master.geometry("900x600")
         self.master.minsize(900,600)
         self.config.set_theme(None,self) 
@@ -46,15 +47,11 @@ class AutoFill(tk.Frame):
 
         
 
-    def intlizeform(self):
-        #self.master.overrideredirect(True)
+    def intlizeform(self):        
         self.varMenu= tk.StringVar()
         self.varMenu.set("Dashboard")
-        #self.isapp = isapp                        
-        #self.varMenu =tk.StringVar()
         self._create_Frame()
         self._create_inner_content()
-        #self.master.eval('tk::PlaceWindow . center')
         
     
     def _create_Frame(self):
@@ -73,7 +70,7 @@ class AutoFill(tk.Frame):
         frmStatusFrame = ttk.Frame(self,style="DashboardContent.TFrame")        
         frmStatusFrame.grid(row=2, column=0, sticky=tk.W+tk.E+tk.S)
 
-        btnClose = tk.Button(frmTopFrame, text = fa.icons['trash'],font= self.config.headerFonts ,command =lambda: self.master.destroy(), bg=self.config.COLOR_TOP_BACKGROUND,fg=self.config.COLOR_MENU_BACKGROUND,relief=tk.FLAT)
+        btnClose = ttk.Button(frmTopFrame, text = "Close",style="Dashboard.TButton",image=self.config.ico_delete1,command =lambda: self.master.destroy())
         btnClose.pack(side=tk.RIGHT, pady=7,padx=5)
         self.icon = tk.PhotoImage(file="logoIcon32.png")
         self.icon.subsample(1, 2)
