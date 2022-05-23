@@ -3,6 +3,7 @@ import wget
 import configparser,os
 #from msilib.schema import Directory
 from ttkthemes import ThemedStyle
+from tkfontawesome import icon_to_image
 
 
 class GenerateConfig:
@@ -37,13 +38,14 @@ class GenerateConfig:
     
 
     def set_icons(self):
-        self.ico_delete=PhotoImage(file="images/icons/cil-remove.png")
+        self.ico_delete1=icon_to_image("trash",fill="#44a2d2",scale_to_width=22)
         # Resizing image to fit on button
-        self.ico_delete1 = self.ico_delete.subsample(1, 1)
-        self.ico_add=PhotoImage(file="images/icons/cil-plus.png")
-        self.ico_edit=PhotoImage(file="images/icons/cil-pencil.png")
-        self.ico_up=PhotoImage(file="images/icons/cil-arrow-top.png")
-        self.ico_down=PhotoImage(file="images/icons/cil-arrow-bottom.png")
+        self.ico_delete  =icon_to_image("trash",fill="#44a2d2",scale_to_width=10)
+        self.ico_add=icon_to_image("plus",fill="#44a2d2",scale_to_width=10)
+        self.ico_edit=icon_to_image("pen",fill="#44a2d2",scale_to_width=10)
+        self.ico_up=icon_to_image("arrow-up",fill="#44a2d2",scale_to_width=10)
+        self.ico_down=icon_to_image("arrow-down",fill="#44a2d2",scale_to_width=10)
+        self.ico_sync=icon_to_image("sync",fill="#44a2d2",scale_to_width=10)
         
         
 
