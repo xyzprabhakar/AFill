@@ -113,8 +113,7 @@ class AutoFill(tk.Frame):
     def move_app(self,event,parent):
         parent.geometry('+{0}+{1}'.format(event.x_root, event.y_root))
 
-    def _draw_menu(self,parent):        
-        print(self.config.ico_menuData)
+    def _draw_menu(self,parent):                
         for thisdict in self.MenuItems:            
             button = tk.Radiobutton(parent, name= thisdict["name"], text =thisdict["ficon"] +" "+thisdict["text"] ,
              variable = self.varMenu,	value = thisdict["text"],     image=self.config.ico_menuData[thisdict["icon"]] ,
@@ -128,15 +127,28 @@ class AutoFill(tk.Frame):
             )
             #button.image=photo
             button.pack( fill=tk.X ,ipady = 8,ipadx=8)
-            button.bind('<Enter>', self.on_enter_menu)
-            button.bind('<Leave>', self.on_leave_menu)
+            button.bind('<Enter>',self.on_enter_menu)
+            button.bind('<Leave>',self.on_leave_menu)
     
+    def Get_iconName(self,name):
+        for thisdict in self.MenuItems:            
+            if(thisdict["text"]==name):
+                return thisdict["icon"]
+        return ""
+
     def on_enter_menu(self,event):
         event.widget['background'] = self.config.COLOR_BACKGROUND
         event.widget['foreground'] = self.config.COLOR_MENU_FOREGROUND
+        
+        iconName=self.Get_iconName(event.widget['value'])
+        if(iconName!=""):
+            event.widget['image']=self.config.ico_menuData1[iconName]
     def on_leave_menu(self,event):
         event.widget['background'] = self.config.COLOR_MENU_BACKGROUND
         event.widget['foreground'] = self.config.COLOR_FOREGROUND
+        iconName=self.Get_iconName(event.widget['value'])
+        if(iconName!=""):
+            event.widget['image']=self.config.ico_menuData[iconName]
     
 
     def _create_inner_content(self):        

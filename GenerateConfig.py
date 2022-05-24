@@ -64,6 +64,15 @@ class GenerateConfig:
         self.ico_menuData.update({"ico_Setting":PhotoImage(file ="data/Setting-1.png")})
         self.ico_menuData.update({"ico_ChangePassword":PhotoImage(file ="data/Change-Password-1.png")})
 
+        self.ico_menuData1={}
+        self.ico_menuData1.update({"ico_DashBoard":PhotoImage(file ="data/Dashboard.png")})
+        self.ico_menuData1.update({"ico_Template":PhotoImage(file ="data/template.png")})
+        self.ico_menuData1.update({"ico_FillData":PhotoImage(file ="data/Fill-Data.png")})
+        self.ico_menuData1.update({"ico_ImportData":PhotoImage(file ="data/Import-Data.png")})
+        self.ico_menuData1.update({"ico_Report":PhotoImage(file ="data/Report.png")})
+        self.ico_menuData1.update({"ico_Setting":PhotoImage(file ="data/Setting.png")})
+        self.ico_menuData1.update({"ico_ChangePassword":PhotoImage(file ="data/Change-Password.png")})
+
         
 
         
