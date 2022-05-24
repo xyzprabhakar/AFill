@@ -3,7 +3,7 @@ import wget
 import configparser,os
 #from msilib.schema import Directory
 from ttkthemes import ThemedStyle
-from tkfontawesome import icon_to_image
+
 
 
 class GenerateConfig:

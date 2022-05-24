@@ -326,6 +326,12 @@ class FillData(ttk.Frame):
                             CurrentActionId=CurrentAction["falseActionId"]
                     
                     CurrentAction=self.Get_Action(section,CurrentActionId)
+    def change_tab(self):
+         try:
+            if(self.driver != None):
+                self.driver.switch_to.window(self.driver.window_handles[int(self.varCurrentTab.get())-1]) 
+         except:
+            print('Invalid Tab')           
 
     def Open_Browser(self):
         if(self.varCurrentTemplateName.get()==""):
@@ -385,6 +391,7 @@ class FillData(ttk.Frame):
     
 
     def fncCreateItems(self):
+        self.varCurrentTab.set("1")
         frmHeader,frmBody  = ttk.Frame(self.ContainerFrame) ,ttk.Frame(self.ContainerFrame)        
         self.ContainerFrame.grid_columnconfigure(0, weight=100)
         self.ContainerFrame.grid_rowconfigure(0, weight=1)
@@ -429,30 +436,24 @@ class FillData(ttk.Frame):
         self.ddlTemplateName.grid(row=0,column=1,sticky=tk.N+tk.S+tk.W,pady=(10,3))
         ttk.Label(self.frmLeftPanel,text="File Name").grid(row=1,column=0,sticky=tk.N+tk.S+tk.W,pady=(10,3),padx=(10,10))
         self.ddlFileName=ttk.Combobox(self.frmLeftPanel,textvariable = self.varCurrentDataFileName,values=self.varAllJsonFileName,width=26)
-        self.ddlFileName.grid(row=1,column=1,sticky=tk.N+tk.S+tk.W,pady=(10,3))
-        
-
+        self.ddlFileName.grid(row=1,column=1,sticky=tk.N+tk.S+tk.W,pady=(10,3))        
         ttk.Label(self.frmLeftPanel,text="Current Tab").grid(row=2,column=0,sticky=tk.N+tk.S+tk.W,pady=(10,3),padx=(10,10))
-        self.ddlFileName=ttk.Combobox(self.frmLeftPanel,textvariable = self.varCurrentDataFileName,values=self.varAllJsonFileName,width=26)
-        self.ddlFileName.grid(row=1,column=1,sticky=tk.N+tk.S+tk.W,pady=(10,3))
+        ttk.Entry(self.frmLeftPanel,textvariable = self.varCurrentTab,width=24).grid(row=2,column=1,sticky=tk.N+tk.S+tk.W,pady=(10,3))
+        
 
         self.frmInnerContentFrame1 = ttk.Frame(self.frmLeftPanel)
         self.frmInnerContentFrame1.grid(row=6, column=0,columnspan=2, sticky=tk.E+tk.W+tk.N+tk.S)  
         frmbtn2 = ttk.Frame(self.frmLeftPanel)        
-        frmbtn2.grid(row=2,column = 0,columnspan=2,pady=(10,3),padx=(10,10))
+        frmbtn2.grid(row=3,column = 0,columnspan=2,pady=(10,3),padx=(10,10))
         ttk.Button (frmbtn2, text ="Open Browser", width=12, command =lambda: self.Open_Browser()).grid(row=0,column = 0,padx=(2,2) )
-        ttk.Button ( frmbtn2, text ="Load Data", width=12, command =lambda: self.load_data()).grid(row=0,column = 1 ,padx=(2,2))
-        ttk.Button ( frmbtn2, text ="Change Tab", width=12, command =lambda: self.change_tab()).grid(row=0,column = 2 ,padx=(2,2))
+        ttk.Button ( frmbtn2, text ="Load Data", width=9, command =lambda: self.load_data()).grid(row=0,column = 1 ,padx=(2,2))
+        ttk.Button ( frmbtn2, text ="Change Tab", width=9, command =lambda: self.change_tab()).grid(row=0,column = 2 ,padx=(2,2))
 
-        ttk.Frame(self.frmLeftPanel, height=10).grid(row=3, column=0,columnspan=2, sticky=tk.E+tk.W)
-        ttk.Frame(self.frmLeftPanel, style="Separator.TFrame", height=1).grid(row=4, column=0,columnspan=2, sticky=tk.E+tk.W)
-        ttk.Frame(self.frmLeftPanel, height=10).grid(row=5, column=0,columnspan=2, sticky=tk.E+tk.W)
+        ttk.Frame(self.frmLeftPanel, height=10).grid(row=4, column=0,columnspan=2, sticky=tk.E+tk.W)
+        ttk.Frame(self.frmLeftPanel, style="Separator.TFrame", height=1).grid(row=5, column=0,columnspan=2, sticky=tk.E+tk.W)
+        ttk.Frame(self.frmLeftPanel, height=10).grid(row=6, column=0,columnspan=2, sticky=tk.E+tk.W)
               
         
-        
-
-
-
         # self.varApplicantType.set("")
         # self.varTemplateType.set("")
         
