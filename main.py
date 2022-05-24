@@ -21,13 +21,13 @@ class AutoFill(tk.Frame):
     
     frmChangePassword=None
     #Left Menu Items
-    MenuItems=[{"name":"rdoDashBoard", "text":"Dashboard","icon":"images\icons\cil-moon.png", "ficon":fa.icons['palette']},
-                {"name":"rdoTemplate", "text":"Template","icon":"images\icons\cil-moon.png", "ficon":fa.icons['file']},
-                {"name":"rdoFillData", "text":"Fill Data","icon":"images\icons\cil-moon.png", "ficon":fa.icons['database']},
-                {"name":"rdoImportData", "text":"Import Data","icon":"images\icons\cil-moon.png", "ficon":fa.icons['file-import']},
-                {"name":"rdoReport", "text":"Report","icon":"images\icons\cil-moon.png", "ficon":fa.icons['chart-line']},
-                {"name":"rdoSetting", "text":"Setting","icon":"images\icons\cil-moon.png", "ficon":fa.icons['wrench']},
-                {"name":"rdoChangePassword", "text":"Change Password","icon":"images\icons\cil-moon.png", "ficon":fa.icons['user']}]
+    MenuItems=[{"name":"rdoDashBoard", "text":"Dashboard","icon":"ico_DashBoard", "ficon":fa.icons['palette']},
+                {"name":"rdoTemplate", "text":"Template","icon":"ico_Template", "ficon":fa.icons['file']},
+                {"name":"rdoFillData", "text":"Fill Data","icon":"ico_FillData", "ficon":fa.icons['database']},
+                {"name":"rdoImportData", "text":"Import Data","icon":"ico_ImportData", "ficon":fa.icons['file-import']},
+                {"name":"rdoReport", "text":"Report","icon":"ico_Report", "ficon":fa.icons['chart-line']},
+                {"name":"rdoSetting", "text":"Setting","icon":"ico_Setting", "ficon":fa.icons['wrench']},
+                {"name":"rdoChangePassword", "text":"Change Password","icon":"ico_ChangePassword", "ficon":fa.icons['user']}]
 
     def __init__(self,config,isapp=True, name='AutoFill'):
         tk.Frame.__init__(self)        
@@ -114,8 +114,10 @@ class AutoFill(tk.Frame):
         parent.geometry('+{0}+{1}'.format(event.x_root, event.y_root))
 
     def _draw_menu(self,parent):        
+        print(self.config.ico_menuData)
         for thisdict in self.MenuItems:            
-            button = tk.Radiobutton(parent, name= thisdict["name"], text =thisdict["ficon"] +" "+thisdict["text"] , variable = self.varMenu,	value = thisdict["text"],             
+            button = tk.Radiobutton(parent, name= thisdict["name"], text =thisdict["ficon"] +" "+thisdict["text"] ,
+             variable = self.varMenu,	value = thisdict["text"],     image=self.config.ico_menuData[thisdict["icon"]] ,
              indicator = 0, fg=self.config.COLOR_FOREGROUND, bg=self.config.COLOR_MENU_BACKGROUND, activeforeground="red" ,selectcolor=self.config.COLOR_BACKGROUND
              ,font=self.config.displayFont,
              borderwidth=0,

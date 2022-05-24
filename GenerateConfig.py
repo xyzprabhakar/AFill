@@ -55,6 +55,17 @@ class GenerateConfig:
         self.ico_down=PhotoImage(file ="data/arrow-down.png")
         self.ico_sync=PhotoImage(file ="data/sync.png")
 
+        self.ico_menuData={}
+        self.ico_menuData.update({"ico_DashBoard":PhotoImage(file ="data/Dashboard-1.png")})
+        self.ico_menuData.update({"ico_Template":PhotoImage(file ="data/template-1.png")})
+        self.ico_menuData.update({"ico_FillData":PhotoImage(file ="data/Fill-Data-1.png")})
+        self.ico_menuData.update({"ico_ImportData":PhotoImage(file ="data/Import-Data-1.png")})
+        self.ico_menuData.update({"ico_Report":PhotoImage(file ="data/Report-1.png")})
+        self.ico_menuData.update({"ico_Setting":PhotoImage(file ="data/Setting-1.png")})
+        self.ico_menuData.update({"ico_ChangePassword":PhotoImage(file ="data/Change-Password-1.png")})
+
+        
+
         
         
 
