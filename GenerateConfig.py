@@ -319,6 +319,53 @@ class GenerateConfig:
         wget.download(url, out=filepath)
         url="http://wms.galway.in/afill/logoIcon64.png"
         wget.download(url, out=filepath)
+
+
+        url="http://wms.galway.in/afill/Change-Password.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Change-Password-1.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Dashboard.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Dashboard-1.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Fill-Data.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Fill-Data-1.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Import-Data.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Import-Data-1.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Report.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Report-1.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Setting.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Setting-1.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/template.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/template-1.png"
+
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/arrow-down.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/arrow-up.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/pen.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/plus.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/sync.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/trash.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/trash1.png"
+
+
+        wget.download(url, out=dirpath)
         self.LoadAllData()
         print("Config file 'configurations.ini' created")
 
