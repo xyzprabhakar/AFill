@@ -117,16 +117,17 @@ class AutoFill(tk.Frame):
         for thisdict in self.MenuItems:            
             button = tk.Radiobutton(parent, name= thisdict["name"], text =thisdict["ficon"] +" "+thisdict["text"] ,
              variable = self.varMenu,	value = thisdict["text"],     image=self.config.ico_menuData[thisdict["icon"]] ,
-             indicator = 0, fg=self.config.COLOR_FOREGROUND, bg=self.config.COLOR_MENU_BACKGROUND, activeforeground="red" ,selectcolor=self.config.COLOR_BACKGROUND
+             indicator = 0, selectcolor=self.config.COLOR_BACKGROUND
              ,font=self.config.displayFont,
              borderwidth=0,
              anchor=tk.W,
-             padx=10,
+             #padx=10,
              command=lambda: self._create_inner_content(),
-             relief=tk.RAISED 
+             #relief=tk.RAISED ,
+             bd=0
             )
             #button.image=photo
-            button.pack( fill=tk.X ,ipady = 8,ipadx=8)
+            button.pack( fill=tk.X ,padx=8,pady=8)#,ipady = 8,ipadx=8)
             button.bind('<Enter>',self.on_enter_menu)
             button.bind('<Leave>',self.on_leave_menu)
     
