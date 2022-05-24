@@ -38,14 +38,23 @@ class GenerateConfig:
     
 
     def set_icons(self):
-        self.ico_delete1=icon_to_image("trash",fill="#44a2d2",scale_to_width=22)
+        #self.ico_delete1=icon_to_image("trash",fill="#44a2d2",scale_to_width=22)
         # Resizing image to fit on button
-        self.ico_delete  =icon_to_image("trash",fill="#44a2d2",scale_to_width=10)
-        self.ico_add=icon_to_image("plus",fill="#44a2d2",scale_to_width=10)
-        self.ico_edit=icon_to_image("pen",fill="#44a2d2",scale_to_width=10)
-        self.ico_up=icon_to_image("arrow-up",fill="#44a2d2",scale_to_width=10)
-        self.ico_down=icon_to_image("arrow-down",fill="#44a2d2",scale_to_width=10)
-        self.ico_sync=icon_to_image("sync",fill="#44a2d2",scale_to_width=10)
+        # self.ico_delete  =icon_to_image("trash",fill="#44a2d2",scale_to_width=10)
+        # self.ico_add=icon_to_image("plus",fill="#44a2d2",scale_to_width=10)
+        # self.ico_edit=icon_to_image("pen",fill="#44a2d2",scale_to_width=10)
+        # self.ico_up=icon_to_image("arrow-up",fill="#44a2d2",scale_to_width=10)
+        # self.ico_down=icon_to_image("arrow-down",fill="#44a2d2",scale_to_width=10)
+        # self.ico_sync=icon_to_image("sync",fill="#44a2d2",scale_to_width=10)
+
+        self.ico_delete1  =PhotoImage(file ="data/trash.png")
+        self.ico_delete  =PhotoImage(file ="data/trash.png")
+        self.ico_add=PhotoImage(file ="data/plus.png")
+        self.ico_edit=PhotoImage(file ="data/trash.png")
+        self.ico_up=PhotoImage(file ="data/arrow-up.png")
+        self.ico_down=PhotoImage(file ="data/arrow-down.png")
+        self.ico_sync=PhotoImage(file ="data/sync.png")
+
         
         
 

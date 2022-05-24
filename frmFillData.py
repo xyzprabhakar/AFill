@@ -432,12 +432,17 @@ class FillData(ttk.Frame):
         self.ddlFileName.grid(row=1,column=1,sticky=tk.N+tk.S+tk.W,pady=(10,3))
         
 
+        ttk.Label(self.frmLeftPanel,text="Current Tab").grid(row=2,column=0,sticky=tk.N+tk.S+tk.W,pady=(10,3),padx=(10,10))
+        self.ddlFileName=ttk.Combobox(self.frmLeftPanel,textvariable = self.varCurrentDataFileName,values=self.varAllJsonFileName,width=26)
+        self.ddlFileName.grid(row=1,column=1,sticky=tk.N+tk.S+tk.W,pady=(10,3))
+
         self.frmInnerContentFrame1 = ttk.Frame(self.frmLeftPanel)
         self.frmInnerContentFrame1.grid(row=6, column=0,columnspan=2, sticky=tk.E+tk.W+tk.N+tk.S)  
         frmbtn2 = ttk.Frame(self.frmLeftPanel)        
-        frmbtn2.grid(row=2,column = 0,columnspan=2,pady=(10,3),padx=(10,10) )
-        ttk.Button (frmbtn2, text ="Open Browser", width=12, command =lambda: self.Open_Browser()).grid(row=0,column = 0,padx=(5,5) )
-        ttk.Button ( frmbtn2, text ="Load Data", width=12, command =lambda: self.load_data()).grid(row=0,column = 1 ,padx=(5,5))
+        frmbtn2.grid(row=2,column = 0,columnspan=2,pady=(10,3),padx=(10,10))
+        ttk.Button (frmbtn2, text ="Open Browser", width=12, command =lambda: self.Open_Browser()).grid(row=0,column = 0,padx=(2,2) )
+        ttk.Button ( frmbtn2, text ="Load Data", width=12, command =lambda: self.load_data()).grid(row=0,column = 1 ,padx=(2,2))
+        ttk.Button ( frmbtn2, text ="Change Tab", width=12, command =lambda: self.change_tab()).grid(row=0,column = 2 ,padx=(2,2))
 
         ttk.Frame(self.frmLeftPanel, height=10).grid(row=3, column=0,columnspan=2, sticky=tk.E+tk.W)
         ttk.Frame(self.frmLeftPanel, style="Separator.TFrame", height=1).grid(row=4, column=0,columnspan=2, sticky=tk.E+tk.W)
