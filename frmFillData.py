@@ -34,7 +34,7 @@ from selenium.webdriver.support.ui import Select
 class FillData(ttk.Frame):
     config=None
     frm_Applicant1Canvas,ContainerFrame=None ,None 
-    varCurrentTemplateName,varCurrentDataFileName  = None,None
+    varCurrentTemplateName,varCurrentDataFileName,varCurrentTab  = None,None,None
     varAllTemlateName,varAllTemlate,varAllJsonData,varAllJsonFileName=[],[],[],[]       
     frmLeftPanel,frmRightPanel,ddlTemplateName,ddlFileName=None,None,None,None
     varCurrentData,varCurrentTemplateData=None,None
@@ -46,7 +46,7 @@ class FillData(ttk.Frame):
         self.config=config   
         self.ContainerFrame=Container
         self.displayFont = ( "Verdana", 10)       
-        self.varCurrentTemplateName,self.varCurrentDataFileName = tk.StringVar(), tk.StringVar()        
+        self.varCurrentTemplateName,self.varCurrentDataFileName,self.varCurrentTab = tk.StringVar(), tk.StringVar() , tk.StringVar()
         self.LoadAllJsonData()
         self.fncCreateItems()        
     

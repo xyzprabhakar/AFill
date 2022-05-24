@@ -74,7 +74,7 @@ class AutoFill(tk.Frame):
         btnClose.pack(side=tk.RIGHT, pady=7,padx=5)
         self.icon = tk.PhotoImage(file="logoIcon32.png")
         self.icon.subsample(1, 2)
-        lblHeader1=ttk.Label(frmTopFrame,image=self.icon,style="Toplable.TLabel")        
+        lblHeader1=ttk.Label(frmTopFrame,image=self.icon,style="Toplable.TLabel")
         lblHeader1.pack(side=tk.LEFT, pady=7,padx=(10,2))
         lblHeader2=ttk.Label(frmTopFrame,text="Auto Fill", style="Toplable.TLabel")
         lblHeader2.pack(side=tk.LEFT, pady=7,padx=2)

@@ -48,9 +48,9 @@ class GenerateConfig:
         # self.ico_sync=icon_to_image("sync",fill="#44a2d2",scale_to_width=10)
 
         self.ico_delete1  =PhotoImage(file ="data/trash.png")
-        self.ico_delete  =PhotoImage(file ="data/trash.png")
+        self.ico_delete  =PhotoImage(file ="data/trash1.png")
         self.ico_add=PhotoImage(file ="data/plus.png")
-        self.ico_edit=PhotoImage(file ="data/trash.png")
+        self.ico_edit=PhotoImage(file ="data/pen.png")
         self.ico_up=PhotoImage(file ="data/arrow-up.png")
         self.ico_down=PhotoImage(file ="data/arrow-down.png")
         self.ico_sync=PhotoImage(file ="data/sync.png")
