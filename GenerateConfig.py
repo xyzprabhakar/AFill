@@ -150,6 +150,7 @@ class GenerateConfig:
         self.FilePath = self.config_file['AFill_FileSetting']['FilePath']
         self.TemplateFileName = self.config_file['AFill_FileSetting']['TemplateFileName']
         self.DataFileName = self.config_file['AFill_FileSetting']['DataFileName']
+        self.WrapperFileName = self.config_file['AFill_FileSetting']['WrapperFileName']
         self.ChromeDriver = self.config_file['AFill_FileSetting']['ChromeDriver']
         self.UserName = self.config_file['AFill_Users']['UserName']
         self.Password = self.config_file['AFill_Users']['Password']
@@ -199,7 +200,8 @@ class GenerateConfig:
         # ADD SETTINGS TO SECTION
         self.config_file.set("AFill_FileSetting", "FilePath", os.getcwd()+"/data")
         self.config_file.set("AFill_FileSetting", "TemplateFileName", "template.json")
-        self.config_file.set("AFill_FileSetting", "DataFileName", "data.json")
+        self.config_file.set("AFill_FileSetting", "DataFileName", "data.json")        
+        self.config_file.set("AFill_FileSetting", "WrapperFileName", "wraperdata.json")    
         self.config_file.set("AFill_FileSetting", "ChromeDriver", "chromedriver.exe")         
 
         self.config_file.add_section("AFill_Users")
