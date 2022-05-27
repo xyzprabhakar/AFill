@@ -824,6 +824,7 @@ if __name__ == '__main__':
     posy  = 100
     root.wm_geometry("%dx%d+%d+%d" % (sizex, sizey, posx, posy))
     config.set_theme(None,root)
+    config.set_icons()
     myframe=tk.Frame(root,relief=tk.GROOVE,width=500,height=600,bd=1)
     myframe.pack( fill="both" ,expand=tk.TRUE ,anchor=tk.N+tk.W)   
     AddTemplate(myframe,config)
