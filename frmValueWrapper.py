@@ -20,7 +20,7 @@ class ValueWrapper:
     displayFont = ( "Verdana", 10)
     combostyle=None
     treeViewStyle=None
-    varAllData,varAllTemlateName,varCurrentTemplate,varAllSectionCategory,varCurrentSectionCategory,varAllIOName,varCurrentIOName,varIOValue,varTemplateValue=None,[],None,[],None,[],None ,None,None    
+    varAllData,varAllTemlateName,varCurrentTemplate,varAllSectionCategory,varCurrentSectionCategory,varAllIOName,varCurrentIOName,varIOValue,varTemplateValue=[],[],None,[],None,[],None ,None,None    
     chdFrm1,chdFrm2=None,None    
     treev1=None;
 
@@ -68,7 +68,9 @@ class ValueWrapper:
                     print('Empty File Created')
             else:
                 with io.open(os.path.join(self.config.FilePath, self.config.WrapperFileName)) as fp:                    
-                    self.varAllData = json.load(fp)
+                    tempData= json.load(fp)
+                    if(self.checkKey(tempData,"allData")):
+                        self.varAllData = tempData["allData"]
                     
         except Exception as ex:
             messagebox.showerror("Error", ex)
@@ -83,7 +85,7 @@ class ValueWrapper:
 
     def BindExistingTreeview(self,event):                    
             self.clear_all_gridview()        
-            for sections in self.self.varAllData:                
+            for sections in self.varAllData:                
                 varCurrentTemplate,varCurrentSectionCategory,varCurrentIOName,varIOValue,varWrapperValue='','','','',''                
                 if(self.checkKey(sections,"template")):
                     varCurrentTemplate=sections["template"]
@@ -98,8 +100,7 @@ class ValueWrapper:
         
     def clear_all_gridview(self):        
             for item in self.treev1.get_children():
-                self.treev1.delete(item)
-            self.frmHeader.children["frmTreeviewhandler"].children["btnEditAction"]["state"]=tk.DISABLED
+                self.treev1.delete(item)            
             self.frmHeader.children["frmTreeviewhandler"].children["btnRemoveAction"]["state"]=tk.DISABLED
             self.frmHeader.children["frmTreeviewhandler"].children["btnMoveUpAction"]["state"]=tk.DISABLED
             self.frmHeader.children["frmTreeviewhandler"].children["btnMoveDownAction"]["state"]=tk.DISABLED
@@ -132,12 +133,12 @@ class ValueWrapper:
         btnRefresh = ttk.Button ( frmbtn, text ="Refresh", width=10,command =lambda: self.fncReloadData())
         
         btnSave.grid(row=0,column = 0 , padx=(10,0),pady=(3,5))        
-        btnRefresh.grid(row=1,column = 0, padx=(10,0),pady=(3,5))
+        btnRefresh.grid(row=0,column = 1, padx=(10,0),pady=(3,5))
 
 
         frmbtn1 = ttk.Frame(self.frmHeader,name="frmTreeviewhandler")        
         frmbtn1.grid(row=3,column = 1, columnspan=3, sticky=tk.N+tk.W+tk.E)
-        btnAddAction = ttk.Button ( frmbtn1,name="btnAddAction" , image=self.config.ico_add ,command =lambda: self.fncOpenInnerChildForm(False) )                
+        btnAddAction = ttk.Button ( frmbtn1,name="btnAddAction" , image=self.config.ico_add ,command =lambda: self.fncOpenInnerChildForm() )                
         btnRemoveAction = ttk.Button ( frmbtn1,name="btnRemoveAction",image=self.config.ico_delete ,  state=tk.DISABLED,command =lambda: self.fncRemove() )
         btnMoveUpAction = ttk.Button ( frmbtn1,name="btnMoveUpAction",image=self.config.ico_up ,  state=tk.DISABLED,command =lambda: self.fncMoveUp() )
         btnMoveDownAction = ttk.Button ( frmbtn1,name="btnMoveDownAction",image=self.config.ico_down , state=tk.DISABLED,command =lambda: self.fncMoveDown() )
@@ -224,11 +225,10 @@ class ValueWrapper:
     def fncSaveData(self):
         AllData=[]
         for titem in self.treev1.get_children():
-           AllData.append({"template":self.treev1.item(titem)["values"][0],"sectionCategory":self.treev1.item(titem)["values"][1],"ioName":self.treev1.item(titem)["values"][2],"wrapperValue":self.treev1.item(titem)["values"][3]})                    
-        
+           AllData.append({"template":self.treev1.item(titem)["values"][0],"sectionCategory":self.treev1.item(titem)["values"][1],"ioName":self.treev1.item(titem)["values"][2],"wrapperValue":self.treev1.item(titem)["values"][3]})        
         with open(os.path.join(self.config.FilePath, self.config.TemplateFileName), 'w', encoding='utf-8') as f:
-            json.dump(AllData, f, ensure_ascii=False, indent=4,separators=(',',': '))            
-            tk.messagebox.showinfo("showinfo", "Save Successfully")            
+            json.dump({"allData":AllData}, f, ensure_ascii=False, indent=4,separators=(',',': ')) 
+            tk.messagebox.showinfo("info", "Save Successfully")            
             
             
     def fncChangeSectionCategory(self,event ):        
@@ -236,8 +236,7 @@ class ValueWrapper:
             if(section["Category"]==self.varCurrentTemplate.get()):
                 if(self.checkKey(self.frmHeader.children,"cmbIOName")):
                     self.frmHeader.children["cmbIOName"].configure(values= section["IOName"])
-
-            
+       
     
     def fncOpenInnerChildForm(self):    
         containter = tk.Toplevel(self.frmHeader1)        
