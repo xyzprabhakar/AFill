@@ -39,7 +39,7 @@ class FillData(ttk.Frame):
     config=None
     frm_Applicant1Canvas,ContainerFrame=None ,None 
     varCurrentTemplateName,varCurrentDataFileName,varCurrentTab  = None,None,None
-    varAllTemlateName,varAllTemlate,varAllJsonData,varAllJsonFileName,varAllWrapperData=[],[],[],[],
+    varAllTemlateName,varAllTemlate,varAllJsonData,varAllJsonFileName,varAllWrapperData=[],[],[],[],[]
     frmLeftPanel,frmRightPanel,ddlTemplateName,ddlFileName=None,None,None,None
     varCurrentData,varCurrentTemplateData=None,None
     driver=None

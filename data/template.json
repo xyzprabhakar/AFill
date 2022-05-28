@@ -806,7 +806,7 @@
                         "actionType": "Fill Input",
                         "startupType": "Start",
                         "selectorType": "ById",
-                        "control": "selCWD",
+                        "control": "selA1B",
                         "inputType": "ManualValue",
                         "manualValue": "mootools",
                         "ioValue": "",

@@ -1083,3 +1083,20 @@ JavaScript error: resource://gre/modules/CrashManager.jsm, line 898: AbortError:
 RunWatchdog: Mainthread nested event loops during hang: 
  --- (no nested event loop active)
 1652248681380	geckodriver	INFO	Listening on 127.0.0.1:57255
+1653740460321	geckodriver	INFO	Listening on 127.0.0.1:55676
+1653740463425	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--remote-debugging-port" "55677" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\PRABHA~1\\AppData\\Local\\Temp\\rust_mozprofilekwxEhk"
+1653740468893	Marionette	INFO	Marionette enabled
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at C:\\Users\\prabhakarsingh\\AppData\\Local\\Temp\\rust_mozprofilekwxEhk\\search.json.mozlz4", (void 0)))
+console.error: Region.jsm: "Error fetching region" (new TypeError("NetworkError when attempting to fetch resource.", ""))
+console.error: Region.jsm: "Failed to fetch region" (new Error("NO_RESULT", "resource://gre/modules/Region.jsm", 419))
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+DevTools listening on ws://localhost:55677/devtools/browser/182a23bc-df7a-4b7c-86af-7d0223817e60
+1653740479711	Marionette	INFO	Listening on port 55711
+Read port: 55711
+1653740479784	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://platform.twitter.com/widgets.js, line 1: SyntaxError: expected expression, got '<'
+1653740487517	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+JavaScript warning: https://192.168.5.1/UserCheck/push, line 30: unreachable code after return statement
+JavaScript error: https://192.168.5.1/UserCheck/js/Blob.js, line 3549: TypeError: callback.call is not a function
+JavaScript error: https://192.168.5.1/UserCheck/push, line 132: TypeError: pushButton is null
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, 
