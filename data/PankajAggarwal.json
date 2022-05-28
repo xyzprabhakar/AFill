@@ -173,7 +173,7 @@
             "Council_Tax_Bill_Seen": "",
             "Utilities_Bill_Seen": ""
         },
-        "CurrentEmployementDetails": {
+        "CurrentEmploymentDetails": {
             "Highest_rate_of_income_tax_paid": "45",
             "Owner": "",
             "Employment_Status": "Self-Employed",
@@ -752,7 +752,7 @@
             "Council_Tax_Bill_Seen": "",
             "Utilities_Bill_Seen": ""
         },
-        "CurrentEmployementDetails": {
+        "CurrentEmploymentDetails": {
             "Highest_rate_of_income_tax_paid": "40",
             "Owner": "",
             "Employment_Status": "Employed",

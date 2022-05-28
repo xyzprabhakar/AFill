@@ -10,6 +10,7 @@ import frmDataReport as DataReport
 import frmDashboard as Dash
 import frmFillData as FillData
 import frmSetting as setting
+import frmIOWrapper as ioWrapper
 import _thread
 
 
@@ -17,7 +18,7 @@ class AutoFill(tk.Frame):
     config=None
     icon =None
     varMenu=None
-    frmDashBoard,frmTemplate,frmFillData,frmImportData,frmReport,frmReport,frmSetting,frmChangePassword=None,None,None,None,None,None,None,None    
+    frmDashBoard,frmTemplate,frmFillData,frmImportData,frmReport,frmReport,frmSetting,frmChangePassword,frmIOWrapper=None,None,None,None,None,None,None,None ,None
     
     frmChangePassword=None
     #Left Menu Items
@@ -27,6 +28,7 @@ class AutoFill(tk.Frame):
                 {"name":"rdoImportData", "text":"Import Data","icon":"ico_ImportData", "ficon":fa.icons['file-import']},
                 {"name":"rdoReport", "text":"Report","icon":"ico_Report", "ficon":fa.icons['chart-line']},
                 {"name":"rdoSetting", "text":"Setting","icon":"ico_Setting", "ficon":fa.icons['wrench']},
+                {"name":"rdoWrapper", "text":"IO Wrapper","icon":"ico_Wrapper", "ficon":fa.icons['wrench']},
                 {"name":"rdoChangePassword", "text":"Change Password","icon":"ico_ChangePassword", "ficon":fa.icons['user']}]
 
     def __init__(self,config,isapp=True, name='AutoFill'):
@@ -165,6 +167,8 @@ class AutoFill(tk.Frame):
             self.frmReport.pack_forget()
         if(self.frmSetting!=None):
             self.frmSetting.pack_forget()
+        if(self.frmIOWrapper!=None):
+            self.frmIOWrapper.pack_forget()
 
         if(self.varMenu.get()=="Dashboard"):            
             if(self.frmDashBoard==None):
@@ -208,6 +212,13 @@ class AutoFill(tk.Frame):
                 setting.Setting(self.frmSetting,self.config)
             else:
                 self.frmSetting.pack(fill=tk.BOTH,expand=tk.TRUE)
+        elif(self.varMenu.get()=="IO Wrapper"):
+            if(self.frmIOWrapper==None):
+                self.frmIOWrapper=ttk.Frame(self.frmInnerDisplayContentFrame,style="DashboardContent.TFrame")
+                self.frmIOWrapper.pack(fill=tk.BOTH,expand=tk.TRUE)
+                ioWrapper.IOWrapper(self.frmSetting,self.config)
+            else:
+                self.frmIOWrapper.pack(fill=tk.BOTH,expand=tk.TRUE)
             
             #self._create_Template(frmInnerDisplayContentFrame)
 

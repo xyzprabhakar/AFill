@@ -24,7 +24,7 @@ class GenerateConfig:
     ConditionType=("eq","nq","gt","ge","lt","le")
     SectionNames=("Personal Details","Current Address","Previous Address","Contact Details","Professional Contacts","Bank Account Details","Family And Dependants","ID Verification","Current Employment Details","Assets","Liabilities","Existing Mortgage","Mortgage Requirements","Expenditure")
     SectionType=("Multiple","Single")
-    SectionCategory=("PersonalDetails","CurrentAddress","PreviousAddress","ContactDetails","ProfessionalContacts","BankAccount","FamilyAndDependants","IDVerification","CurrentEmployementDetails","Assets","Liabilities","Expenditure","ExistingMortgage","MortgageRequirements")
+    SectionCategory=("PersonalDetails","CurrentAddress","PreviousAddress","ContactDetails","ProfessionalContacts","BankAccount","FamilyAndDependants","IDVerification","CurrentEmploymentDetails","Assets","Liabilities","Expenditure","ExistingMortgage","MortgageRequirements")
     SectionCategoryType=("Single","Single","Multiple","Single","Multiple","Multiple","Multiple","Single","Single","Multiple","Multiple","Multiple","Multiple","Multiple")
     
 
@@ -44,6 +44,7 @@ class GenerateConfig:
         self.ico_menuData.update({"ico_Report":PhotoImage(file ="data/Report-1.png")})
         self.ico_menuData.update({"ico_Setting":PhotoImage(file ="data/Setting-1.png")})
         self.ico_menuData.update({"ico_ChangePassword":PhotoImage(file ="data/Change-Password-1.png")})
+        self.ico_menuData.update({"ico_Wrapper":PhotoImage(file ="data/Wrapper-1.png")})
 
         self.ico_menuData1={}
         self.ico_menuData1.update({"ico_DashBoard":PhotoImage(file ="data/Dashboard.png")})
@@ -53,6 +54,8 @@ class GenerateConfig:
         self.ico_menuData1.update({"ico_Report":PhotoImage(file ="data/Report.png")})
         self.ico_menuData1.update({"ico_Setting":PhotoImage(file ="data/Setting.png")})
         self.ico_menuData1.update({"ico_ChangePassword":PhotoImage(file ="data/Change-Password.png")})
+        self.ico_menuData1.update({"ico_Wrapper":PhotoImage(file ="data/Wrapper.png")})
+        
 
         
 

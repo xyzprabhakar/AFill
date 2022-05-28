@@ -14,7 +14,7 @@ from ttkthemes import ThemedStyle
 import time
 
 
-class ValueWrapper:
+class IOWrapper:
     config=None    
     ContainerFrame=None    
     displayFont = ( "Verdana", 10)
@@ -53,7 +53,7 @@ class ValueWrapper:
             self.varAllIOName.append({"Category":"PreviousAddress","IOName":self.config.IO_Name_PreviousAddress})
             self.varAllIOName.append({"Category":"ContactDetails","IOName":self.config.IO_Name_ContactDetails})
             self.varAllIOName.append({"Category":"ProfessionalContacts","IOName":self.config.IO_Name_ProfessionalContacts})
-            self.varAllIOName.append({"Category":"BankAccountDetails","IOName":self.config.IO_Name_BankAccountDetails})
+            self.varAllIOName.append({"Category":"BankAccount","IOName":self.config.IO_Name_BankAccountDetails})
             self.varAllIOName.append({"Category":"FamilyAndDependants","IOName":self.config.IO_Name_FamilyAndDependants})
             self.varAllIOName.append({"Category":"IDVerification","IOName":self.config.IO_Name_IDVerification})
             self.varAllIOName.append({"Category":"CurrentEmploymentDetails","IOName":self.config.IO_Name_CurrentEmploymentDetails})
@@ -93,6 +93,8 @@ class ValueWrapper:
                     varCurrentSectionCategory=sections["sectionCategory"]
                 if(self.checkKey(sections,"ioName")):
                     varCurrentIOName=sections["ioName"]
+                if(self.checkKey(sections,"ioValue")):
+                    varIOValue=sections["ioValue"]
                 if(self.checkKey(sections,"wrapperValue")):
                     varWrapperValue=len(sections["wrapperValue"]) 
                 self.treev1.insert("", 'end',values =(varCurrentTemplate,varCurrentSectionCategory,varCurrentIOName,varIOValue,varWrapperValue))
@@ -163,7 +165,7 @@ class ValueWrapper:
 
         
         # Defining number of columns
-        self.treev1["columns"] = ("Template","SectionCategory","IOName","WrapperValue")
+        self.treev1["columns"] = ("Template","SectionCategory","IOName","IOValue","WrapperValue")
         # Defining heading
         self.treev1['show'] = 'headings'
         # Assigning the width and anchor to the
@@ -171,6 +173,7 @@ class ValueWrapper:
         self.treev1.column("Template", width = 50, anchor ='nw')
         self.treev1.column("SectionCategory", width = 50, anchor ='nw')
         self.treev1.column("IOName", width = 50, anchor ='nw')
+        self.treev1.column("IOValue", width = 50, anchor ='nw')
         self.treev1.column("WrapperValue", width = 50, anchor ='center')
         
         # Assigning the heading names to the
@@ -178,6 +181,7 @@ class ValueWrapper:
         self.treev1.heading("Template", text ="Template")
         self.treev1.heading("SectionCategory", text ="Section Category")
         self.treev1.heading("IOName", text ="IO Name")
+        self.treev1.heading("IOValue", text ="IO Value")
         self.treev1.heading("WrapperValue", text ="Wrapper Value")
 
         self.BindExistingTreeview(None)
@@ -213,155 +217,96 @@ class ValueWrapper:
         self.frmHeader.children["frmTreeviewhandler"].children["btnMoveUpAction"]["state"]=tk.DISABLED
         self.frmHeader.children["frmTreeviewhandler"].children["btnMoveDownAction"]["state"]=tk.DISABLED
         
-    def fncResetData(self):
-        pass
-        # self.varActionType.set("Add Template")
-        # self.varCurrentTemplateName.set("")        
-        # self.varCurrentUrl.set("")
-        # self.clear_all_gridview()
-        # self.fncChangeTemplateType(None)
-        # self.BindDropDownTemplateName()
+    def fncReloadData(self):
+        self.LoadAllJsonData()
+        self.BindExistingTreeview(None)
+        
                 
     def fncSaveData(self):
         AllData=[]
         for titem in self.treev1.get_children():
-           AllData.append({"template":self.treev1.item(titem)["values"][0],"sectionCategory":self.treev1.item(titem)["values"][1],"ioName":self.treev1.item(titem)["values"][2],"wrapperValue":self.treev1.item(titem)["values"][3]})        
-        with open(os.path.join(self.config.FilePath, self.config.TemplateFileName), 'w', encoding='utf-8') as f:
+           AllData.append({"template":self.treev1.item(titem)["values"][0],"sectionCategory":self.treev1.item(titem)["values"][1],"ioName":self.treev1.item(titem)["values"][2],"ioValue":self.treev1.item(titem)["values"][3],"wrapperValue":self.treev1.item(titem)["values"][4]})        
+        with open(os.path.join(self.config.FilePath, self.config.WrapperFileName), 'w', encoding='utf-8') as f:
             json.dump({"allData":AllData}, f, ensure_ascii=False, indent=4,separators=(',',': ')) 
             tk.messagebox.showinfo("info", "Save Successfully")            
             
             
-    def fncChangeSectionCategory(self,event ):        
+    def fncChangeSectionCategory(self,event ):       
+        print(self.varCurrentSectionCategory.get()) 
+        
         for section in self.varAllIOName:
-            if(section["Category"]==self.varCurrentTemplate.get()):
-                if(self.checkKey(self.frmHeader.children,"cmbIOName")):
-                    self.frmHeader.children["cmbIOName"].configure(values= section["IOName"])
+            if(section["Category"]==self.varCurrentSectionCategory.get()):
+                print(section["Category"])
+                if(self.checkKey(self.chdFrm1.children,"cmbIOName")):
+                    self.chdFrm1.children["cmbIOName"].configure(values= section["IOName"])
        
     
     def fncOpenInnerChildForm(self):    
-        containter = tk.Toplevel(self.frmHeader1)        
+        containter = tk.Toplevel(self.ContainerFrame)        
         containter.title("Add Wrapper value")
-        containter.geometry("400x300")
+        containter.geometry("400x275")
         innercontainter=ttk.Frame(containter)        
         innercontainter.pack(expand="True",fill=tk.BOTH,anchor="nw",side=tk.LEFT)
         innercontainter.columnconfigure(0, weight=1)
         innercontainter.rowconfigure(0, weight=1)
-        chdFrm=ttk.Frame(innercontainter)        
-        chdFrm.grid(row=0,column=0)
-        chdFrm.columnconfigure(0, weight=1)
-        chdFrm.columnconfigure(1, weight=1)
-        chdFrm.rowconfigure(0, weight=1)
-        chdFrm.rowconfigure(1, weight=1)
-        chdFrm.rowconfigure(2, weight=1)
-        chdFrm.rowconfigure(3, weight=1)
-        chdFrm.rowconfigure(4, weight=1)        
+        self.chdFrm1=ttk.Frame(innercontainter)        
+        self.chdFrm1.grid(row=0,column=0)
+        self.chdFrm1.columnconfigure(0, weight=1)
+        self.chdFrm1.columnconfigure(1, weight=1)
+        self.chdFrm1.rowconfigure(0, weight=1)
+        self.chdFrm1.rowconfigure(1, weight=1)
+        self.chdFrm1.rowconfigure(2, weight=1)
+        self.chdFrm1.rowconfigure(3, weight=1)
+        self.chdFrm1.rowconfigure(4, weight=1)        
 
-        ttk.Label(chdFrm,text = "Template :").grid(row=0,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-        ttk.Combobox(chdFrm, width = 24, textvariable = self.varCurrentTemplate, values=self.varAllTemlateName).grid(row=0,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        ttk.Label(self.chdFrm1, text = "Template :").grid(row=0,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        ttk.Combobox(self.chdFrm1, width = 24, textvariable = self.varCurrentTemplate, values=self.varAllTemlateName).grid(row=0,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
         
-        ttk.Label(chdFrm,text = "Section Category :").grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-        cmbSectionCategory=ttk.Combobox(chdFrm, width = 24, textvariable = self.varCurrentSectionCategory, values=self.varAllSectionCategory)
+        ttk.Label(self.chdFrm1,name="cmbTemplate",text = "Section Category :").grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        cmbSectionCategory=ttk.Combobox(self.chdFrm1, width = 24, textvariable = self.varCurrentSectionCategory, values=self.varAllSectionCategory)
         cmbSectionCategory.grid(row=1,column =1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
         
          
-        ttk.Label(chdFrm,text = "IO Name :").grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-        ttk.Combobox(chdFrm, width = 24, name="cmbIOName", textvariable = self.varCurrentIOName,state="readonly").grid(row=0,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        ttk.Label(self.chdFrm1,text = "IO Name :").grid(row=2,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        ttk.Combobox(self.chdFrm1, width = 24, name="cmbIOName", textvariable = self.varCurrentIOName,state="readonly").grid(row=2,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+
+        ttk.Label(self.chdFrm1,text = "IO Value :").grid(row=3,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        ttk.Entry(self.chdFrm1,width = 26, textvariable = self.varIOValue).grid(row=3,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
         
-        ttk.Label(chdFrm,text = "Wrapper Value :" ).grid(row=0,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-        ttk.Entry(chdFrm, name="WrapperValue",width = 26, textvariable = self.var_control).grid(row=0,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        ttk.Label(self.chdFrm1,text = "Wrapper Value :" ).grid(row=4,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        ttk.Entry(self.chdFrm1, name="txtWrapperValue",width = 26, textvariable = self.varTemplateValue).grid(row=4,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
 
         
-        ttk.Button(chdFrm, text ="Save", width=10, command =lambda: self.fncAddAction(containter)).grid(row=5,column = 1 , padx=(10,0),pady=(3,5),sticky=tk.N+tk.W)        
+        ttk.Button(self.chdFrm1, text ="Save", width=10, command =lambda: self.fncAddAction(containter)).grid(row=5,column = 1 , padx=(10,0),pady=(3,5),sticky=tk.N+tk.W)        
         containter.grab_set()
         cmbSectionCategory.bind("<<ComboboxSelected>>", lambda event: self.fncChangeSectionCategory(event))
         
 
     
     def fncAddAction(self,container):
-        if(self.var_actionId==None or self.var_actionId.get()=="" ):
-            messagebox.showerror("Required", "Required Action Id")
+        if(self.varCurrentTemplate==None or self.varCurrentTemplate.get()=="" ):
+            messagebox.showerror("Required", "Required Template")
             return
-        if(self.var_actionType==None or self.var_actionType.get()=="" ):
-            messagebox.showerror("Required", "Required Action Type")
+        if(self.varCurrentSectionCategory==None or self.varCurrentSectionCategory.get()=="" ):
+            messagebox.showerror("Required", "Required Section Category")
             return
-        if(self.var_ActionStartupType==None or self.var_ActionStartupType.get()==""):
-            messagebox.showerror("Required", "Required startup type")
+        if(self.varCurrentIOName==None or self.varCurrentIOName.get()==""):
+            messagebox.showerror("Required", "Required IOName")
+            return        
+        if(self.varIOValue==None or self.varIOValue.get()==""):
+            messagebox.showerror("Required", "Required IOValue")
+            return        
+        if(self.varTemplateValue==None or self.varTemplateValue.get()==""):
+            messagebox.showerror("Required", "Required False Action Id")
             return
-        if(self.var_actionType.get()=="Wait"):
-            if(self.var_manualValue==None or self.var_manualValue.get()==""):
-                    messagebox.showerror("Required", "Required Manual Value")
-                    return
-        elif(not (self.var_actionType.get()=="Condition" or self.var_actionType.get()=="Find Index")) :
-            if(self.var_controlSelectorType==None or self.var_controlSelectorType.get()==""):
-                messagebox.showerror("Required", "Required Selector Type")
-                return
-            if(self.var_control==None or self.var_control.get()==""):
-                messagebox.showerror("Required", "Required Control")
-                return
-            if(self.var_inputType==None or self.var_inputType.get()==""):
-                messagebox.showerror("Required", "Required Input Type")
-                return
-            if(self.var_inputType.get()=="ManualValue"):
-                if(self.var_manualValue==None or self.var_manualValue.get()==""):
-                    messagebox.showerror("Required", "Required Manual Value")
-                    return
-            else:
-                if(self.var_ioValue==None or self.var_ioValue.get()==""):
-                    messagebox.showerror("Required", "Required IO Value")
-                    return
-            if(self.var_nextActionId==None or self.var_nextActionId.get()==""):
-                messagebox.showerror("Required", "Required Next Action Id")
-                return
-        else:
-            if(self.var_conditionType==None or self.var_conditionType.get()==""):
-                messagebox.showerror("Required", "Required Condition Type")
-                return
-            if(self.var_leftInputType==None or self.var_leftInputType.get()==""):
-                messagebox.showerror("Required", "Required Left Input Type")
-                return
-            if(self.var_leftInputType.get()=="ManualValue"):
-                if(self.var_leftManualValue==None or self.var_leftManualValue.get()==""):
-                    messagebox.showerror("Required", "Required Left Manual Value")
-                    return
-            else:
-                if(self.var_leftIOValue==None or self.var_leftIOValue.get()==""):
-                    messagebox.showerror("Required", "Required Left IO Value")
-                    return
-            if(self.var_rightInputType==None or self.var_rightInputType.get()==""):
-                messagebox.showerror("Required", "Required Right Input Type")
-                return
-            if(self.var_rightInputType.get()=="ManualValue"):
-                if(self.var_rightManualValue==None or self.var_rightManualValue.get()==""):
-                    messagebox.showerror("Required", "Required Right Manual Value")
-                    return
-            else:
-                if(self.var_rightIOValue==None or self.var_rightIOValue.get()==""):
-                    messagebox.showerror("Required", "Required Right IO Value")
-                    return
-
-            if(self.var_trueActionId==None or self.var_trueActionId.get()==""):
-                messagebox.showerror("Required", "Required True Action Id")
-                return
-            if(self.var_falseActionId==None or self.var_falseActionId.get()==""):
-                messagebox.showerror("Required", "Required False Action Id")
-                return
-        self.treev2.insert("", 'end',values =(self.var_actionId.get(), self.var_actionType.get(),self.var_ActionStartupType.get(),
-        self.var_controlSelectorType.get(),self.var_control.get(),self.var_inputType.get(),self.var_manualValue.get(),self.var_ioValue.get(),self.var_nextActionId.get(),
-        self.var_conditionType.get(),self.var_leftInputType.get(),self.var_leftManualValue.get(),self.var_leftIOValue.get(),self.var_trueActionId.get(),
-        self.var_rightInputType.get(),self.var_rightManualValue.get(),self.var_rightIOValue.get(),self.var_falseActionId.get()
-        ))
+        self.treev1.insert("", 'end',values =(self.varCurrentTemplate.get(), self.varCurrentSectionCategory.get(),self.varCurrentIOName.get(),self.varIOValue.get(),self.varTemplateValue.get()))
         #reset the data
-        self.var_control.set("")
-        self.var_manualValue.set("")
-        self.var_leftManualValue.set("")
-        self.var_rightInputType.set("")
-        self.var_actionId.set("")
-        self.var_nextActionId.set("")
-        self.var_trueActionId.set("")
-        self.var_falseActionId.set("")
-        self.var_ActionStartupType.set("Middle")
-        self.chdFrm1.children["txtControl"].focus_set()        
-
+        self.varCurrentTemplate.set("")
+        self.varCurrentSectionCategory.set("")
+        self.varCurrentIOName.set("")
+        self.varIOValue.set("")
+        self.varTemplateValue.set("")        
+        self.chdFrm1.children["cmbTemplate"].focus_set()      
         messagebox.showinfo("Success", "Action added successfully")
 
 
@@ -380,6 +325,6 @@ if __name__ == '__main__':
     config.set_icons()
     myframe=tk.Frame(root,relief=tk.GROOVE,width=500,height=600,bd=1)
     myframe.pack( fill="both" ,expand=tk.TRUE ,anchor=tk.N+tk.W)   
-    ValueWrapper(myframe,config)
+    IOWrapper(myframe,config)
     root.eval('tk::PlaceWindow . center')
     root.mainloop()

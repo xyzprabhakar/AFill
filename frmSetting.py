@@ -108,7 +108,7 @@ class Setting(ttk.Frame):
         ttk.Entry(frmFileDetailsInnerData,textvariable=self.varTemplateFile, width=50).grid(row=1,column=1,sticky=tk.E+tk.N+tk.S, padx=(10,10),pady=(8,3))
         ttk.Entry(frmFileDetailsInnerData,textvariable=self.varDataFile, width=50).grid(row=2,column=1,sticky=tk.E+tk.N+tk.S, padx=(10,10),pady=(8,3))
         ttk.Entry(frmFileDetailsInnerData,textvariable=self.varWrapperFile, width=50).grid(row=3,column=1,sticky=tk.E+tk.N+tk.S, padx=(10,10),pady=(8,3))
-        ttk.Combobox(frmFileDetailsInnerData,textvariable = self.varDriverName,values=["Chrome","FireFox","IE","Edge"],width=50).grid(row=4,column=1,sticky=tk.E+tk.N+tk.S, padx=(10,10),pady=(8,3))
+        ttk.Combobox(frmFileDetailsInnerData,textvariable = self.varDriverName,values=["Chrome","FireFox","IE","Edge"],width=47).grid(row=4,column=1,sticky=tk.E+tk.N+tk.S, padx=(10,10),pady=(8,3))
         ttk.Button( frmFileDetailsInnerData, text ="Save", width=10,command =lambda: self.fncSaveData()).grid(row=5,column=1, padx=(10,10),pady=(8,3))
 
     def fncSaveData(self):

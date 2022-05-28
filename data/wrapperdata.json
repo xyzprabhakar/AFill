@@ -1,1 +1,11 @@
-{"allData":[]}
+{
+    "allData": [
+        {
+            "template": "Barclays",
+            "sectionCategory": "BankAccount",
+            "ioName": "Bank Name",
+            "ioValue": "national westminster bank",
+            "wrapperValue": "netwest"
+        }
+    ]
+}

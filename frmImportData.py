@@ -106,10 +106,10 @@ class ImportData:
             self.fnc_Read_IDVerification_IO_Template(frmIDVerificationFrame, Applicantid)
             frmTopFrame.add(frmIDVerificationFrame, text ='ID Verification')
 
-            # Current Employement Details
-            frmCurrentEmployementDetailsFrame = ttk.LabelFrame(frmTopFrame,name="frmCurrentEmployementDetailsFrame_"+str(Applicantid),text="Current Employement Details",style="Details.TLabelframe")
-            self.fnc_Read_CurrentEmployementDetails_IO_Template(frmCurrentEmployementDetailsFrame, Applicantid)           
-            frmTopFrame.add(frmCurrentEmployementDetailsFrame, text ='Employement')
+            # Current Employment Details
+            frmCurrentEmploymentDetailsFrame = ttk.LabelFrame(frmTopFrame,name="frmCurrentEmploymentDetailsFrame_"+str(Applicantid),text="Current Employment Details",style="Details.TLabelframe")
+            self.fnc_Read_CurrentEmploymentDetails_IO_Template(frmCurrentEmploymentDetailsFrame, Applicantid)           
+            frmTopFrame.add(frmCurrentEmploymentDetailsFrame, text ='Employment')
 
 
             frmAssetsLiabilitiesFrame=ttk.Notebook(frmTopFrame,name="frmAssetsLiabilitiesFrame_"+str(Applicantid))            
@@ -877,7 +877,7 @@ class ImportData:
                         row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
                 PreviousAddressCounter += 1
     
-    def fnc_Read_CurrentEmployementDetails_IO_Template(self, ParentContainer, Applicantid):
+    def fnc_Read_CurrentEmploymentDetails_IO_Template(self, ParentContainer, Applicantid):
         self.gridrowindex, self.gridcolumnindex = -1, 0
         columnIndex, rowIndex = 0, 0
         DetailTable = None
@@ -1466,7 +1466,7 @@ class ImportData:
             ApplicantData.update({"BankAccount":self.fnc_Save_BankAccount(ApplicantId)})
             ApplicantData.update({"FamilyAndDependants":self.fnc_Save_FamilyAndDependants(ApplicantId)})
             ApplicantData.update({"IDVerification":self.fnc_Save_IDVerification(ApplicantId)})
-            ApplicantData.update({"CurrentEmployementDetails":self.fnc_Save_CurrentEmployementDetails(ApplicantId)})
+            ApplicantData.update({"CurrentEmploymentDetails":self.fnc_Save_CurrentEmploymentDetails(ApplicantId)})
             ApplicantData.update({"Assets":self.fnc_Save_Assets(ApplicantId)})
             ApplicantData.update({"Liabilities":self.fnc_Save_Liabilities(ApplicantId)})
             ApplicantData.update({"Expenditure":self.fnc_Save_Expenditure(ApplicantId)})
@@ -1715,8 +1715,8 @@ class ImportData:
                                 IDVerification.update({HeaderName:controlVal})                
         return IDVerification
 
-    def fnc_Save_CurrentEmployementDetails(self,ApplicantId):
-        CurrentEmployementDetails={}
+    def fnc_Save_CurrentEmploymentDetails(self,ApplicantId):
+        CurrentEmploymentDetails={}
         TabFrame,frmInnerContentFrame=None,None
         if(ApplicantId==1):
             TabFrame=self.frm_Applicant1
@@ -1724,8 +1724,8 @@ class ImportData:
             TabFrame=self.frm_Applicant2
         if(self.checkKey(TabFrame.children,"frmInnerContentFrame"+str(ApplicantId))):
             if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children,"tab_Section_"+str(ApplicantId))):
-                if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmCurrentEmployementDetailsFrame_"+str(ApplicantId))):                    
-                            frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmCurrentEmployementDetailsFrame_"+str(ApplicantId)]
+                if(self.checkKey(TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children,"frmCurrentEmploymentDetailsFrame_"+str(ApplicantId))):                    
+                            frmInnerContentFrame=TabFrame.children["frmInnerContentFrame"+str(ApplicantId)].children["tab_Section_"+str(ApplicantId)].children["frmCurrentEmploymentDetailsFrame_"+str(ApplicantId)]
                             controlName,controlVal,HeaderName='','',''
                             for  x in self.config.IO_Name_CurrentEmploymentDetails: 
                                 controlName,controlVal,HeaderName='','',''
@@ -1733,8 +1733,8 @@ class ImportData:
                                 HeaderName=x.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')
                                 if (self.checkKey(frmInnerContentFrame.children,controlName)):
                                     controlVal=frmInnerContentFrame.children[controlName].get()
-                                CurrentEmployementDetails.update({HeaderName:controlVal})                
-        return CurrentEmployementDetails
+                                CurrentEmploymentDetails.update({HeaderName:controlVal})                
+        return CurrentEmploymentDetails
 
     def fnc_Save_Assets(self,ApplicantId):
         Assets=[]
