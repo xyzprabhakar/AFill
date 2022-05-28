@@ -242,10 +242,7 @@ class FillData(ttk.Frame):
             #self.driver = webdriver.Firefox()
             self.driver = webdriver.Chrome(ChromeDriverManager().install())
             self.driver.get(self.varCurrentTemplateData["url"])
-        
         element,controlId,IoName,controlValue,actiontype,finalValue,actionOn,CurrentActionId,CurrentAction=None,None,None,None,None,None,None,None,None
-        
-
         for section in self.varCurrentTemplateData["sections"]:                     
             if(section["sectionName"]!=sectionName):
                 continue

@@ -10,21 +10,12 @@ class GenerateConfig:
     # CREATE OBJECT
     config_file = configparser.ConfigParser(interpolation=None)
     ConfigFileName="configurations.ini"
-    Name=None
-    Email=None
-    ContactNo=None
-    IO_Name=[]
-    IO_Template=[]
-    COLOR_TOP_BACKGROUND="#44a2d2"
-    COLOR_BACKGROUND="#f2f5f7"
-    COLOR_FOREGROUND="#343a40"
-    COLOR_MENU_BACKGROUND="#ffffff"
-    COLOR_MENU_FOREGROUND="#44a2d2"    
+    Name,Email,ContactNo=None,None,None    
+    IO_Name,IO_Template=[],[]    
+    COLOR_TOP_BACKGROUND,COLOR_BACKGROUND,COLOR_FOREGROUND,COLOR_MENU_BACKGROUND,COLOR_MENU_FOREGROUND="#44a2d2","#f2f5f7","#343a40","#ffffff","#44a2d2"        
     displayFont=( "Verdana", 10)
     ChromeDriver="chromedriver.exe"
-    themeName=None
-    customStyle=None
-    headerFonts =None 
+    themeName,customStyle,headerFonts=None,None,None    
     SecretKey ='fpxNyunUji5SJod5sK1dCwmovsukz1qLC1sJYOsVTzo='
     ActionTypes=("Wait","Check Checkbox","Click Button","Click Link","Click Submit","Fill Input","Select Text","Select Option","Condition","Find Index")
     ActionStartTypes=("Start","End","Middle")
@@ -194,7 +185,6 @@ class GenerateConfig:
         
 
     def fnc_CreateDefaultFile(self):    
-        
         # ADD SECTION
         self.config_file.add_section("AFill_FileSetting")
         # ADD SETTINGS TO SECTION
@@ -202,19 +192,16 @@ class GenerateConfig:
         self.config_file.set("AFill_FileSetting", "TemplateFileName", "template.json")
         self.config_file.set("AFill_FileSetting", "DataFileName", "data.json")        
         self.config_file.set("AFill_FileSetting", "WrapperFileName", "wraperdata.json")    
-        self.config_file.set("AFill_FileSetting", "ChromeDriver", "chromedriver.exe")         
-
+        self.config_file.set("AFill_FileSetting", "ChromeDriver", "chromedriver.exe")
         self.config_file.add_section("AFill_Users")
         # ADD SETTINGS TO SECTION        
         self.config_file.set("AFill_Users", "UserName", "admin")
         self.config_file.set("AFill_Users", "Password", "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92")
-
         self.config_file.add_section("AFill_Register")
         # ADD SETTINGS TO SECTION        
         self.config_file.set("AFill_Register", "Name", "Prabhakar Kumar Singh")
         self.config_file.set("AFill_Register", "Email", "")
         self.config_file.set("AFill_Register", "ContactNo", "")
-
         self.config_file.add_section("InputTemplate")
         self.config_file.set("InputTemplate", "IO_Name", "Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,Marital Status,"+
         "Country of Birth,Nationality,National Insurance No.,Country Of Residence,Country of Birth,"+
