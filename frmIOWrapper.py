@@ -96,7 +96,7 @@ class IOWrapper:
                 if(self.checkKey(sections,"ioValue")):
                     varIOValue=sections["ioValue"]
                 if(self.checkKey(sections,"wrapperValue")):
-                    varWrapperValue=len(sections["wrapperValue"]) 
+                    varWrapperValue=sections["wrapperValue"]
                 self.treev1.insert("", 'end',values =(varCurrentTemplate,varCurrentSectionCategory,varCurrentIOName,varIOValue,varWrapperValue))
                 
         

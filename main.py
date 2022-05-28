@@ -216,7 +216,7 @@ class AutoFill(tk.Frame):
             if(self.frmIOWrapper==None):
                 self.frmIOWrapper=ttk.Frame(self.frmInnerDisplayContentFrame,style="DashboardContent.TFrame")
                 self.frmIOWrapper.pack(fill=tk.BOTH,expand=tk.TRUE)
-                ioWrapper.IOWrapper(self.frmSetting,self.config)
+                ioWrapper.IOWrapper(self.frmIOWrapper,self.config)
             else:
                 self.frmIOWrapper.pack(fill=tk.BOTH,expand=tk.TRUE)
             

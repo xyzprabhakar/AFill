@@ -39,7 +39,7 @@ class FillData(ttk.Frame):
     config=None
     frm_Applicant1Canvas,ContainerFrame=None ,None 
     varCurrentTemplateName,varCurrentDataFileName,varCurrentTab  = None,None,None
-    varAllTemlateName,varAllTemlate,varAllJsonData,varAllJsonFileName=[],[],[],[]       
+    varAllTemlateName,varAllTemlate,varAllJsonData,varAllJsonFileName,varAllWrapperData=[],[],[],[],
     frmLeftPanel,frmRightPanel,ddlTemplateName,ddlFileName=None,None,None,None
     varCurrentData,varCurrentTemplateData=None,None
     driver=None
@@ -76,7 +76,16 @@ class FillData(ttk.Frame):
                 self.varAllTemlateName.clear()
                 for x in self.varAllTemlate:
                     self.varAllTemlateName.append(x["templateName"])
-        self.AppendDataToDropDown()    
+        self.AppendDataToDropDown()  
+
+        if os.path.isfile(os.path.join(self.config.FilePath, self.config.WrapperFileName)) is False:
+                with io.open(os.path.join(self.config.FilePath, self.config.WrapperFileName), 'w') as fp:
+                    print('Empty File Created')
+        else:
+            with io.open(os.path.join(self.config.FilePath, self.config.WrapperFileName)) as fp:                    
+                tempData= json.load(fp)
+                if(self.checkKey(tempData,"allData")):
+                    self.varAllWrapperData = tempData["allData"]
            
     
     def AppendDataToDropDown(self):
@@ -193,6 +202,14 @@ class FillData(ttk.Frame):
             elif(actionOn=="ByXpath") :
                 return self.driver.find_element(By.XPATH ,ControlName)
     
+    def Get_WrapperValue(self,HaveWrapper,SectionCategory,IOName,IOValue):
+        if(HaveWrapper):
+            for data in self.varAllWrapperData:
+                ioName_=str( data["ioName"]).lower().replace(' ','_')
+                if(data["template"]==self.varCurrentTemplateName.get() and data["sectionCategory"]==SectionCategory and ioName_==str(IOName).lower() and str(data["ioValue"]).lower() == str(IOValue).lower() ):
+                    return data["wrapperValue"]
+        return IOValue
+
     def Get_ActionValue(self,jsonKeyName,counter,ApplicantId):
         keynames=jsonKeyName.split(":")
         sectionkeyname,datakeyname='',''
@@ -203,22 +220,29 @@ class FillData(ttk.Frame):
         if(ApplicantId==None):
             ApplicantId=0
         tempData=self.varCurrentData[ApplicantId]
+
+        HaveWrapper=False
+        if(sectionkeyname.find('fncWrapper ')!=-1):
+            HaveWrapper=True
+            sectionkeyname=sectionkeyname.replace('fncWrapper ','')
+
+
         if(sectionkeyname.find('[]')!=-1):
             sectionkeyname=sectionkeyname.replace('[]','')
             if(self.checkKey(tempData,sectionkeyname)):
                 if(len(tempData[sectionkeyname])>counter ):
                     if(self.checkKey(tempData[sectionkeyname][counter],datakeyname)):
-                       return tempData[sectionkeyname][counter][datakeyname]
+                       return self.Get_WrapperValue(HaveWrapper,sectionkeyname,datakeyname, tempData[sectionkeyname][counter][datakeyname])
         elif(sectionkeyname.find('[@]')!=-1):
             sectionkeyname=sectionkeyname.replace('[@]','')
             if(self.checkKey(tempData,sectionkeyname)):
                 if(len(tempData[sectionkeyname])>self.FindIndex and self.FindIndex!=-1):
-                    if(self.checkKey(tempData[sectionkeyname][self.FindIndex],datakeyname)):
-                       return tempData[sectionkeyname][self.FindIndex][datakeyname]
+                    if(self.checkKey(tempData[sectionkeyname][self.FindIndex],datakeyname)):                       
+                       return self.Get_WrapperValue(HaveWrapper,sectionkeyname,datakeyname,tempData[sectionkeyname][self.FindIndex][datakeyname])
         else:
             if(self.checkKey(tempData,sectionkeyname)):
-                if(tempData[sectionkeyname],datakeyname): 
-                    return tempData[sectionkeyname][datakeyname]
+                if(tempData[sectionkeyname],datakeyname):                     
+                    return self.Get_WrapperValue(HaveWrapper,sectionkeyname,datakeyname,tempData[sectionkeyname][datakeyname])
         return ""
 
     def fncFindIndex(self,jsonKeyName,checkValue):
@@ -330,8 +354,7 @@ class FillData(ttk.Frame):
                                 action.click(on_element = element)                            
                                 action.perform()
                         elif(CurrentAction["actionType"]=="Condition"):
-                            leftfinalValue,rightfinalValue="",""
-                            
+                            leftfinalValue,rightfinalValue="",""                            
                             if(CurrentAction["leftInputType"]=="IOValue"):
                                 leftfinalValue=self.Get_ActionValue(CurrentAction["leftIOValue"],buttoncounter,applicantId)
                             else:
