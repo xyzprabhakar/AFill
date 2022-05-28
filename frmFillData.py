@@ -1,5 +1,4 @@
 from curses import keyname
-import this
 from typing import Counter
 import fontawesome as fa
 from multiprocessing.sharedctypes import Value
@@ -141,9 +140,9 @@ class FillData(ttk.Frame):
                                 if(sect["sectionType"]=="Multiple"):
                                     datacounter=len(ApplicantData[sectioncounter])                                         
                                     for i in range(0,datacounter):
-                                        ttk.Button (tempFrame, text =sect["sectionName"]+ " "+str(i+1) , command =lambda: self.fill_data(sect["sectionName"],i,ApplicantId)).grid(row=gridcounter+i,column=ApplicantId,pady=(8,3),padx=(2,2))
+                                        ttk.Button (tempFrame, text =sect["sectionName"]+ " "+str(i+1) , command =lambda sectionName=sect["sectionName"],aplId=ApplicantId,i=i : self.fill_data(sectionName,i,aplId)).grid(row=gridcounter+i,column=ApplicantId,pady=(8,3),padx=(2,2))
                                 else:                    
-                                    ttk.Button(tempFrame, text =sect["sectionName"] ,  command =lambda: self.fill_data(sect["sectionName"],0,ApplicantId)).grid(row=gridcounter,column=ApplicantId,pady=(8,3),padx=(2,2))
+                                    ttk.Button(tempFrame, text =sect["sectionName"] ,  command =lambda sectionName=sect["sectionName"],aplId=ApplicantId: self.fill_data(sectionName,0,aplId)).grid(row=gridcounter,column=ApplicantId,pady=(8,3),padx=(2,2))
                                 gridcounter=gridcounter+1
         self.frm_Applicant1Canvas.create_window((0, 0), window=self.frm_Applicant1, anchor='nw')
         self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
@@ -238,7 +237,7 @@ class FillData(ttk.Frame):
         return -1
 
     def fill_data(self,sectionName,buttoncounter,applicantId=0):
-        print(sectionName)
+        print(sectionName,buttoncounter,applicantId)
         if(self.driver is None):
             #self.driver = webdriver.Firefox()
             self.driver = webdriver.Chrome(ChromeDriverManager().install())
@@ -410,7 +409,7 @@ class FillData(ttk.Frame):
         frmHeader.rowconfigure(0, weight=1)        
         frmbtn1 = ttk.Frame(frmHeader)        
         frmbtn1.grid(row=0,column = 1, columnspan=3, sticky=tk.N+tk.W+tk.E)
-        btnReffreshData = ttk.Button ( frmbtn1,name="btnReffreshData",image=self.config.ico_sync, text =fa.icons['sync'], relief='groove', width=3,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command = lambda :self.LoadAllJsonData() )
+        btnReffreshData = ttk.Button ( frmbtn1,name="btnReffreshData",image=self.config.ico_sync, text =fa.icons['sync'],   command = lambda :self.LoadAllJsonData() )
         btnReffreshData.grid(row=0,column = 0, padx=(10,0),pady=(3,5))
         
         
@@ -535,6 +534,7 @@ if __name__ == '__main__':
     posy  = 100
     root.wm_geometry("%dx%d+%d+%d" % (sizex, sizey, posx, posy))
     config.set_theme(None,root)
+    config.set_icons()
     myframe=tk.Frame(root,relief=tk.GROOVE,width=500,height=600,bd=1)
     myframe.pack( fill="both" ,expand=tk.TRUE ,anchor=tk.N+tk.W)   
     FillData(myframe,config)
