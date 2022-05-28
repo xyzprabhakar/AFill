@@ -9,7 +9,7 @@
             "actions": [
                 {
                     "actionId": "1",
-                    "actionType": "Select Text",
+                    "actionType": "Single Choosen Text",
                     "startupType": "Start",
                     "selectorType": "ById",
                     "control": "SystemContactSalesProcessCustomersTitle",
@@ -169,7 +169,7 @@
                 },
                 {
                     "actionId": "9",
-                    "actionType": "Select Text",
+                    "actionType": "Single Choosen Text",
                     "startupType": "Middle",
                     "selectorType": "ById",
                     "control": "SystemContactSalesProcessCustomersGender",
@@ -189,7 +189,7 @@
                 },
                 {
                     "actionId": "10",
-                    "actionType": "Select Text",
+                    "actionType": "Single Choosen Text",
                     "startupType": "Middle",
                     "selectorType": "ById",
                     "control": "SystemContactSalesProcessCustomersCountryOfBirth",
@@ -209,7 +209,7 @@
                 },
                 {
                     "actionId": "11",
-                    "actionType": "Select Text",
+                    "actionType": "Single Choosen Text",
                     "startupType": "Middle",
                     "selectorType": "ById",
                     "control": "SystemContactSalesProcessCustomersNationality",
@@ -229,7 +229,7 @@
                 } ,
                 {
                     "actionId": "12",
-                    "actionType": "Select Text",
+                    "actionType": "Single Choosen Text",
                     "startupType": "End",
                     "selectorType": "ById",
                     "control": "CountryOfResidence",
@@ -343,7 +343,7 @@
             "actions": [
                 {
                     "actionId": "1",
-                    "actionType": "Select Text",
+                    "actionType": "Single Choosen Text",
                     "startupType": "Start",
                     "selectorType": "ById",
                     "control": "SystemContactSalesProcessCustomersTitle",
@@ -450,7 +450,7 @@
             "actions": [
                 {
                     "actionId": "1",
-                    "actionType": "Select Text",
+                    "actionType": "Single Choosen Text",
                     "startupType": "Start",
                     "selectorType": "ById",
                     "control": "select-previousAddress-0-AddressType",
@@ -577,7 +577,7 @@
                 },
                 {
                     "actionId": "2",
-                    "actionType": "Select Text",
+                    "actionType": "Single Choosen Text",
                     "startupType": "Middle",
                     "selectorType": "ById",
                     "control": "fccommitment",
@@ -597,7 +597,7 @@
                 },
                 {
                     "actionId": "3",
-                    "actionType": "Select Text",
+                    "actionType": "Single Choosen Text",
                     "startupType": "Middle",
                     "selectorType": "ById",
                     "control": "input-previousAddress-0-postcode_input",
@@ -697,7 +697,7 @@
                 },
                 {
                     "actionId": "8",
-                    "actionType": "Select Text",
+                    "actionType": "Single Choosen Text",
                     "startupType": "Middle",
                     "selectorType": "ById",
                     "control": "commitment-repaid",
@@ -788,6 +788,39 @@
                         "rightIOValue": "",
                         "falseActionId": ""
                     }
+                ]
+            }
+        ]
+    }
+    ,{
+        "templateName": "Choosen Text",
+        "url": "https://davidwalsh.name/demo/jquery-chosen.php",
+        "sections": [
+            {
+                "sectionName": "Personal Details",
+                "sectionCategory": "PersonalDetails",
+                "sectionType": "Single",
+                "actions": [
+                    {
+                        "actionId": "1",
+                        "actionType": "Fill Input",
+                        "startupType": "Start",
+                        "selectorType": "ById",
+                        "control": "selCWD",
+                        "inputType": "ManualValue",
+                        "manualValue": "mootools",
+                        "ioValue": "",
+                        "nextActionId": "2",
+                        "conditionType": "",
+                        "leftInputType": "",
+                        "leftManualValue": "",
+                        "leftIOValue": "",
+                        "trueActionId": "",
+                        "rightInputType": "IOValue",
+                        "rightManualValue": "",
+                        "rightIOValue": "",
+                        "falseActionId": ""
+                    }                    
                 ]
             }
         ]

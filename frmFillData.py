@@ -25,6 +25,10 @@ import json
 # import webdriver
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.microsoft import IEDriverManager
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
+
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
@@ -236,12 +240,26 @@ class FillData(ttk.Frame):
                             return index
         return -1
 
-    def fill_data(self,sectionName,buttoncounter,applicantId=0):
-        print(sectionName,buttoncounter,applicantId)
-        if(self.driver is None):
-            #self.driver = webdriver.Firefox()
+    def InitlinzeDriver(self):
+        if(self.config.DriverName=="Chrome"):
             self.driver = webdriver.Chrome(ChromeDriverManager().install())
             self.driver.get(self.varCurrentTemplateData["url"])
+        if(self.config.DriverName=="FireFox"):
+            self.driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+            self.driver.get(self.varCurrentTemplateData["url"])
+        if(self.config.DriverName=="IE"):
+            self.driver = webdriver.Ie(IEDriverManager().install())
+            self.driver.get(self.varCurrentTemplateData["url"])
+        if(self.config.DriverName=="Edge"):
+            self.driver = webdriver.Edge(EdgeChromiumDriverManager().install())
+            self.driver.get(self.varCurrentTemplateData["url"])
+
+    def fill_data(self,sectionName,buttoncounter,applicantId=0):
+        print(sectionName,buttoncounter,applicantId)
+        if(self.driver is None):            
+            self.InitlinzeDriver()
+            
+
         element,controlId,IoName,controlValue,actiontype,finalValue,actionOn,CurrentActionId,CurrentAction=None,None,None,None,None,None,None,None,None
         for section in self.varCurrentTemplateData["sections"]:                     
             if(section["sectionName"]!=sectionName):
@@ -263,7 +281,7 @@ class FillData(ttk.Frame):
                                 else:
                                     finalValue=CurrentAction["manualValue"]
                             element.send_keys(finalValue)                            
-                        elif(CurrentAction["actionType"]=="Select Option" or CurrentAction["actionType"]=="Select Text"):
+                        elif(CurrentAction["actionType"]=="Select Option" or CurrentAction["actionType"]=="Select Text" ):
                             CurrentActionId=CurrentAction["nextActionId"]
                             element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
                             if(element != None):
@@ -276,7 +294,20 @@ class FillData(ttk.Frame):
                                 if(CurrentAction["actionType"]=="Select Option"):
                                     select.select_by_value(finalValue)
                                 else:
-                                    select.select_by_visible_text(finalValue)                            
+                                    select.select_by_visible_text(finalValue)       
+                        elif(CurrentAction["actionType"]=="Single Choosen Text" or CurrentAction["actionType"]=="Multiple Choosen Text"):
+                            CurrentActionId=CurrentAction["nextActionId"]
+                            finalValue=""
+                            if(CurrentAction["inputType"]=="IOValue"):
+                                finalValue=self.Get_ActionValue(CurrentAction["ioValue"],buttoncounter,applicantId)
+                            else:
+                                finalValue=CurrentAction["manualValue"]
+                            if(CurrentAction["actionType"]=="Single Choosen Text"):
+                                self.select_from_chosen(CurrentAction["control"],finalValue)
+                            else:
+                                fullFinalValue=[]
+                                fullFinalValue.append(finalValue)
+                                self.select_from_multi_chosen(CurrentAction["control"],fullFinalValue)
                         elif(CurrentAction["actionType"]=="Button Click"):
                             CurrentActionId=CurrentAction["nextActionId"]
                             element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
@@ -347,11 +378,8 @@ class FillData(ttk.Frame):
         if(not FoundTemplateName):
             messagebox.showerror("Required", "Invalid template name")
             return
-        if(self.driver is None):
-            #self.driver = webdriver.Firefox()
-            self.driver = webdriver.Chrome(ChromeDriverManager().install())
-            self.driver.get(self.varCurrentTemplateData["url"])
         
+        self.InitlinzeDriver()
         
 
     def reset_data(self):
@@ -456,69 +484,33 @@ class FillData(ttk.Frame):
         ttk.Frame(self.frmLeftPanel, height=10).grid(row=6, column=0,columnspan=2, sticky=tk.E+tk.W)
               
         
-        # self.varApplicantType.set("")
-        # self.varTemplateType.set("")
-        
-        # yaxis=0
-        # tk.Label(self,text = "Id",font=self.config.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).place(x = 40,y = (10), anchor=tk.NW)
-        # tk.Entry(self,bg=self.config.COLOR_BACKGROUND,name="txt__Id",textvariable = self.varId ,width = 25,font=self.config.displayFont).place(x = 170,y = (10), anchor=tk.NW)	
-        # yaxis=40
-        # tk.Label(self,text = "Template",font=self.config.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).place(x = 40,y = (10+yaxis), anchor=tk.NW)
-        # combostyle = ttk.Style()
-        # combostyle.theme_create('combostyle', parent='alt',settings = {'TCombobox':{'configure':{'fieldbackground': self.config.COLOR_BACKGROUND,'background': self.config.COLOR_BACKGROUND}}})
-        
-        # combostyle.theme_use('combostyle') 
-        # cmbTemplateType = ttk.Combobox(self, width = 23, textvariable =self.varTemplateType,font=self.config.displayFont)
-        # # Adding combobox drop down list
-        # cmbTemplateType['values'] = self.varAllTemlateName
-        # cmbTemplateType.place(x = 170,y = (10+yaxis), anchor=tk.NW)	
+    def select_from_chosen(self,  id, value):
+        chosen = self.driver.find_element_by_id(id + '_chzn')
+        results = chosen.find_elements_by_css_selector(".chzn-results li")
+        found = False
+        for result in results:
+            if str( result.text).lower() == str(value).lower():
+                found = True
+                break
+        if found:
+            chosen.find_element_by_css_selector("a").click()
+            result.click()
+        return found
 
-        # yaxis=yaxis+40
-        # tk.Label(self,text = "Data",font=self.config.displayFont, bg=self.config.COLOR_MENU_BACKGROUND).place(x = 40,y = (10+yaxis), anchor=tk.NW)
-        # tk.Text(self,name="txtApplicantData",bg=self.config.COLOR_BACKGROUND, width = 25, height=5,font=self.config.displayFont).place(x = 170,y = (10+yaxis), anchor=tk.NW)
-        
-        # btnLoadData = tk.Button ( self, text ="Get Data",width=10, relief='flat', font=self.config.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND,  command =self.load_data )
-        # btnOpenTemplate = tk.Button ( self, text ="Open Template", width=10,relief='flat', font=self.config.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND, command = self.Open_Template)
-        # btnFillData = tk.Button ( self, text ="Fill", width=10,relief='flat', font=self.config.displayFont,fg=self.config.COLOR_MENU_BACKGROUND,bg=self.config.COLOR_TOP_BACKGROUND, command = self.fill_data)
-        
-        # btnLoadData.bind('<Enter>', self.config.on_enter_button)
-        # btnLoadData.bind('<Leave>', self.config.on_leave_button)
-        # btnFillData.bind('<Enter>', self.config.on_enter_button)
-        # btnFillData.bind('<Leave>', self.config.on_leave_button)
-        # btnOpenTemplate.bind('<Enter>', self.config.on_enter_button)
-        # btnOpenTemplate.bind('<Leave>', self.config.on_leave_button)
-        
-        # btnLoadData.place(x = 400,y = 10, anchor=tk.NW)
-        # btnOpenTemplate.place(x = 400,y = 50, anchor=tk.NW)
-        # btnFillData.place(x = 400,y = 90, anchor=tk.NW)
-        
 
-# def select_from_chosen(item_text, options)
-#   field_id = find_field(options[:from])[:id]
-#   within "##{field_id}_chzn" do
-#     find('a.chzn-single').click
-#     input = find("div.chzn-search input").native
-#     input.send_keys(item_text)
-#     find('ul.chzn-results').click
-#     input.send_key(:arrow_down, :return)
-#     within 'a.chzn-single' do
-#       page.should have_content item_text
-#     end
-#   end
-# end
+    def select_from_multi_chosen(self, id, values):
+        chosen = self.driver.find_element_by_id(id + '_chzn')
+        results = chosen.find_elements_by_css_selector(".chzn-results li")
+        for value in values:
+            found = False
+            for result in results:
+                if str(result.text).lower()  == str(value).lower():
+                    found = True
+                    break
+            if found:
+                chosen.find_element_by_css_selector("input").click()
+                result.click()
 
-# def select_from_multi_chosen(item_text, options)
-#   field_id = find_field(options[:from])[:id]
-#   within "##{field_id}_chzn" do
-#     input = find("ul.chzn-choices input").native
-#     input.click
-#     input.send_keys(item_text)
-#     input.send_key(:return)
-#     within 'ul.chzn-choices' do
-#       page.should have_content item_text
-#     end
-#   end
-# end
 
 
 if __name__ == '__main__':

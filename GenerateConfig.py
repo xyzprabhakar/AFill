@@ -14,10 +14,10 @@ class GenerateConfig:
     IO_Name,IO_Template=[],[]    
     COLOR_TOP_BACKGROUND,COLOR_BACKGROUND,COLOR_FOREGROUND,COLOR_MENU_BACKGROUND,COLOR_MENU_FOREGROUND="#44a2d2","#f2f5f7","#343a40","#ffffff","#44a2d2"        
     displayFont=( "Verdana", 10)
-    ChromeDriver="chromedriver.exe"
+    DriverName="Chrome"
     themeName,customStyle,headerFonts=None,None,None    
     SecretKey ='fpxNyunUji5SJod5sK1dCwmovsukz1qLC1sJYOsVTzo='
-    ActionTypes=("Wait","Check Checkbox","Click Button","Click Link","Click Submit","Fill Input","Select Text","Select Option","Condition","Find Index")
+    ActionTypes=("Wait","Check Checkbox","Click Button","Click Link","Click Submit","Fill Input","Select Text","Select Option","Single Choosen Text","Multiple Choosen Text","Condition","Find Index")
     ActionStartTypes=("Start","End","Middle")
     SelectorType=("ByName","ById","BySelector")
     InputType=("IOValue","ManualValue")
@@ -28,16 +28,7 @@ class GenerateConfig:
     SectionCategoryType=("Single","Single","Multiple","Single","Multiple","Multiple","Multiple","Single","Single","Multiple","Multiple","Multiple","Multiple","Multiple")
     
 
-    def set_icons(self):
-        #self.ico_delete1=icon_to_image("trash",fill="#44a2d2",scale_to_width=22)
-        # Resizing image to fit on button
-        # self.ico_delete  =icon_to_image("trash",fill="#44a2d2",scale_to_width=10)
-        # self.ico_add=icon_to_image("plus",fill="#44a2d2",scale_to_width=10)
-        # self.ico_edit=icon_to_image("pen",fill="#44a2d2",scale_to_width=10)
-        # self.ico_up=icon_to_image("arrow-up",fill="#44a2d2",scale_to_width=10)
-        # self.ico_down=icon_to_image("arrow-down",fill="#44a2d2",scale_to_width=10)
-        # self.ico_sync=icon_to_image("sync",fill="#44a2d2",scale_to_width=10)
-
+    def set_icons(self):        
         self.ico_delete1  =PhotoImage(file ="data/trash.png")
         self.ico_delete  =PhotoImage(file ="data/trash1.png")
         self.ico_add=PhotoImage(file ="data/plus.png")
@@ -45,7 +36,6 @@ class GenerateConfig:
         self.ico_up=PhotoImage(file ="data/arrow-up.png")
         self.ico_down=PhotoImage(file ="data/arrow-down.png")
         self.ico_sync=PhotoImage(file ="data/sync.png")
-
         self.ico_menuData={}
         self.ico_menuData.update({"ico_DashBoard":PhotoImage(file ="data/Dashboard-1.png")})
         self.ico_menuData.update({"ico_Template":PhotoImage(file ="data/template-1.png")})
@@ -64,9 +54,6 @@ class GenerateConfig:
         self.ico_menuData1.update({"ico_Setting":PhotoImage(file ="data/Setting.png")})
         self.ico_menuData1.update({"ico_ChangePassword":PhotoImage(file ="data/Change-Password.png")})
 
-        
-
-        
         
 
     def set_theme(self,event,frameData):
@@ -142,7 +129,7 @@ class GenerateConfig:
         self.TemplateFileName = self.config_file['AFill_FileSetting']['TemplateFileName']
         self.DataFileName = self.config_file['AFill_FileSetting']['DataFileName']
         self.WrapperFileName = self.config_file['AFill_FileSetting']['WrapperFileName']
-        self.ChromeDriver = self.config_file['AFill_FileSetting']['ChromeDriver']
+        self.DriverName = self.config_file['AFill_FileSetting']['DriverName']
         self.UserName = self.config_file['AFill_Users']['UserName']
         self.Password = self.config_file['AFill_Users']['Password']
         self.IO_Name=self.config_file['InputTemplate']['IO_Name'].split(",")
@@ -192,7 +179,7 @@ class GenerateConfig:
         self.config_file.set("AFill_FileSetting", "TemplateFileName", "template.json")
         self.config_file.set("AFill_FileSetting", "DataFileName", "data.json")        
         self.config_file.set("AFill_FileSetting", "WrapperFileName", "wraperdata.json")    
-        self.config_file.set("AFill_FileSetting", "ChromeDriver", "chromedriver.exe")
+        self.config_file.set("AFill_FileSetting", "DriverName", "Chrome")
         self.config_file.add_section("AFill_Users")
         # ADD SETTINGS TO SECTION        
         self.config_file.set("AFill_Users", "UserName", "admin")
@@ -352,8 +339,10 @@ class GenerateConfig:
         url="http://wms.galway.in/afill/trash.png"
         wget.download(url, out=dirpath)
         url="http://wms.galway.in/afill/trash1.png"
-
-
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Wrapper.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Wrapper-1.png"
         wget.download(url, out=dirpath)
         self.LoadAllData()
         print("Config file 'configurations.ini' created")
@@ -364,6 +353,22 @@ class GenerateConfig:
         self.config_file["AFill_Register"]["Name"]=Name
         self.config_file["AFill_Register"]["Email"]=Email
         self.config_file["AFill_Register"]["ContactNo"]=ContactNo        
+        # ADD A NEW FIELD UNDER A SECTION
+        #self.config_file["AFill_Register"].update({"Format":"(message)"})
+
+        # Create Directory
+        with open(self.ConfigFileName,"w") as file_object:
+            self.config_file.write(file_object)
+        self.LoadAllData()
+    
+    def fnc_SaveSetting(self,Location,TemplateFile,DataFile,WrapperFile,DriverName  ):
+        self.config_file.read("configurations.ini")
+        # UPDATE A FIELD VALUE
+        self.FilePath = self.config_file['AFill_FileSetting']['FilePath']=Location
+        self.TemplateFileName = self.config_file['AFill_FileSetting']['TemplateFileName']=TemplateFile
+        self.DataFileName = self.config_file['AFill_FileSetting']['DataFileName']=DataFile
+        self.WrapperFileName = self.config_file['AFill_FileSetting']['WrapperFileName']=WrapperFile
+        self.DriverName = self.config_file['AFill_FileSetting']['DriverName']=DriverName         
         # ADD A NEW FIELD UNDER A SECTION
         #self.config_file["AFill_Register"].update({"Format":"(message)"})
 
