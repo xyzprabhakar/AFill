@@ -1,4 +1,5 @@
 from curses import keyname
+import this
 from typing import Counter
 import fontawesome as fa
 from multiprocessing.sharedctypes import Value
@@ -142,7 +143,7 @@ class FillData(ttk.Frame):
                                     for i in range(0,datacounter):
                                         ttk.Button (tempFrame, text =sect["sectionName"]+ " "+str(i+1) , command =lambda: self.fill_data(sect["sectionName"],i,ApplicantId)).grid(row=gridcounter+i,column=ApplicantId,pady=(8,3),padx=(2,2))
                                 else:                    
-                                    ttk.Button(tempFrame, text =sect["sectionName"] ,  command =lambda: self.fill_data("Personal Detail",0,ApplicantId)).grid(row=gridcounter,column=ApplicantId,pady=(8,3),padx=(2,2))
+                                    ttk.Button(tempFrame, text =sect["sectionName"] ,  command =lambda: self.fill_data(sect["sectionName"],0,ApplicantId)).grid(row=gridcounter,column=ApplicantId,pady=(8,3),padx=(2,2))
                                 gridcounter=gridcounter+1
         self.frm_Applicant1Canvas.create_window((0, 0), window=self.frm_Applicant1, anchor='nw')
         self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
@@ -237,7 +238,7 @@ class FillData(ttk.Frame):
         return -1
 
     def fill_data(self,sectionName,buttoncounter,applicantId=0):
-        
+        print(sectionName)
         if(self.driver is None):
             #self.driver = webdriver.Firefox()
             self.driver = webdriver.Chrome(ChromeDriverManager().install())
@@ -246,9 +247,7 @@ class FillData(ttk.Frame):
         element,controlId,IoName,controlValue,actiontype,finalValue,actionOn,CurrentActionId,CurrentAction=None,None,None,None,None,None,None,None,None
         
 
-        for section in self.varCurrentTemplateData["sections"]:         
-            print(section)
-            print(sectionName)
+        for section in self.varCurrentTemplateData["sections"]:                     
             if(section["sectionName"]!=sectionName):
                 continue
             else :
@@ -259,6 +258,7 @@ class FillData(ttk.Frame):
                     ActionCounter=ActionCounter+1
                     try:
                         if(CurrentAction["actionType"]=="Fill Input"):
+                            CurrentActionId=CurrentAction["nextActionId"]
                             element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
                             if(element != None):
                                 finalValue=""
@@ -266,9 +266,9 @@ class FillData(ttk.Frame):
                                     finalValue=self.Get_ActionValue(CurrentAction["ioValue"],buttoncounter,applicantId)
                                 else:
                                     finalValue=CurrentAction["manualValue"]
-                            element.send_keys(finalValue)
-                            CurrentActionId=CurrentAction["nextActionId"]
+                            element.send_keys(finalValue)                            
                         elif(CurrentAction["actionType"]=="Select Option" or CurrentAction["actionType"]=="Select Text"):
+                            CurrentActionId=CurrentAction["nextActionId"]
                             element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
                             if(element != None):
                                 finalValue=""
@@ -280,22 +280,22 @@ class FillData(ttk.Frame):
                                 if(CurrentAction["actionType"]=="Select Option"):
                                     select.select_by_value(finalValue)
                                 else:
-                                    select.select_by_visible_text(finalValue)
-                            CurrentActionId=CurrentAction["nextActionId"]
+                                    select.select_by_visible_text(finalValue)                            
                         elif(CurrentAction["actionType"]=="Button Click"):
+                            CurrentActionId=CurrentAction["nextActionId"]
                             element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
                             if(element != None):                            
                                 element.send_keys(finalValue)
                                 action=ActionChains(self.driver)
                                 action.move_to_element(element)
                                 action.click(on_element = element)                            
-                                action.perform()
-                            CurrentActionId=CurrentAction["nextActionId"]
+                                action.perform()                            
                         elif(CurrentAction["actionType"]=="Wait"):
                             finalValue=CurrentAction["manualValue"]
                             self.driver.implicitly_wait(finalValue)
                             CurrentActionId=CurrentAction["nextActionId"]
                         elif(CurrentAction["actionType"]=="Check Checkbox"):
+                            CurrentActionId=CurrentAction["nextActionId"]
                             element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
                             if(element != None):
                                 action=ActionChains(self.driver)
@@ -318,8 +318,7 @@ class FillData(ttk.Frame):
                             else:
                                 CurrentActionId=CurrentAction["falseActionId"]
                         elif(CurrentAction["actionType"]=="Find Index"):
-                            self.FindIndex=-1
-                            
+                            self.FindIndex=-1                            
                             if(CurrentAction["leftInputType"]=="IOValue"):
                                 self.FindIndex==self.fncFindIndex(CurrentAction["leftIOValue"],CurrentAction["rightManualValue"])
                             else:
@@ -327,9 +326,10 @@ class FillData(ttk.Frame):
                             if(self.FindIndex!=-1):
                                 CurrentActionId=CurrentAction["trueActionId"]
                             else:
-                                CurrentActionId=CurrentAction["falseActionId"]
+                                CurrentActionId=CurrentAction["falseActionId"] 
                     except Exception as ex:
                         print("Error", ex)
+                        
 
                     CurrentAction=self.Get_Action(section,CurrentActionId)
     def change_tab(self):
@@ -410,7 +410,7 @@ class FillData(ttk.Frame):
         frmHeader.rowconfigure(0, weight=1)        
         frmbtn1 = ttk.Frame(frmHeader)        
         frmbtn1.grid(row=0,column = 1, columnspan=3, sticky=tk.N+tk.W+tk.E)
-        btnReffreshData = tk.Button ( frmbtn1,name="btnReffreshData", text =fa.icons['sync'], relief='groove', width=3,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command = lambda :self.LoadAllJsonData() )
+        btnReffreshData = ttk.Button ( frmbtn1,name="btnReffreshData",image=self.config.ico_sync, text =fa.icons['sync'], relief='groove', width=3,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command = lambda :self.LoadAllJsonData() )
         btnReffreshData.grid(row=0,column = 0, padx=(10,0),pady=(3,5))
         
         
@@ -497,32 +497,32 @@ class FillData(ttk.Frame):
         # btnFillData.place(x = 400,y = 90, anchor=tk.NW)
         
 
-def select_from_chosen(item_text, options)
-  field_id = find_field(options[:from])[:id]
-  within "##{field_id}_chzn" do
-    find('a.chzn-single').click
-    input = find("div.chzn-search input").native
-    input.send_keys(item_text)
-    find('ul.chzn-results').click
-    input.send_key(:arrow_down, :return)
-    within 'a.chzn-single' do
-      page.should have_content item_text
-    end
-  end
-end
+# def select_from_chosen(item_text, options)
+#   field_id = find_field(options[:from])[:id]
+#   within "##{field_id}_chzn" do
+#     find('a.chzn-single').click
+#     input = find("div.chzn-search input").native
+#     input.send_keys(item_text)
+#     find('ul.chzn-results').click
+#     input.send_key(:arrow_down, :return)
+#     within 'a.chzn-single' do
+#       page.should have_content item_text
+#     end
+#   end
+# end
 
-def select_from_multi_chosen(item_text, options)
-  field_id = find_field(options[:from])[:id]
-  within "##{field_id}_chzn" do
-    input = find("ul.chzn-choices input").native
-    input.click
-    input.send_keys(item_text)
-    input.send_key(:return)
-    within 'ul.chzn-choices' do
-      page.should have_content item_text
-    end
-  end
-end
+# def select_from_multi_chosen(item_text, options)
+#   field_id = find_field(options[:from])[:id]
+#   within "##{field_id}_chzn" do
+#     input = find("ul.chzn-choices input").native
+#     input.click
+#     input.send_keys(item_text)
+#     input.send_key(:return)
+#     within 'ul.chzn-choices' do
+#       page.should have_content item_text
+#     end
+#   end
+# end
 
 
 if __name__ == '__main__':
