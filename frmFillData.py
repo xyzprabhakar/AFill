@@ -142,7 +142,7 @@ class FillData(ttk.Frame):
                                     for i in range(0,datacounter):
                                         ttk.Button (tempFrame, text =sect["sectionName"]+ " "+str(i+1) , command =lambda: self.fill_data(sect["sectionName"],i,ApplicantId)).grid(row=gridcounter+i,column=ApplicantId,pady=(8,3),padx=(2,2))
                                 else:                    
-                                    ttk.Button(tempFrame, text =sect["sectionName"] ,  command =lambda: self.fill_data(sect["sectionName"],0,ApplicantId)).grid(row=gridcounter,column=ApplicantId,pady=(8,3),padx=(2,2))
+                                    ttk.Button(tempFrame, text =sect["sectionName"] ,  command =lambda: self.fill_data("Personal Detail",0,ApplicantId)).grid(row=gridcounter,column=ApplicantId,pady=(8,3),padx=(2,2))
                                 gridcounter=gridcounter+1
         self.frm_Applicant1Canvas.create_window((0, 0), window=self.frm_Applicant1, anchor='nw')
         self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
@@ -245,7 +245,10 @@ class FillData(ttk.Frame):
         
         element,controlId,IoName,controlValue,actiontype,finalValue,actionOn,CurrentActionId,CurrentAction=None,None,None,None,None,None,None,None,None
         
+
         for section in self.varCurrentTemplateData["sections"]:         
+            print(section)
+            print(sectionName)
             if(section["sectionName"]!=sectionName):
                 continue
             else :
@@ -254,77 +257,80 @@ class FillData(ttk.Frame):
                 CurrentAction=self.Get_Action(section,CurrentActionId)
                 while (CurrentAction !=None and ActionCounter<1000):
                     ActionCounter=ActionCounter+1
-                    if(CurrentAction["actionType"]=="Fill Input"):
-                        element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
-                        if(element != None):
-                            finalValue=""
-                            if(CurrentAction["inputType"]=="IOValue"):
-                                finalValue=self.Get_ActionValue(CurrentAction["ioValue"],buttoncounter,applicantId)
-                            else:
-                                finalValue=CurrentAction["manualValue"]
-                        element.send_keys(finalValue)
-                        CurrentActionId=CurrentAction["nextActionId"]
-                    elif(CurrentAction["actionType"]=="Select Option" or CurrentAction["actionType"]=="Select Text"):
-                        element=self.Get_Element(self,CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
-                        if(element != None):
-                            finalValue=""
-                            if(CurrentAction["inputType"]=="IOValue"):
-                                finalValue=self.Get_ActionValue(CurrentAction["ioValue"],buttoncounter,applicantId)
-                            else:
-                                finalValue=CurrentAction["manualValue"]
-                            select = Select(element)
-                            if(CurrentAction["actionType"]=="Select Option"):
-                                select.select_by_value(finalValue)
-                            else:
-                                select.select_by_visible_text(finalValue)
-                        CurrentActionId=CurrentAction["nextActionId"]
-                    elif(CurrentAction["actionType"]=="Button Click"):
-                        element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
-                        if(element != None):                            
+                    try:
+                        if(CurrentAction["actionType"]=="Fill Input"):
+                            element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
+                            if(element != None):
+                                finalValue=""
+                                if(CurrentAction["inputType"]=="IOValue"):
+                                    finalValue=self.Get_ActionValue(CurrentAction["ioValue"],buttoncounter,applicantId)
+                                else:
+                                    finalValue=CurrentAction["manualValue"]
                             element.send_keys(finalValue)
-                            action=ActionChains(self.driver)
-                            action.move_to_element(element)
-                            action.click(on_element = element)                            
-                            action.perform()
-                        CurrentActionId=CurrentAction["nextActionId"]
-                    elif(CurrentAction["actionType"]=="Wait"):
-                        finalValue=CurrentAction["manualValue"]
-                        self.driver.implicitly_wait(finalValue)
-                        CurrentActionId=CurrentAction["nextActionId"]
-                    elif(CurrentAction["Check Checkbox"]=="Fill Input"):
-                        element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter)
-                        if(element != None):
-                            action=ActionChains(self.driver)
-                            action.move_to_element(element)
-                            action.click(on_element = element)                            
-                            action.perform()
-                    elif(CurrentAction["actionType"]=="Condition"):
-                        leftfinalValue,rightfinalValue="",""
-                        
-                        if(CurrentAction["leftInputType"]=="IOValue"):
-                            leftfinalValue=self.Get_ActionValue(CurrentAction["leftIOValue"],buttoncounter,applicantId)
-                        else:
-                            leftfinalValue=CurrentAction["leftManualValue"]                        
-                        if(CurrentAction["rightInputType"]=="IOValue"):
-                            rightfinalValue=self.Get_ActionValue(CurrentAction["rightIOValue"],buttoncounter,applicantId)
-                        else:
-                            rightfinalValue=CurrentAction["rightManualValue"]
-                        if(str(leftfinalValue)==str(rightfinalValue)):
-                            CurrentActionId=CurrentAction["trueActionId"]
-                        else:
-                            CurrentActionId=CurrentAction["falseActionId"]
-                    elif(CurrentAction["actionType"]=="Find Index"):
-                        self.FindIndex=-1
-                        
-                        if(CurrentAction["leftInputType"]=="IOValue"):
-                            self.FindIndex==self.fncFindIndex(CurrentAction["leftIOValue"],CurrentAction["rightManualValue"])
-                        else:
-                            self.FindIndex==self.fncFindIndex(CurrentAction["rightIOValue"],CurrentAction["leftManualValue"])
-                        if(self.FindIndex!=-1):
-                            CurrentActionId=CurrentAction["trueActionId"]
-                        else:
-                            CurrentActionId=CurrentAction["falseActionId"]
-                    
+                            CurrentActionId=CurrentAction["nextActionId"]
+                        elif(CurrentAction["actionType"]=="Select Option" or CurrentAction["actionType"]=="Select Text"):
+                            element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
+                            if(element != None):
+                                finalValue=""
+                                if(CurrentAction["inputType"]=="IOValue"):
+                                    finalValue=self.Get_ActionValue(CurrentAction["ioValue"],buttoncounter,applicantId)
+                                else:
+                                    finalValue=CurrentAction["manualValue"]
+                                select = Select(element)
+                                if(CurrentAction["actionType"]=="Select Option"):
+                                    select.select_by_value(finalValue)
+                                else:
+                                    select.select_by_visible_text(finalValue)
+                            CurrentActionId=CurrentAction["nextActionId"]
+                        elif(CurrentAction["actionType"]=="Button Click"):
+                            element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
+                            if(element != None):                            
+                                element.send_keys(finalValue)
+                                action=ActionChains(self.driver)
+                                action.move_to_element(element)
+                                action.click(on_element = element)                            
+                                action.perform()
+                            CurrentActionId=CurrentAction["nextActionId"]
+                        elif(CurrentAction["actionType"]=="Wait"):
+                            finalValue=CurrentAction["manualValue"]
+                            self.driver.implicitly_wait(finalValue)
+                            CurrentActionId=CurrentAction["nextActionId"]
+                        elif(CurrentAction["actionType"]=="Check Checkbox"):
+                            element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
+                            if(element != None):
+                                action=ActionChains(self.driver)
+                                action.move_to_element(element)
+                                action.click(on_element = element)                            
+                                action.perform()
+                        elif(CurrentAction["actionType"]=="Condition"):
+                            leftfinalValue,rightfinalValue="",""
+                            
+                            if(CurrentAction["leftInputType"]=="IOValue"):
+                                leftfinalValue=self.Get_ActionValue(CurrentAction["leftIOValue"],buttoncounter,applicantId)
+                            else:
+                                leftfinalValue=CurrentAction["leftManualValue"]                        
+                            if(CurrentAction["rightInputType"]=="IOValue"):
+                                rightfinalValue=self.Get_ActionValue(CurrentAction["rightIOValue"],buttoncounter,applicantId)
+                            else:
+                                rightfinalValue=CurrentAction["rightManualValue"]
+                            if(str(leftfinalValue)==str(rightfinalValue)):
+                                CurrentActionId=CurrentAction["trueActionId"]
+                            else:
+                                CurrentActionId=CurrentAction["falseActionId"]
+                        elif(CurrentAction["actionType"]=="Find Index"):
+                            self.FindIndex=-1
+                            
+                            if(CurrentAction["leftInputType"]=="IOValue"):
+                                self.FindIndex==self.fncFindIndex(CurrentAction["leftIOValue"],CurrentAction["rightManualValue"])
+                            else:
+                                self.FindIndex==self.fncFindIndex(CurrentAction["rightIOValue"],CurrentAction["leftManualValue"])
+                            if(self.FindIndex!=-1):
+                                CurrentActionId=CurrentAction["trueActionId"]
+                            else:
+                                CurrentActionId=CurrentAction["falseActionId"]
+                    except Exception as ex:
+                        print("Error", ex)
+
                     CurrentAction=self.Get_Action(section,CurrentActionId)
     def change_tab(self):
          try:
@@ -490,6 +496,33 @@ class FillData(ttk.Frame):
         # btnOpenTemplate.place(x = 400,y = 50, anchor=tk.NW)
         # btnFillData.place(x = 400,y = 90, anchor=tk.NW)
         
+
+def select_from_chosen(item_text, options)
+  field_id = find_field(options[:from])[:id]
+  within "##{field_id}_chzn" do
+    find('a.chzn-single').click
+    input = find("div.chzn-search input").native
+    input.send_keys(item_text)
+    find('ul.chzn-results').click
+    input.send_key(:arrow_down, :return)
+    within 'a.chzn-single' do
+      page.should have_content item_text
+    end
+  end
+end
+
+def select_from_multi_chosen(item_text, options)
+  field_id = find_field(options[:from])[:id]
+  within "##{field_id}_chzn" do
+    input = find("ul.chzn-choices input").native
+    input.click
+    input.send_keys(item_text)
+    input.send_key(:return)
+    within 'ul.chzn-choices' do
+      page.should have_content item_text
+    end
+  end
+end
 
 
 if __name__ == '__main__':
