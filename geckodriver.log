@@ -1099,4 +1099,28 @@ JavaScript error: https://platform.twitter.com/widgets.js, line 1: SyntaxError: 
 JavaScript warning: https://192.168.5.1/UserCheck/push, line 30: unreachable code after return statement
 JavaScript error: https://192.168.5.1/UserCheck/js/Blob.js, line 3549: TypeError: callback.call is not a function
 JavaScript error: https://192.168.5.1/UserCheck/push, line 132: TypeError: pushButton is null
-JavaScript error: resource://gre/modules/AsyncShutdown.jsm, 
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1653740668373	Marionette	INFO	Stopped listening on port 55711
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+JavaScript error: chrome://remote/content/marionette/cert.js, line 55: NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsICertOverrideService.setDisableAllSecurityChecksAndLetAttackersInterceptMyData]
+
+###!!! [Parent][PGPUParent] Error: RunMessage(msgname=PGPU::Msg_ShutdownVR) Channel closing: too late to send/recv, messages will be lost
+
+de732119ea
+1653740640594	Marionette	INFO	Listening on port 52760
+Read port: 52760
+1653740640705	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://platform.twitter.com/widgets.js, line 1: SyntaxError: expected expression, got '<'
+1653740647083	Marionette	WARN	Ignoring event 'pageshow' because document has an invalid readyState of 'uninitialized'.
+JavaScript warning: https://192.168.5.1/UserCheck/push, line 30: unreachable code after return statement
+JavaScript error: https://192.168.5.1/UserCheck/js/Blob.js, line 3549: TypeError: callback.call is not a function
+JavaScript error: https://192.168.5.1/UserCheck/push, line 132: TypeError: pushButton is null
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.jsm, line 575: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1653740690492	Marionette	INFO	Stopped listening on port 52760
+console.warn: TopSitesFeed: Failed to fetch data from Contile server: NetworkError when attempting to fetch resource.
+JavaScript error: chrome://remote/content/marionette/cert.js, line 55: NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsICertOverrideService.setDisableAllSecurityChecksAndLetAttackersInterceptMyData]
+[Parent 102832, IPC I/O Parent] WARNING: file /builds/worker/checkouts/gecko/ipc/chromium/src/base/process_util_win.cc:167
