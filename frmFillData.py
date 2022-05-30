@@ -32,7 +32,7 @@ from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
-
+from choosen import Chosen
 
 
 class FillData(ttk.Frame):
@@ -304,6 +304,7 @@ class FillData(ttk.Frame):
                                     finalValue=self.Get_ActionValue(CurrentAction["ioValue"],buttoncounter,applicantId)
                                 else:
                                     finalValue=CurrentAction["manualValue"]
+                            element.clear()
                             element.send_keys(finalValue)                            
                         elif(CurrentAction["actionType"]=="Select Option" or CurrentAction["actionType"]=="Select Text" ):
                             CurrentActionId=CurrentAction["nextActionId"]
@@ -363,10 +364,16 @@ class FillData(ttk.Frame):
                                 rightfinalValue=self.Get_ActionValue(CurrentAction["rightIOValue"],buttoncounter,applicantId)
                             else:
                                 rightfinalValue=CurrentAction["rightManualValue"]
-                            if(str(leftfinalValue)==str(rightfinalValue)):
-                                CurrentActionId=CurrentAction["trueActionId"]
-                            else:
-                                CurrentActionId=CurrentAction["falseActionId"]
+                            if(CurrentAction["conditionType"]=="eq"):
+                                if(str(leftfinalValue)==str(rightfinalValue)):
+                                    CurrentActionId=CurrentAction["trueActionId"]
+                                else:
+                                    CurrentActionId=CurrentAction["falseActionId"]
+                            elif(CurrentAction["conditionType"]=="nq"):
+                                if(str(leftfinalValue)!=str(rightfinalValue)):
+                                    CurrentActionId=CurrentAction["trueActionId"]
+                                else:
+                                    CurrentActionId=CurrentAction["falseActionId"]
                         elif(CurrentAction["actionType"]=="Find Index"):
                             self.FindIndex=-1                            
                             if(CurrentAction["leftInputType"]=="IOValue"):
@@ -507,23 +514,27 @@ class FillData(ttk.Frame):
         ttk.Frame(self.frmLeftPanel, height=10).grid(row=6, column=0,columnspan=2, sticky=tk.E+tk.W)
               
         
-    def select_from_chosen(self,  id, value):
-        chosen = self.driver.find_element_by_id(id + '_chzn')
-        results = chosen.find_elements_by_css_selector(".chzn-results li")
-        found = False
-        for result in results:
-            if str( result.text).lower() == str(value).lower():
-                found = True
-                break
-        if found:
-            chosen.find_element_by_css_selector("a").click()
-            result.click()
-        return found
+    def select_from_chosen(self,  id, value):              
+        ch=Chosen(self.driver, id)
+        ch.select_by_visible_text(value)
+        # chosen = self.driver.find_element(By.ID ,id + '_chzn')
+        # chosen.Click()
+        # results = chosen.find_elements(By.CSS_SELECTOR,".chzn-results li")
+        # found = False
+        # for result in results:
+        #     print(result.text)
+        #     if str( result.text).lower() == str(value).lower():
+        #         found = True
+        #         break
+        # if found:
+        #     chosen.find_element(By.CSS_SELECTOR,"a").click()
+        #     result.click()
+        # return found
 
 
     def select_from_multi_chosen(self, id, values):
-        chosen = self.driver.find_element_by_id(id + '_chzn')
-        results = chosen.find_elements_by_css_selector(".chzn-results li")
+        chosen = self.driver.find_element(By.ID,id + '_chzn')
+        results = chosen.find_element(By.CSS_SELECTOR,".chzn-results li")
         for value in values:
             found = False
             for result in results:
@@ -531,7 +542,7 @@ class FillData(ttk.Frame):
                     found = True
                     break
             if found:
-                chosen.find_element_by_css_selector("input").click()
+                chosen.find_element(By.CSS_SELECTOR, "input").click()
                 result.click()
 
 
