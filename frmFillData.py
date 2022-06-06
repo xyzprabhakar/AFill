@@ -118,14 +118,14 @@ class FillData(ttk.Frame):
             messagebox.showerror("Required", "Invalid template name")
             return
         
-        self.frm_Applicant1Canvas = tk.Canvas(self.frmInnerContentFrame1, bg=self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge',width=200)
+        self.frm_Applicant1Canvas = tk.Canvas(self.frmInnerContentFrame1, bg=  self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge',width=250)
         scrollbar_y = ttk.Scrollbar(self.frmInnerContentFrame1, orient=tk.VERTICAL, command=self.frm_Applicant1Canvas.yview)        
         scrollbar_y.pack(side=tk.RIGHT, fill="y")        
         scrollbar_x = ttk.Scrollbar(self.frmInnerContentFrame1, orient=tk.HORIZONTAL, command=self.frm_Applicant1Canvas.xview)        
         scrollbar_x.pack(side=tk.BOTTOM, fill="x")        
 
         self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
-        self.frm_Applicant1 = ttk.Frame(self.frm_Applicant1Canvas)            
+        self.frm_Applicant1 = ttk.Frame(self.frm_Applicant1Canvas,border=1)            
 
         if not os.path.exists(self.config.FilePath):
             os.makedirs(self.config.FilePath)
@@ -492,13 +492,13 @@ class FillData(ttk.Frame):
         self.frmLeftPanel.rowconfigure(6, weight=100)
 
         ttk.Label(self.frmLeftPanel,text="Template").grid(row=0,column=0,sticky=tk.N+tk.S+tk.W,pady=(10,3),padx=(10,10))
-        self.ddlTemplateName=ttk.Combobox(self.frmLeftPanel,textvariable = self.varCurrentTemplateName,values=self.varAllTemlateName,width=26)
+        self.ddlTemplateName=ttk.Combobox(self.frmLeftPanel,textvariable = self.varCurrentTemplateName,values=self.varAllTemlateName,width=24)
         self.ddlTemplateName.grid(row=0,column=1,sticky=tk.N+tk.S+tk.W,pady=(10,3))
         ttk.Label(self.frmLeftPanel,text="File Name").grid(row=1,column=0,sticky=tk.N+tk.S+tk.W,pady=(10,3),padx=(10,10))
-        self.ddlFileName=ttk.Combobox(self.frmLeftPanel,textvariable = self.varCurrentDataFileName,values=self.varAllJsonFileName,width=26)
+        self.ddlFileName=ttk.Combobox(self.frmLeftPanel,textvariable = self.varCurrentDataFileName,values=self.varAllJsonFileName,width=24)
         self.ddlFileName.grid(row=1,column=1,sticky=tk.N+tk.S+tk.W,pady=(10,3))        
         ttk.Label(self.frmLeftPanel,text="Current Tab").grid(row=2,column=0,sticky=tk.N+tk.S+tk.W,pady=(10,3),padx=(10,10))
-        ttk.Entry(self.frmLeftPanel,textvariable = self.varCurrentTab,width=24).grid(row=2,column=1,sticky=tk.N+tk.S+tk.W,pady=(10,3))
+        ttk.Entry(self.frmLeftPanel,textvariable = self.varCurrentTab,width=26).grid(row=2,column=1,sticky=tk.N+tk.S+tk.W,pady=(10,3))
         
 
         self.frmInnerContentFrame1 = ttk.Frame(self.frmLeftPanel)
@@ -509,27 +509,15 @@ class FillData(ttk.Frame):
         ttk.Button ( frmbtn2, text ="Load Data", width=9, command =lambda: self.load_data()).grid(row=0,column = 1 ,padx=(2,2))
         ttk.Button ( frmbtn2, text ="Change Tab", width=9, command =lambda: self.change_tab()).grid(row=0,column = 2 ,padx=(2,2))
 
-        ttk.Frame(self.frmLeftPanel, height=10).grid(row=4, column=0,columnspan=2, sticky=tk.E+tk.W)
-        ttk.Frame(self.frmLeftPanel, style="Separator.TFrame", height=1).grid(row=5, column=0,columnspan=2, sticky=tk.E+tk.W)
-        ttk.Frame(self.frmLeftPanel, height=10).grid(row=6, column=0,columnspan=2, sticky=tk.E+tk.W)
+        #ttk.Frame(self.frmLeftPanel, height=10).grid(row=4, column=0,columnspan=2, sticky=tk.E+tk.W)
+        # ttk.Frame(self.frmLeftPanel, style="Separator.TFrame", height=1).grid(row=5, column=0,columnspan=2, sticky=tk.E+tk.W)
+        # ttk.Frame(self.frmLeftPanel, height=10).grid(row=6, column=0,columnspan=2, sticky=tk.E+tk.W)
               
         
     def select_from_chosen(self,  id, value):              
         ch=Chosen(self.driver, id)
-        ch.select_by_visible_text(value)
-        # chosen = self.driver.find_element(By.ID ,id + '_chzn')
-        # chosen.Click()
-        # results = chosen.find_elements(By.CSS_SELECTOR,".chzn-results li")
-        # found = False
-        # for result in results:
-        #     print(result.text)
-        #     if str( result.text).lower() == str(value).lower():
-        #         found = True
-        #         break
-        # if found:
-        #     chosen.find_element(By.CSS_SELECTOR,"a").click()
-        #     result.click()
-        # return found
+        ch.select_by_visible_text(value,True)
+        
 
 
     def select_from_multi_chosen(self, id, values):
@@ -558,7 +546,7 @@ if __name__ == '__main__':
     root.wm_geometry("%dx%d+%d+%d" % (sizex, sizey, posx, posy))
     config.set_theme(None,root)
     config.set_icons()
-    myframe=tk.Frame(root,relief=tk.GROOVE,width=500,height=600,bd=1)
+    myframe=tk.Frame(root,relief=tk.GROOVE,width=600,height=700,bd=1)
     myframe.pack( fill="both" ,expand=tk.TRUE ,anchor=tk.N+tk.W)   
     FillData(myframe,config)
     #root.eval('tk::PlaceWindow . center')
