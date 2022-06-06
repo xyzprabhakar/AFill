@@ -265,6 +265,8 @@ class FillData(ttk.Frame):
         return -1
 
     def InitlinzeDriver(self):
+        if(self.driver != None):
+            self.driver.quit()
         if(self.config.DriverName=="Chrome"):
             self.driver = webdriver.Chrome(ChromeDriverManager().install())
             self.driver.get(self.varCurrentTemplateData["url"])
@@ -514,14 +516,20 @@ class FillData(ttk.Frame):
         # ttk.Frame(self.frmLeftPanel, height=10).grid(row=6, column=0,columnspan=2, sticky=tk.E+tk.W)
               
         
-    def select_from_chosen(self,  id, value):              
-        ch=Chosen(self.driver, id)
-        ch.select_by_visible_text(value,True)
+    def select_from_chosen(self,  id, value):                      
+        try:
+            ch=Chosen(self.driver, id)
+            ch.select_by_visible_text(value,True)   
+        except:
+            ch=Chosen(self.driver, id)
+            ch.select_by_search(value)
+        
         
 
 
     def select_from_multi_chosen(self, id, values):
         chosen = self.driver.find_element(By.ID,id + '_chzn')
+
         results = chosen.find_element(By.CSS_SELECTOR,".chzn-results li")
         for value in values:
             found = False
