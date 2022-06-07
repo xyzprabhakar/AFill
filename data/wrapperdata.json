@@ -6,6 +6,21 @@
             "ioName": "Bank Name",
             "ioValue": "national westminster bank",
             "wrapperValue": "netwest"
+        },
+        {
+            "template": "Barclays",
+            "sectionCategory": "PersonalDetails",
+            "ioName": "Nationality",
+            "ioValue": "British",
+            "wrapperValue": "United Kingdom"
+        }
+        ,
+        {
+            "template": "Barclays",
+            "sectionCategory": "CurrentAddress",
+            "ioName": "Country",
+            "ioValue": "United Kingdom",
+            "wrapperValue": "UK"
         }
     ]
 }

@@ -245,7 +245,7 @@ class FillData(ttk.Frame):
                     return self.Get_WrapperValue(HaveWrapper,sectionkeyname,datakeyname,tempData[sectionkeyname][datakeyname])
         return ""
 
-    def fncFindIndex(self,jsonKeyName,checkValue):
+    def fncFindIndex(self,jsonKeyName,checkValue,conditionType,ApplicantId):
         keynames=jsonKeyName.split(":")
         sectionkeyname,datakeyname='',''
         if(len(keynames)>0):
@@ -258,10 +258,13 @@ class FillData(ttk.Frame):
         if(sectionkeyname.find('[]')!=-1):
             sectionkeyname=sectionkeyname.replace('[]','')
             if(self.checkKey(tempData,sectionkeyname)):
-                for index,data in tempData[sectionkeyname]:
+                for index,data in enumerate(tempData[sectionkeyname]):
                     if(self.checkKey( data,datakeyname)):
-                        if(str(data[datakeyname]).strip().lower()  == str(checkValue).strip().lower() ):
-                            return index
+                        if(conditionType=="eq"):
+                            if(str(data[datakeyname]).strip().lower()  == str(checkValue).strip().lower() ):
+                                self.FindIndex=index
+                                return index
+                        
         return -1
 
     def InitlinzeDriver(self):
@@ -294,7 +297,7 @@ class FillData(ttk.Frame):
                 ActionCounter=0
                 CurrentActionId=None
                 CurrentAction=self.Get_Action(section,CurrentActionId)
-                while (CurrentAction !=None and ActionCounter<1000):
+                while (CurrentAction !=None and ActionCounter<500):
                     ActionCounter=ActionCounter+1
                     try:
                         if(CurrentAction["actionType"]=="Fill Input"):
@@ -379,9 +382,9 @@ class FillData(ttk.Frame):
                         elif(CurrentAction["actionType"]=="Find Index"):
                             self.FindIndex=-1                            
                             if(CurrentAction["leftInputType"]=="IOValue"):
-                                self.FindIndex==self.fncFindIndex(CurrentAction["leftIOValue"],CurrentAction["rightManualValue"])
+                                self.FindIndex==self.fncFindIndex(CurrentAction["leftIOValue"],CurrentAction["rightManualValue"],CurrentAction["conditionType"],applicantId)
                             else:
-                                self.FindIndex==self.fncFindIndex(CurrentAction["rightIOValue"],CurrentAction["leftManualValue"])
+                                self.FindIndex==self.fncFindIndex(CurrentAction["rightIOValue"],CurrentAction["leftManualValue"],CurrentAction["conditionType"],applicantId)
                             if(self.FindIndex!=-1):
                                 CurrentActionId=CurrentAction["trueActionId"]
                             else:
