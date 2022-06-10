@@ -182,25 +182,20 @@ class FillData(ttk.Frame):
                         return action
         return None
 
-    def Get_Element(self,actionOn,ControlName,SectionType,counter,ApplicantId):
-        
+    def Get_Element(self,actionOn,ControlName,GetOnlyId,counter,ApplicantId):        
         if(ApplicantId>0):
-           ControlName=ControlName.replace("1",str(ApplicantId+1))
+           ControlName=ControlName.replace("{applicantid}",str(ApplicantId+1))           
+        ControlName=ControlName.replace("{counter}",str(counter))
 
-        if(SectionType=="Multiple"):
-            if(actionOn=="ByName"):
-                return self.driver.find_element(By.NAME,ControlName.replace("0",str(counter)))
-            elif(actionOn=="ById") :
-                return self.driver.find_element(By.ID ,ControlName.replace("0",str(counter)))
-            elif(actionOn=="ByXpath") :
-                return self.driver.find_element(By.XPATH ,ControlName.replace("0",str(counter)))
-        else:
-            if(actionOn=="ByName"):
-                return self.driver.find_element(By.NAME,ControlName)
-            elif(actionOn=="ById") :
-                return self.driver.find_element(By.ID ,ControlName)
-            elif(actionOn=="ByXpath") :
-                return self.driver.find_element(By.XPATH ,ControlName)
+        if(GetOnlyId=="GetOnlyId"):
+            return ControlName
+
+        if(actionOn=="ByName"):
+            return self.driver.find_element(By.NAME,ControlName)
+        elif(actionOn=="ById") :
+            return self.driver.find_element(By.ID ,ControlName)
+        elif(actionOn=="ByXpath") :
+            return self.driver.find_element(By.XPATH ,ControlName)
     
     def Get_WrapperValue(self,HaveWrapper,SectionCategory,IOName,IOValue):
         if(HaveWrapper):
@@ -304,7 +299,7 @@ class FillData(ttk.Frame):
                     try:
                         if(CurrentAction["actionType"]=="Fill Input"):
                             CurrentActionId=CurrentAction["nextActionId"]
-                            element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
+                            element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],"",buttoncounter,applicantId)
                             if(element != None):
                                 finalValue=""
                                 if(CurrentAction["inputType"]=="IOValue"):
@@ -315,7 +310,7 @@ class FillData(ttk.Frame):
                             element.send_keys(finalValue)                            
                         elif(CurrentAction["actionType"]=="Select Option" or CurrentAction["actionType"]=="Select Text" ):
                             CurrentActionId=CurrentAction["nextActionId"]
-                            element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
+                            element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],"",buttoncounter,applicantId)
                             if(element != None):
                                 finalValue=""
                                 if(CurrentAction["inputType"]=="IOValue"):
@@ -333,13 +328,13 @@ class FillData(ttk.Frame):
                             if(CurrentAction["inputType"]=="IOValue"):
                                 finalValue=self.Get_ActionValue(CurrentAction["ioValue"],buttoncounter,applicantId)
                             else:
-                                finalValue=CurrentAction["manualValue"]
-                            if(CurrentAction["actionType"]=="Single Choosen Text"):
-                                self.select_from_chosen(CurrentAction["control"],finalValue)
+                                finalValue=CurrentAction["manualValue"]                                
+                            if(CurrentAction["actionType"]=="Single Choosen Text"):                                
+                                self.select_from_chosen( self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],"GetOnlyId",buttoncounter,applicantId), finalValue)
                             else:
                                 fullFinalValue=[]
                                 fullFinalValue.append(finalValue)
-                                self.select_from_multi_chosen(CurrentAction["control"],fullFinalValue)
+                                self.select_from_multi_chosen(self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],"GetOnlyId",buttoncounter,applicantId),fullFinalValue)
                         elif(CurrentAction["actionType"]=="Button Click"):
                             CurrentActionId=CurrentAction["nextActionId"]
                             element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
@@ -356,7 +351,7 @@ class FillData(ttk.Frame):
                             CurrentActionId=CurrentAction["nextActionId"]
                         elif(CurrentAction["actionType"]=="Check Checkbox"):
                             CurrentActionId=CurrentAction["nextActionId"]
-                            element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
+                            element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],"",buttoncounter,applicantId)
                             if(element != None):
                                 action=ActionChains(self.driver)
                                 action.move_to_element(element)
