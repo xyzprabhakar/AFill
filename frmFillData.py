@@ -295,10 +295,12 @@ class FillData(ttk.Frame):
                 continue
             else :
                 ActionCounter=0
-                CurrentActionId=None
+                CurrentActionId,PreviousActionId=None,-1
                 CurrentAction=self.Get_Action(section,CurrentActionId)
-                while (CurrentAction !=None and ActionCounter<500):
+                while (CurrentAction !=None and ActionCounter<500 and CurrentActionId != PreviousActionId ):
+
                     ActionCounter=ActionCounter+1
+                    PreviousActionId=CurrentActionId
                     try:
                         if(CurrentAction["actionType"]=="Fill Input"):
                             CurrentActionId=CurrentAction["nextActionId"]
@@ -342,11 +344,12 @@ class FillData(ttk.Frame):
                             CurrentActionId=CurrentAction["nextActionId"]
                             element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
                             if(element != None):                            
-                                element.send_keys(finalValue)
-                                action=ActionChains(self.driver)
-                                action.move_to_element(element)
-                                action.click(on_element = element)                            
-                                action.perform()                            
+                                element.click()
+                                # element.send_keys(finalValue)
+                                # action=ActionChains(self.driver)
+                                # action.move_to_element(element)
+                                # action.click(on_element = element)                            
+                                # action.perform()                            
                         elif(CurrentAction["actionType"]=="Wait"):
                             finalValue=CurrentAction["manualValue"]
                             self.driver.implicitly_wait(finalValue)
@@ -392,7 +395,7 @@ class FillData(ttk.Frame):
                     except Exception as ex:
                         print("Error", ex)
                         
-
+                    
                     CurrentAction=self.Get_Action(section,CurrentActionId)
     def change_tab(self):
          try:

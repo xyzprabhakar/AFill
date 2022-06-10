@@ -5,11 +5,13 @@ from email.headerregistry import Address
 import os
 from numpy import pad
 import tabula
+from tabula.io import read_pdf
 import pandas as pd
 import io
 import tkinter as tk
 from tkinter.filedialog import askopenfile, askopenfilename
 from tkinter import RAISED, ttk,messagebox
+
 import GenerateConfig as Gc
 import json
 from datetime import datetime

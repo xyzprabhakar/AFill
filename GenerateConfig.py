@@ -238,13 +238,13 @@ class GenerateConfig:
         "Payment Amount (Monthly),Lender,Loan Term (years),Start Date[M],End Date,Early Redemption Charge,Whether liability is to be repaid?,How will liability be repaid")
 
         self.config_file.set("InputTemplate", "IO_Name_ExistingMortgage","Owner,Lender,Policy Number,Address Line 1,Rate Type,Mortage Type,Are you a First Time Buyer,"+
-        "Property Type,Repayment Method,Capital Repayment Amount,Interest Only Amount,Interest Only Repayment Vehicle,"
+        "Property Type,Repayment Method,Capital Repayment Amount,Interest Only Amount,Interest Only Repayment Vehicle,Monthly Repayment Amount,"
         "Original Loan Amount,Interest Rate,Base Rate,Feature Expires,Original Mortgage Term,Start Date,End Date,Remaining Term,"+
         "Current Balance,Account Number,Is the loan subject to Redemption Penalty,Redemption End Date,Consent to Let,Linked to Asset,Asset Value")
         self.config_file.set("InputTemplate", "IO_Template_ExistingMortgage","Owner,Lender,Policy Number,Address Line 1,Rate Type,Mortage Type,Are you a First Time Buyer,"+
-        "Property Type,Repayment Method,Capital Repayment Amount,Interest Only Amount,Interest Only Repayment Vehicle,"
+        "Property Type,Repayment Method,Capital Repayment Amount,Interest Only Amount,Interest Only Repayment Vehicle,Monthly Repayment Amount,"
         "Original Loan Amount,Interest Rate %,Base Rate,Feature Expires,Original Mortgage Term,Start Date,End Date,Remaining Term,"+
-        "Current Balance,Account Number,Is the loan subject to Redemption Penalty?,Redemption End Date,Consent to Let?,Linked to Asset,Asset Value")
+        "Current Balance,Account Number,Is the loan subject to Redemption,Redemption End Date,Consent to Let?,Linked to Asset,Asset Value")
 
         self.config_file.set("InputTemplate", "IO_Name_MortgageRequirements","Source of Deposit[M],Owner,RequirementType[M][D],Mortage Type,Property,Number of Bedrooms,Number of living rooms,Number of kitchen,Number of Toilets,Number of bathrooms,Parking space,Garage,Is area gt 2 acres,"+
         "Repayment Method,Tenure Type[M][D],Region[M],Year Built[M],Property Type[M][D],Property Description[M],Floor[M],Total floors in the block[M],Lift[M],Lease Years Remaining[M],Is above commercial[M],Ground rent[M],Service charge[M],EWS1 Form available[M],Capital Repayment Amount,Interest Only Amount,Price/Valuation,Deposit/Equity,Loan,LTV,Term,Source Of Deposit")
