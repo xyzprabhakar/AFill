@@ -41,6 +41,55 @@
             "ioName": "Residency_Status",
             "ioValue": "Owner Occupier - mortgaged",
             "wrapperValue": "Owner occupier with mortgage"
+        },
+        {
+            "template": "Barclays",
+            "sectionCategory": "Liabilities",
+            "ioName": "Liability_Category",
+            "ioValue": "Credit/Store Cards",
+            "wrapperValue": "Credit Card/Store card"
+        },
+        {
+            "template": "Barclays",
+            "sectionCategory": "Liabilities",
+            "ioName": "Liability_Category",
+            "ioValue": "Hire Purchase",
+            "wrapperValue": "Credit Agreement/Hire Purchase"
+        },
+        {
+            "template": "Barclays",
+            "sectionCategory": "Liabilities",
+            "ioName": "Liability_Category",
+            "ioValue": "Car Loan",
+            "wrapperValue": "Credit Agreement/Hire Purchase"
+        },
+        {
+            "template": "Barclays",
+            "sectionCategory": "Liabilities",
+            "ioName": "Liability_Category",
+            "ioValue": "Main Residence",
+            "wrapperValue": "Credit Agreement/Hire Purchase"
+        },
+        {
+            "template": "Barclays",
+            "sectionCategory": "ExistingMortgage",
+            "ioName": "Lender",
+            "ioValue": "Barclays Bank",
+            "wrapperValue": "Barclays"
+        },
+        {
+            "template": "Barclays",
+            "sectionCategory": "ExistingMortgage",
+            "ioName": "Lender",
+            "ioValue": "National Westminster Bank",
+            "wrapperValue": "NatWest"
+        },
+        {
+            "template": "Barclays",
+            "sectionCategory": "ExistingMortgage",
+            "ioName": "Mortgage_Type",
+            "ioValue": "Let To Buy",
+            "wrapperValue": "Buy to Let"
         }
 
     ]

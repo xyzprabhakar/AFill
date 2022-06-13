@@ -183,8 +183,7 @@ class FillData(ttk.Frame):
         return None
 
     def Get_Element(self,actionOn,ControlName,GetOnlyId,counter,ApplicantId):        
-        if(ApplicantId>0):
-           ControlName=ControlName.replace("{applicantid}",str(ApplicantId+1))           
+        ControlName=ControlName.replace("{applicantid}",str(ApplicantId+1))           
         ControlName=ControlName.replace("{counter}",str(counter))
 
         if(GetOnlyId=="GetOnlyId"):
@@ -205,7 +204,31 @@ class FillData(ttk.Frame):
                     return data["wrapperValue"]
         return IOValue
 
+    def GetApplicantFullName(self,ApplicantId):
+        try:
+            tempData=self.varCurrentData[ApplicantId-1]
+            FirstName,LastName="",""
+            if(self.checkKey(tempData,"PersonalDetails")):                
+                if(self.checkKey(tempData["PersonalDetails"],"First_Name")):
+                    FirstName=tempData["PersonalDetails"]["First_Name"]
+                if(self.checkKey(tempData["PersonalDetails"],"Last_Name")):
+                    LastName=tempData["PersonalDetails"]["Last_Name"]
+            return FirstName+" "+LastName
+        except:
+            return " "
+
     def Get_ActionValue(self,jsonKeyName,counter,ApplicantId):
+        if(jsonKeyName.strip().lower()=="fncgetapplicantname(1)"):
+            return self.GetApplicantFullName(1)
+        elif(jsonKeyName.strip().lower()=="fncgetapplicantname(2)"):
+            return self.GetApplicantFullName(2)
+        elif(jsonKeyName.strip().lower()=="fncgetapplicantname(3)"):
+            return self.GetApplicantFullName(3)
+        elif(jsonKeyName.strip().lower()=="fncgetapplicantname(4)"):
+            return self.GetApplicantFullName(4)
+        elif(jsonKeyName.strip().lower()=="fncgetapplicantname(@)"):
+            return self.GetApplicantFullName(ApplicantId+1)
+
         keynames=jsonKeyName.split(":")
         sectionkeyname,datakeyname='',''
         if(len(keynames)>0):
@@ -353,10 +376,12 @@ class FillData(ttk.Frame):
                             CurrentActionId=CurrentAction["nextActionId"]
                             element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],"",buttoncounter,applicantId)
                             if(element != None):
-                                action=ActionChains(self.driver)
-                                action.move_to_element(element)
-                                action.click(on_element = element)                            
-                                action.perform()
+                                isSelected = element.is_selected()
+                                if(isSelected==False):
+                                    action=ActionChains(self.driver)
+                                    action.move_to_element(element)
+                                    action.click(on_element = element)                            
+                                    action.perform()
                         elif(CurrentAction["actionType"]=="Condition"):
                             leftfinalValue,rightfinalValue="",""                            
                             if(CurrentAction["leftInputType"]=="IOValue"):
@@ -520,10 +545,21 @@ class FillData(ttk.Frame):
     def select_from_chosen(self,  id, value):                      
         try:
             ch=Chosen(self.driver, id)
-            ch.select_by_visible_text(value,True)   
+            if(value==""):
+                ch.select_by_visible_text("Please select",False)   
+            else:
+                ch.select_by_visible_text(value,True)   
+                # alltext= ch.get_options_text()
+                # FoundData=False
+                # for d in alltext:
+                #     if(str(d).lower() == str(value).lower()):
+                #         FoundData=True
+                #         break
+                # if(FoundData):                    
+                #     ch.select_by_visible_text(value,True)   
         except:
             ch=Chosen(self.driver, id)
-            ch.select_by_search(value)
+            ch.select_by_visible_text("Please select",False)   
         
         
 

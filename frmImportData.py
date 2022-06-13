@@ -56,6 +56,19 @@ class ImportData:
     def fnc_resizeScroll(self,event):
         self.ContainerCanvas.configure(scrollregion=self.ContainerCanvas.bbox("all"))
 
+
+    def fncReplaceName(self,value):
+        if(not(  str(value).find(self.varApplicant1.get(),0) ==-1 and str(value).find(self.varApplicant2.get(),0) ==-1)):
+            for i in range(1 ,30):
+                if(value==self.varApplicant1.get()+"."+str(i)):
+                    return self.varApplicant1.get()
+                if(value==self.varApplicant2.get()+"."+str(i)):
+                    return self.varApplicant2.get()
+                if(value=="Joint."+str(i)):
+                    return "Joint"
+        return value
+
+
     def fnc_Read_PersonalDetails(self, ParentContainer, Applicantid):
         
         
@@ -173,7 +186,7 @@ class ImportData:
         txtboxname = Suffix+IO_Name.strip().replace(' ',
                                                     '_').replace('[M]', '').replace('[D]', '')
         entrybox = ttk.Entry(ParentContainer, name=txtboxname)
-        entrybox.insert(0, FindingValue)
+        entrybox.insert(0, self.fncReplaceName(FindingValue) )
         entrybox.grid(row=self.gridrowindex, column=(
             self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
 
@@ -202,7 +215,7 @@ class ImportData:
         txtboxname = Suffix+IO_Name.strip().replace(' ',
                                                     '_').replace('[M]', '').replace('[D]', '')
         entrybox = ttk.Entry(ParentContainer, name=txtboxname)
-        entrybox.insert(0, FindingValue)
+        entrybox.insert(0,self.fncReplaceName(FindingValue) )
         entrybox.grid(row=self.gridrowindex, column=(
             self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
 
@@ -219,7 +232,7 @@ class ImportData:
         txtboxname = Suffix+IO_Name.strip().replace(' ',
                                                     '_').replace('[M]', '').replace('[D]', '')
         entrybox = ttk.Entry(ParentContainer, name=txtboxname)
-        entrybox.insert(0, FindingValue)
+        entrybox.insert(0,self.fncReplaceName( FindingValue))
         entrybox.grid(row=self.gridrowindex, column=(
             self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
 
