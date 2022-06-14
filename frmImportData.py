@@ -5,11 +5,13 @@ from email.headerregistry import Address
 import os
 from numpy import pad
 import tabula
+from tabula.io import read_pdf
 import pandas as pd
 import io
 import tkinter as tk
 from tkinter.filedialog import askopenfile, askopenfilename
 from tkinter import RAISED, ttk,messagebox
+
 import GenerateConfig as Gc
 import json
 from datetime import datetime
@@ -53,6 +55,19 @@ class ImportData:
     #     canvas.configure(scrollregion=canvas.bbox("all"))
     def fnc_resizeScroll(self,event):
         self.ContainerCanvas.configure(scrollregion=self.ContainerCanvas.bbox("all"))
+
+
+    def fncReplaceName(self,value):
+        if(not(  str(value).find(self.varApplicant1.get(),0) ==-1 and str(value).find(self.varApplicant2.get(),0) ==-1)):
+            for i in range(1 ,30):
+                if(value==self.varApplicant1.get()+"."+str(i)):
+                    return self.varApplicant1.get()
+                if(value==self.varApplicant2.get()+"."+str(i)):
+                    return self.varApplicant2.get()
+                if(value=="Joint."+str(i)):
+                    return "Joint"
+        return value
+
 
     def fnc_Read_PersonalDetails(self, ParentContainer, Applicantid):
         
@@ -171,11 +186,11 @@ class ImportData:
         txtboxname = Suffix+IO_Name.strip().replace(' ',
                                                     '_').replace('[M]', '').replace('[D]', '')
         entrybox = ttk.Entry(ParentContainer, name=txtboxname)
-        entrybox.insert(0, FindingValue)
+        entrybox.insert(0, self.fncReplaceName(FindingValue) )
         entrybox.grid(row=self.gridrowindex, column=(
             self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
 
-    def fnc_GenrateControl_Vertical(self, ParentContainer, DetailTable, FindingColumnIndex, FindingRowIndex, IO_Name, IO_Template_Name, Suffix):
+    def fnc_GenrateControl_Vertical(self, ParentContainer, DetailTable, FindingColumnIndex, FindingRowIndex, IO_Name, IO_Template_Name, Suffix,CastToInt=False):
         if(self.IsEvenColumn):
             self.IsEvenColumn = False
             self.gridcolumnindex = 2
@@ -189,7 +204,10 @@ class ImportData:
                 if(i < FindingRowIndex):
                     continue
                 try:
-                    FindingValue = j[FindingColumnIndex]
+                    if(CastToInt):
+                        FindingValue = int(j[FindingColumnIndex]) 
+                    else:
+                        FindingValue = j[FindingColumnIndex] 
                     if(str(FindingValue) == "nan"):
                         FindingValue = ""
                     break
@@ -200,7 +218,7 @@ class ImportData:
         txtboxname = Suffix+IO_Name.strip().replace(' ',
                                                     '_').replace('[M]', '').replace('[D]', '')
         entrybox = ttk.Entry(ParentContainer, name=txtboxname)
-        entrybox.insert(0, FindingValue)
+        entrybox.insert(0,self.fncReplaceName(FindingValue) )
         entrybox.grid(row=self.gridrowindex, column=(
             self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
 
@@ -217,7 +235,7 @@ class ImportData:
         txtboxname = Suffix+IO_Name.strip().replace(' ',
                                                     '_').replace('[M]', '').replace('[D]', '')
         entrybox = ttk.Entry(ParentContainer, name=txtboxname)
-        entrybox.insert(0, FindingValue)
+        entrybox.insert(0,self.fncReplaceName( FindingValue))
         entrybox.grid(row=self.gridrowindex, column=(
             self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
 
@@ -811,7 +829,7 @@ class ImportData:
                         self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 1,i, "Date of Birth",
                                                  "Date of Birth", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid))                        
                         self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 2,i, "Age",
-                                                 "Age", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid))
+                                                 "Age", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid),True)
                         self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 3,i, "Relationship",
                                                  "Relationship", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid))
                         self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 4,i, "Related To",

@@ -118,14 +118,14 @@ class FillData(ttk.Frame):
             messagebox.showerror("Required", "Invalid template name")
             return
         
-        self.frm_Applicant1Canvas = tk.Canvas(self.frmInnerContentFrame1, bg=self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge',width=200)
+        self.frm_Applicant1Canvas = tk.Canvas(self.frmInnerContentFrame1, bg=  self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge',width=250)
         scrollbar_y = ttk.Scrollbar(self.frmInnerContentFrame1, orient=tk.VERTICAL, command=self.frm_Applicant1Canvas.yview)        
         scrollbar_y.pack(side=tk.RIGHT, fill="y")        
         scrollbar_x = ttk.Scrollbar(self.frmInnerContentFrame1, orient=tk.HORIZONTAL, command=self.frm_Applicant1Canvas.xview)        
         scrollbar_x.pack(side=tk.BOTTOM, fill="x")        
 
         self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
-        self.frm_Applicant1 = ttk.Frame(self.frm_Applicant1Canvas)            
+        self.frm_Applicant1 = ttk.Frame(self.frm_Applicant1Canvas,border=1)            
 
         if not os.path.exists(self.config.FilePath):
             os.makedirs(self.config.FilePath)
@@ -182,25 +182,19 @@ class FillData(ttk.Frame):
                         return action
         return None
 
-    def Get_Element(self,actionOn,ControlName,SectionType,counter,ApplicantId):
-        
-        if(ApplicantId>0):
-           ControlName=ControlName.replace("1",str(ApplicantId+1))
+    def Get_Element(self,actionOn,ControlName,GetOnlyId,counter,ApplicantId):        
+        ControlName=ControlName.replace("{applicantid}",str(ApplicantId+1))           
+        ControlName=ControlName.replace("{counter}",str(counter))
 
-        if(SectionType=="Multiple"):
-            if(actionOn=="ByName"):
-                return self.driver.find_element(By.NAME,ControlName.replace("0",str(counter)))
-            elif(actionOn=="ById") :
-                return self.driver.find_element(By.ID ,ControlName.replace("0",str(counter)))
-            elif(actionOn=="ByXpath") :
-                return self.driver.find_element(By.XPATH ,ControlName.replace("0",str(counter)))
-        else:
-            if(actionOn=="ByName"):
-                return self.driver.find_element(By.NAME,ControlName)
-            elif(actionOn=="ById") :
-                return self.driver.find_element(By.ID ,ControlName)
-            elif(actionOn=="ByXpath") :
-                return self.driver.find_element(By.XPATH ,ControlName)
+        if(GetOnlyId=="GetOnlyId"):
+            return ControlName
+
+        if(actionOn=="ByName"):
+            return self.driver.find_element(By.NAME,ControlName)
+        elif(actionOn=="ById") :
+            return self.driver.find_element(By.ID ,ControlName)
+        elif(actionOn=="ByXpath") :
+            return self.driver.find_element(By.XPATH ,ControlName)
     
     def Get_WrapperValue(self,HaveWrapper,SectionCategory,IOName,IOValue):
         if(HaveWrapper):
@@ -210,7 +204,31 @@ class FillData(ttk.Frame):
                     return data["wrapperValue"]
         return IOValue
 
+    def GetApplicantFullName(self,ApplicantId):
+        try:
+            tempData=self.varCurrentData[ApplicantId-1]
+            FirstName,LastName="",""
+            if(self.checkKey(tempData,"PersonalDetails")):                
+                if(self.checkKey(tempData["PersonalDetails"],"First_Name")):
+                    FirstName=tempData["PersonalDetails"]["First_Name"]
+                if(self.checkKey(tempData["PersonalDetails"],"Last_Name")):
+                    LastName=tempData["PersonalDetails"]["Last_Name"]
+            return FirstName+" "+LastName
+        except:
+            return " "
+
     def Get_ActionValue(self,jsonKeyName,counter,ApplicantId):
+        if(jsonKeyName.strip().lower()=="fncgetapplicantname(1)"):
+            return self.GetApplicantFullName(1)
+        elif(jsonKeyName.strip().lower()=="fncgetapplicantname(2)"):
+            return self.GetApplicantFullName(2)
+        elif(jsonKeyName.strip().lower()=="fncgetapplicantname(3)"):
+            return self.GetApplicantFullName(3)
+        elif(jsonKeyName.strip().lower()=="fncgetapplicantname(4)"):
+            return self.GetApplicantFullName(4)
+        elif(jsonKeyName.strip().lower()=="fncgetapplicantname(@)"):
+            return self.GetApplicantFullName(ApplicantId+1)
+
         keynames=jsonKeyName.split(":")
         sectionkeyname,datakeyname='',''
         if(len(keynames)>0):
@@ -225,8 +243,6 @@ class FillData(ttk.Frame):
         if(sectionkeyname.find('fncWrapper ')!=-1):
             HaveWrapper=True
             sectionkeyname=sectionkeyname.replace('fncWrapper ','')
-
-
         if(sectionkeyname.find('[]')!=-1):
             sectionkeyname=sectionkeyname.replace('[]','')
             if(self.checkKey(tempData,sectionkeyname)):
@@ -245,7 +261,7 @@ class FillData(ttk.Frame):
                     return self.Get_WrapperValue(HaveWrapper,sectionkeyname,datakeyname,tempData[sectionkeyname][datakeyname])
         return ""
 
-    def fncFindIndex(self,jsonKeyName,checkValue):
+    def fncFindIndex(self,jsonKeyName,checkValue,conditionType,ApplicantId):
         keynames=jsonKeyName.split(":")
         sectionkeyname,datakeyname='',''
         if(len(keynames)>0):
@@ -255,16 +271,27 @@ class FillData(ttk.Frame):
         if(ApplicantId==None):
             ApplicantId=0
         tempData=self.varCurrentData[ApplicantId]
+        HaveWrapper=False;        
+        if(sectionkeyname.find('fncWrapper ')!=-1):
+            HaveWrapper=True
+            sectionkeyname=sectionkeyname.replace('fncWrapper ','')
+
+
         if(sectionkeyname.find('[]')!=-1):
             sectionkeyname=sectionkeyname.replace('[]','')
             if(self.checkKey(tempData,sectionkeyname)):
-                for index,data in tempData[sectionkeyname]:
+                for index,data in enumerate(tempData[sectionkeyname]):
                     if(self.checkKey( data,datakeyname)):
-                        if(str(data[datakeyname]).strip().lower()  == str(checkValue).strip().lower() ):
-                            return index
+                        if(conditionType=="eq"):
+                            if(str(self.Get_WrapperValue(HaveWrapper,sectionkeyname,datakeyname,data[datakeyname])).strip().lower()  == str(checkValue).strip().lower() ):
+                                self.FindIndex=index
+                                return index
+                        
         return -1
 
     def InitlinzeDriver(self):
+        if(self.driver != None):
+            self.driver.quit()
         if(self.config.DriverName=="Chrome"):
             self.driver = webdriver.Chrome(ChromeDriverManager().install())
             self.driver.get(self.varCurrentTemplateData["url"])
@@ -290,14 +317,16 @@ class FillData(ttk.Frame):
                 continue
             else :
                 ActionCounter=0
-                CurrentActionId=None
+                CurrentActionId,PreviousActionId=None,-1
                 CurrentAction=self.Get_Action(section,CurrentActionId)
-                while (CurrentAction !=None and ActionCounter<1000):
+                while (CurrentAction !=None and ActionCounter<500 and CurrentActionId != PreviousActionId ):
+
                     ActionCounter=ActionCounter+1
+                    PreviousActionId=CurrentActionId
                     try:
                         if(CurrentAction["actionType"]=="Fill Input"):
                             CurrentActionId=CurrentAction["nextActionId"]
-                            element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
+                            element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],"",buttoncounter,applicantId)
                             if(element != None):
                                 finalValue=""
                                 if(CurrentAction["inputType"]=="IOValue"):
@@ -308,7 +337,7 @@ class FillData(ttk.Frame):
                             element.send_keys(finalValue)                            
                         elif(CurrentAction["actionType"]=="Select Option" or CurrentAction["actionType"]=="Select Text" ):
                             CurrentActionId=CurrentAction["nextActionId"]
-                            element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
+                            element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],"",buttoncounter,applicantId)
                             if(element != None):
                                 finalValue=""
                                 if(CurrentAction["inputType"]=="IOValue"):
@@ -326,34 +355,37 @@ class FillData(ttk.Frame):
                             if(CurrentAction["inputType"]=="IOValue"):
                                 finalValue=self.Get_ActionValue(CurrentAction["ioValue"],buttoncounter,applicantId)
                             else:
-                                finalValue=CurrentAction["manualValue"]
-                            if(CurrentAction["actionType"]=="Single Choosen Text"):
-                                self.select_from_chosen(CurrentAction["control"],finalValue)
+                                finalValue=CurrentAction["manualValue"]                                
+                            if(CurrentAction["actionType"]=="Single Choosen Text"):                                
+                                self.select_from_chosen( self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],"GetOnlyId",buttoncounter,applicantId), finalValue)
                             else:
                                 fullFinalValue=[]
                                 fullFinalValue.append(finalValue)
-                                self.select_from_multi_chosen(CurrentAction["control"],fullFinalValue)
+                                self.select_from_multi_chosen(self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],"GetOnlyId",buttoncounter,applicantId),fullFinalValue)
                         elif(CurrentAction["actionType"]=="Button Click"):
                             CurrentActionId=CurrentAction["nextActionId"]
                             element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
                             if(element != None):                            
-                                element.send_keys(finalValue)
-                                action=ActionChains(self.driver)
-                                action.move_to_element(element)
-                                action.click(on_element = element)                            
-                                action.perform()                            
+                                element.click()
+                                # element.send_keys(finalValue)
+                                # action=ActionChains(self.driver)
+                                # action.move_to_element(element)
+                                # action.click(on_element = element)                            
+                                # action.perform()                            
                         elif(CurrentAction["actionType"]=="Wait"):
                             finalValue=CurrentAction["manualValue"]
                             self.driver.implicitly_wait(finalValue)
                             CurrentActionId=CurrentAction["nextActionId"]
                         elif(CurrentAction["actionType"]=="Check Checkbox"):
                             CurrentActionId=CurrentAction["nextActionId"]
-                            element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],section["sectionType"],buttoncounter,applicantId)
+                            element=self.Get_Element(CurrentAction["selectorType"],CurrentAction["control"],"",buttoncounter,applicantId)
                             if(element != None):
-                                action=ActionChains(self.driver)
-                                action.move_to_element(element)
-                                action.click(on_element = element)                            
-                                action.perform()
+                                isSelected = element.is_selected()
+                                if(isSelected==False):
+                                    action=ActionChains(self.driver)
+                                    action.move_to_element(element)
+                                    action.click(on_element = element)                            
+                                    action.perform()
                         elif(CurrentAction["actionType"]=="Condition"):
                             leftfinalValue,rightfinalValue="",""                            
                             if(CurrentAction["leftInputType"]=="IOValue"):
@@ -377,9 +409,9 @@ class FillData(ttk.Frame):
                         elif(CurrentAction["actionType"]=="Find Index"):
                             self.FindIndex=-1                            
                             if(CurrentAction["leftInputType"]=="IOValue"):
-                                self.FindIndex==self.fncFindIndex(CurrentAction["leftIOValue"],CurrentAction["rightManualValue"])
+                                self.FindIndex==self.fncFindIndex(CurrentAction["leftIOValue"],CurrentAction["rightManualValue"],CurrentAction["conditionType"],applicantId)
                             else:
-                                self.FindIndex==self.fncFindIndex(CurrentAction["rightIOValue"],CurrentAction["leftManualValue"])
+                                self.FindIndex==self.fncFindIndex(CurrentAction["rightIOValue"],CurrentAction["leftManualValue"],CurrentAction["conditionType"],applicantId)
                             if(self.FindIndex!=-1):
                                 CurrentActionId=CurrentAction["trueActionId"]
                             else:
@@ -387,7 +419,7 @@ class FillData(ttk.Frame):
                     except Exception as ex:
                         print("Error", ex)
                         
-
+                    
                     CurrentAction=self.Get_Action(section,CurrentActionId)
     def change_tab(self):
          try:
@@ -492,13 +524,13 @@ class FillData(ttk.Frame):
         self.frmLeftPanel.rowconfigure(6, weight=100)
 
         ttk.Label(self.frmLeftPanel,text="Template").grid(row=0,column=0,sticky=tk.N+tk.S+tk.W,pady=(10,3),padx=(10,10))
-        self.ddlTemplateName=ttk.Combobox(self.frmLeftPanel,textvariable = self.varCurrentTemplateName,values=self.varAllTemlateName,width=26)
+        self.ddlTemplateName=ttk.Combobox(self.frmLeftPanel,textvariable = self.varCurrentTemplateName,values=self.varAllTemlateName,width=24)
         self.ddlTemplateName.grid(row=0,column=1,sticky=tk.N+tk.S+tk.W,pady=(10,3))
         ttk.Label(self.frmLeftPanel,text="File Name").grid(row=1,column=0,sticky=tk.N+tk.S+tk.W,pady=(10,3),padx=(10,10))
-        self.ddlFileName=ttk.Combobox(self.frmLeftPanel,textvariable = self.varCurrentDataFileName,values=self.varAllJsonFileName,width=26)
+        self.ddlFileName=ttk.Combobox(self.frmLeftPanel,textvariable = self.varCurrentDataFileName,values=self.varAllJsonFileName,width=24)
         self.ddlFileName.grid(row=1,column=1,sticky=tk.N+tk.S+tk.W,pady=(10,3))        
         ttk.Label(self.frmLeftPanel,text="Current Tab").grid(row=2,column=0,sticky=tk.N+tk.S+tk.W,pady=(10,3),padx=(10,10))
-        ttk.Entry(self.frmLeftPanel,textvariable = self.varCurrentTab,width=24).grid(row=2,column=1,sticky=tk.N+tk.S+tk.W,pady=(10,3))
+        ttk.Entry(self.frmLeftPanel,textvariable = self.varCurrentTab,width=26).grid(row=2,column=1,sticky=tk.N+tk.S+tk.W,pady=(10,3))
         
 
         self.frmInnerContentFrame1 = ttk.Frame(self.frmLeftPanel)
@@ -509,31 +541,36 @@ class FillData(ttk.Frame):
         ttk.Button ( frmbtn2, text ="Load Data", width=9, command =lambda: self.load_data()).grid(row=0,column = 1 ,padx=(2,2))
         ttk.Button ( frmbtn2, text ="Change Tab", width=9, command =lambda: self.change_tab()).grid(row=0,column = 2 ,padx=(2,2))
 
-        ttk.Frame(self.frmLeftPanel, height=10).grid(row=4, column=0,columnspan=2, sticky=tk.E+tk.W)
-        ttk.Frame(self.frmLeftPanel, style="Separator.TFrame", height=1).grid(row=5, column=0,columnspan=2, sticky=tk.E+tk.W)
-        ttk.Frame(self.frmLeftPanel, height=10).grid(row=6, column=0,columnspan=2, sticky=tk.E+tk.W)
+        #ttk.Frame(self.frmLeftPanel, height=10).grid(row=4, column=0,columnspan=2, sticky=tk.E+tk.W)
+        # ttk.Frame(self.frmLeftPanel, style="Separator.TFrame", height=1).grid(row=5, column=0,columnspan=2, sticky=tk.E+tk.W)
+        # ttk.Frame(self.frmLeftPanel, height=10).grid(row=6, column=0,columnspan=2, sticky=tk.E+tk.W)
               
         
-    def select_from_chosen(self,  id, value):              
-        ch=Chosen(self.driver, id)
-        ch.select_by_visible_text(value)
-        # chosen = self.driver.find_element(By.ID ,id + '_chzn')
-        # chosen.Click()
-        # results = chosen.find_elements(By.CSS_SELECTOR,".chzn-results li")
-        # found = False
-        # for result in results:
-        #     print(result.text)
-        #     if str( result.text).lower() == str(value).lower():
-        #         found = True
-        #         break
-        # if found:
-        #     chosen.find_element(By.CSS_SELECTOR,"a").click()
-        #     result.click()
-        # return found
+    def select_from_chosen(self,  id, value):                      
+        try:
+            ch=Chosen(self.driver, id)
+            if(value==""):
+                ch.select_by_visible_text("Please select",False)   
+            else:
+                ch.select_by_visible_text(value,True)   
+                # alltext= ch.get_options_text()
+                # FoundData=False
+                # for d in alltext:
+                #     if(str(d).lower() == str(value).lower()):
+                #         FoundData=True
+                #         break
+                # if(FoundData):                    
+                #     ch.select_by_visible_text(value,True)   
+        except:
+            ch=Chosen(self.driver, id)
+            ch.select_by_visible_text("Please select",False)   
+        
+        
 
 
     def select_from_multi_chosen(self, id, values):
         chosen = self.driver.find_element(By.ID,id + '_chzn')
+
         results = chosen.find_element(By.CSS_SELECTOR,".chzn-results li")
         for value in values:
             found = False
@@ -558,7 +595,7 @@ if __name__ == '__main__':
     root.wm_geometry("%dx%d+%d+%d" % (sizex, sizey, posx, posy))
     config.set_theme(None,root)
     config.set_icons()
-    myframe=tk.Frame(root,relief=tk.GROOVE,width=500,height=600,bd=1)
+    myframe=tk.Frame(root,relief=tk.GROOVE,width=600,height=700,bd=1)
     myframe.pack( fill="both" ,expand=tk.TRUE ,anchor=tk.N+tk.W)   
     FillData(myframe,config)
     #root.eval('tk::PlaceWindow . center')

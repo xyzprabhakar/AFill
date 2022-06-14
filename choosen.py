@@ -108,6 +108,8 @@ class Chosen(object):
             ActionChains(self.webdriver).move_to_element(result).perform()
             sleep(1.0)
             result.click()
+        else:
+            self.close_select()
 
     def select_by_index(self, index):
         """
@@ -143,7 +145,7 @@ class Chosen(object):
         def select_func(results):
             for result in results:
                 if exact:
-                    if result.text == option_text:
+                    if str(result.text).lower() == str(option_text).lower():
                         return result
                 else:
                     if result.text.find(option_text) != -1:
