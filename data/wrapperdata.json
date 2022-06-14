@@ -1,12 +1,5 @@
 {
-    "allData": [
-        {
-            "template": "Barclays",
-            "sectionCategory": "BankAccount",
-            "ioName": "Bank Name",
-            "ioValue": "national westminster bank",
-            "wrapperValue": "natwest"
-        },
+    "allData": [       
         {
             "template": "Barclays",
             "sectionCategory": "BankAccount",

@@ -5,47 +5,5 @@
         "TemplateType": "IO Template",
         "CreationDt": "27-Apr-2022 13:50:19",
         "ModifyDt": "27-Apr-2022 13:50:19"
-    },
-    {
-        "FileName": "test2",
-        "ApplicantType": "Co Applicant",
-        "TemplateType": "IO Template",
-        "CreationDt": "10-Jun-2022 15:15:15",
-        "ModifyDt": "10-Jun-2022 15:15:15"
-    },
-    {
-        "FileName": "test3",
-        "ApplicantType": "Co Applicant",
-        "TemplateType": "IO Template",
-        "CreationDt": "13-Jun-2022 14:24:39",
-        "ModifyDt": "13-Jun-2022 14:24:39"
-    },
-    {
-        "FileName": "test4",
-        "ApplicantType": "Co Applicant",
-        "TemplateType": "IO Template",
-        "CreationDt": "13-Jun-2022 16:54:17",
-        "ModifyDt": "13-Jun-2022 16:54:17"
-    },
-    {
-        "FileName": "TEST5",
-        "ApplicantType": "Co Applicant",
-        "TemplateType": "IO Template",
-        "CreationDt": "13-Jun-2022 18:03:57",
-        "ModifyDt": "13-Jun-2022 18:03:57"
-    },
-    {
-        "FileName": "test6",
-        "ApplicantType": "Co Applicant",
-        "TemplateType": "IO Template",
-        "CreationDt": "14-Jun-2022 10:42:52",
-        "ModifyDt": "14-Jun-2022 10:42:52"
-    },
-    {
-        "FileName": "test7",
-        "ApplicantType": "Co Applicant",
-        "TemplateType": "IO Template",
-        "CreationDt": "14-Jun-2022 15:28:40",
-        "ModifyDt": "14-Jun-2022 15:28:40"
     }
 ]
