@@ -237,11 +237,11 @@ class GenerateConfig:
         self.config_file.set("InputTemplate", "IO_Template_Liabilities","Owner,Liability Account Number,Liability Category,Original Loan Amount,Repayment or Interest Only?,Rate Type,Amount Outstanding,Credit Limit,Interest Rate (%),"+
         "Payment Amount (Monthly),Lender,Loan Term (years),Start Date[M],End Date,Early Redemption Charge,Whether liability is to be repaid?,How will liability be repaid")
 
-        self.config_file.set("InputTemplate", "IO_Name_ExistingMortgage","Owner,Lender,Policy Number,Address Line 1,Rate Type,Mortgage Type,Are you a First Time Buyer,"+
+        self.config_file.set("InputTemplate", "IO_Name_ExistingMortgage","Owner,Lender,Policy Number,Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,Country,Postcode,Rate Type,Mortgage Type,Are you a First Time Buyer,"+
         "Property Type,Repayment Method,Capital Repayment Amount,Interest Only Amount,Interest Only Repayment Vehicle,Monthly Repayment Amount,"
         "Original Loan Amount,Interest Rate,Base Rate,Feature Expires,Original Mortgage Term,Start Date,End Date,Remaining Term,"+
         "Current Balance,Account Number,Is the loan subject to Redemption Penalty,Redemption End Date,Consent to Let,Linked to Asset,Asset Value")
-        self.config_file.set("InputTemplate", "IO_Template_ExistingMortgage","Owner,Lender,Policy Number,Address Line 1,Rate Type,Mortgage Type,Are you a First Time Buyer,"+
+        self.config_file.set("InputTemplate", "IO_Template_ExistingMortgage","Owner,Lender,Policy Number,Address Line 1,Address Line 2[M],Address Line 3[M],Address Line 4[M],City[M],Country[M],Postcode[M],Rate Type,Mortgage Type,Are you a First Time Buyer,"+
         "Property Type,Repayment Method,Capital Repayment Amount,Interest Only Amount,Interest Only Repayment Vehicle,Monthly Repayment Amount,"
         "Original Loan Amount,Interest Rate (%),Base Rate,Feature Expires,Original Mortgage Term,Start Date,End Date,Remaining Term,"+
         "Current Balance,Account Number,Is the loan subject to Redemption Penalty?,Redemption End Date,Consent to Let?,Linked to Asset,Asset Value")

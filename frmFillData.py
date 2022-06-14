@@ -243,8 +243,6 @@ class FillData(ttk.Frame):
         if(sectionkeyname.find('fncWrapper ')!=-1):
             HaveWrapper=True
             sectionkeyname=sectionkeyname.replace('fncWrapper ','')
-
-
         if(sectionkeyname.find('[]')!=-1):
             sectionkeyname=sectionkeyname.replace('[]','')
             if(self.checkKey(tempData,sectionkeyname)):
@@ -273,13 +271,19 @@ class FillData(ttk.Frame):
         if(ApplicantId==None):
             ApplicantId=0
         tempData=self.varCurrentData[ApplicantId]
+        HaveWrapper=False;        
+        if(sectionkeyname.find('fncWrapper ')!=-1):
+            HaveWrapper=True
+            sectionkeyname=sectionkeyname.replace('fncWrapper ','')
+
+
         if(sectionkeyname.find('[]')!=-1):
             sectionkeyname=sectionkeyname.replace('[]','')
             if(self.checkKey(tempData,sectionkeyname)):
                 for index,data in enumerate(tempData[sectionkeyname]):
                     if(self.checkKey( data,datakeyname)):
                         if(conditionType=="eq"):
-                            if(str(data[datakeyname]).strip().lower()  == str(checkValue).strip().lower() ):
+                            if(str(self.Get_WrapperValue(HaveWrapper,sectionkeyname,datakeyname,data[datakeyname])).strip().lower()  == str(checkValue).strip().lower() ):
                                 self.FindIndex=index
                                 return index
                         

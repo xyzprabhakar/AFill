@@ -5,7 +5,14 @@
             "sectionCategory": "BankAccount",
             "ioName": "Bank Name",
             "ioValue": "national westminster bank",
-            "wrapperValue": "netwest"
+            "wrapperValue": "natwest"
+        },
+        {
+            "template": "Barclays",
+            "sectionCategory": "BankAccount",
+            "ioName": "Bank Name",
+            "ioValue": "Bacrlays",
+            "wrapperValue": "Barclays"
         },
         {
             "template": "Barclays",
@@ -90,6 +97,20 @@
             "ioName": "Mortgage_Type",
             "ioValue": "Let To Buy",
             "wrapperValue": "Buy to Let"
+        } ,
+        {
+            "template": "Barclays",
+            "sectionCategory": "ExistingMortgage",
+            "ioName": "Mortgage_Type",
+            "ioValue": "Standard Residential",
+            "wrapperValue": "Current Residence"
+        },
+        {
+            "template": "Barclays",
+            "sectionCategory": "ExistingMortgage",
+            "ioName": "Mortgage_Type",
+            "ioValue": "United Kingdom",
+            "wrapperValue": "UK"
         }
 
     ]

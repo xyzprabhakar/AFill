@@ -190,7 +190,7 @@ class ImportData:
         entrybox.grid(row=self.gridrowindex, column=(
             self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
 
-    def fnc_GenrateControl_Vertical(self, ParentContainer, DetailTable, FindingColumnIndex, FindingRowIndex, IO_Name, IO_Template_Name, Suffix):
+    def fnc_GenrateControl_Vertical(self, ParentContainer, DetailTable, FindingColumnIndex, FindingRowIndex, IO_Name, IO_Template_Name, Suffix,CastToInt=False):
         if(self.IsEvenColumn):
             self.IsEvenColumn = False
             self.gridcolumnindex = 2
@@ -204,7 +204,10 @@ class ImportData:
                 if(i < FindingRowIndex):
                     continue
                 try:
-                    FindingValue = j[FindingColumnIndex]
+                    if(CastToInt):
+                        FindingValue = int(j[FindingColumnIndex]) 
+                    else:
+                        FindingValue = j[FindingColumnIndex] 
                     if(str(FindingValue) == "nan"):
                         FindingValue = ""
                     break
@@ -826,7 +829,7 @@ class ImportData:
                         self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 1,i, "Date of Birth",
                                                  "Date of Birth", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid))                        
                         self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 2,i, "Age",
-                                                 "Age", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid))
+                                                 "Age", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid),True)
                         self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 3,i, "Relationship",
                                                  "Relationship", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid))
                         self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 4,i, "Related To",
