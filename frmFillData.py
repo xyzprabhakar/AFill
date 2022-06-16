@@ -33,7 +33,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from choosen import Chosen
-
+from datetime import datetime
 
 class FillData(ttk.Frame):
     config=None
@@ -217,6 +217,23 @@ class FillData(ttk.Frame):
         except:
             return " "
 
+    def GetYearMonth(self,inputvalue,procType):
+        if(procType==1):
+            return inputvalue[-4:]
+        elif(procType==2):
+            return inputvalue[4:5]
+        elif(procType==3):
+            EndDt=datetime.now
+            StartDt=datetime.strptime(inputvalue, '%d/%m/%Y')
+            tempdt=EndDt-StartDt
+            tempdt.years
+        elif(procType==4):
+            EndDt=datetime.now
+            StartDt=datetime.strptime(inputvalue, '%d/%m/%Y')
+            tempdt=EndDt-StartDt
+            return tempdt.months%12
+
+
     def Get_ActionValue(self,jsonKeyName,counter,ApplicantId):
         if(jsonKeyName.strip().lower()=="fncgetapplicantname(1)"):
             return self.GetApplicantFullName(1)
@@ -239,26 +256,72 @@ class FillData(ttk.Frame):
             ApplicantId=0
         tempData=self.varCurrentData[ApplicantId]
 
-        HaveWrapper=False
+        HaveWrapper,HaveGetYearFunction,HaveGetMonthFunction,HaveYearDiff,HaveMonthDiff=False,False,False,False,False
         if(sectionkeyname.find('fncWrapper ')!=-1):
             HaveWrapper=True
             sectionkeyname=sectionkeyname.replace('fncWrapper ','')
+        if(sectionkeyname.find('fncGetYear ')!=-1):
+            HaveGetYearFunction=True
+            sectionkeyname=sectionkeyname.replace('fncGetYear ','')        
+        if(sectionkeyname.find('fncGetMonth ')!=-1):
+            HaveGetMonthFunction=True
+            sectionkeyname=sectionkeyname.replace('fncGetMonth ','')
+        if(sectionkeyname.find('fncCalculateYearDiff ')!=-1):
+            HaveYearDiff=True
+            sectionkeyname=sectionkeyname.replace('fncCalculateYearDiff ','')        
+        if(sectionkeyname.find('fncCalcualteMonthDiff ')!=-1):
+            HaveMonthDiff=True
+            sectionkeyname=sectionkeyname.replace('fncCalcualteMonthDiff ','')
+
         if(sectionkeyname.find('[]')!=-1):
             sectionkeyname=sectionkeyname.replace('[]','')
             if(self.checkKey(tempData,sectionkeyname)):
                 if(len(tempData[sectionkeyname])>counter ):
                     if(self.checkKey(tempData[sectionkeyname][counter],datakeyname)):
-                       return self.Get_WrapperValue(HaveWrapper,sectionkeyname,datakeyname, tempData[sectionkeyname][counter][datakeyname])
+                        if(HaveWrapper):
+                            return self.Get_WrapperValue(HaveWrapper,sectionkeyname,datakeyname, tempData[sectionkeyname][counter][datakeyname])
+                        elif(HaveGetYearFunction):
+                            self.GetYearMonth(tempData[sectionkeyname][counter][datakeyname],1)
+                        elif(HaveGetMonthFunction):
+                            self.GetYearMonth(tempData[sectionkeyname][counter][datakeyname],2)
+                        elif(HaveYearDiff):
+                            self.GetYearMonth(tempData[sectionkeyname][counter][datakeyname],3)
+                        elif(HaveMonthDiff):
+                            self.GetYearMonth(tempData[sectionkeyname][counter][datakeyname],4)
+                        else:
+                           return tempData[sectionkeyname][counter][datakeyname]
         elif(sectionkeyname.find('[@]')!=-1):
             sectionkeyname=sectionkeyname.replace('[@]','')
             if(self.checkKey(tempData,sectionkeyname)):
                 if(len(tempData[sectionkeyname])>self.FindIndex and self.FindIndex!=-1):
                     if(self.checkKey(tempData[sectionkeyname][self.FindIndex],datakeyname)):                       
-                       return self.Get_WrapperValue(HaveWrapper,sectionkeyname,datakeyname,tempData[sectionkeyname][self.FindIndex][datakeyname])
+                        if(HaveWrapper):
+                            return self.Get_WrapperValue(HaveWrapper,sectionkeyname,datakeyname,tempData[sectionkeyname][self.FindIndex][datakeyname])
+                        elif(HaveGetYearFunction):
+                            self.GetYearMonth(tempData[sectionkeyname][self.FindIndex][datakeyname],1)
+                        elif(HaveGetMonthFunction):
+                            self.GetYearMonth(tempData[sectionkeyname][self.FindIndex][datakeyname],2)
+                        elif(HaveYearDiff):
+                            self.GetYearMonth(tempData[sectionkeyname][self.FindIndex][datakeyname],3)
+                        elif(HaveMonthDiff):
+                            self.GetYearMonth(tempData[sectionkeyname][self.FindIndex][datakeyname],4)
+                        else:
+                           return tempData[sectionkeyname][self.FindIndex][datakeyname]
         else:
             if(self.checkKey(tempData,sectionkeyname)):
-                if(tempData[sectionkeyname],datakeyname):                     
-                    return self.Get_WrapperValue(HaveWrapper,sectionkeyname,datakeyname,tempData[sectionkeyname][datakeyname])
+                if(tempData[sectionkeyname],datakeyname):           
+                    if(HaveWrapper):
+                        return self.Get_WrapperValue(HaveWrapper,sectionkeyname,datakeyname,tempData[sectionkeyname][datakeyname])
+                    elif(HaveGetYearFunction):
+                            self.GetYearMonth(tempData[sectionkeyname][datakeyname],1)
+                    elif(HaveGetMonthFunction):
+                        self.GetYearMonth(tempData[sectionkeyname][datakeyname],2)
+                    elif(HaveYearDiff):
+                             self.GetYearMonth(tempData[sectionkeyname][datakeyname],3)
+                    elif(HaveMonthDiff):
+                             self.GetYearMonth(tempData[sectionkeyname][datakeyname],4)
+                    else:
+                        return tempData[sectionkeyname][datakeyname]
         return ""
 
     def fncFindIndex(self,jsonKeyName,checkValue,conditionType,ApplicantId):

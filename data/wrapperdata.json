@@ -104,6 +104,20 @@
             "ioName": "Country",
             "ioValue": "United Kingdom",
             "wrapperValue": "UK"
+        },
+        {
+            "template": "Barclays",
+            "sectionCategory": "CurrentEmploymentDetails",
+            "ioName": "Employment_Status",
+            "ioValue": "Self-Employed",
+            "wrapperValue": "Self Employed"
+        },
+        {
+            "template": "Barclays",
+            "sectionCategory": "CurrentEmploymentDetails",
+            "ioName": "Business Type",
+            "ioValue": "Limited Company Director",
+            "wrapperValue": "Self Employed"
         }
 
     ]
