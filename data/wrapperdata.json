@@ -101,7 +101,7 @@
         {
             "template": "Barclays",
             "sectionCategory": "ExistingMortgage",
-            "ioName": "Mortgage_Type",
+            "ioName": "Country",
             "ioValue": "United Kingdom",
             "wrapperValue": "UK"
         }
