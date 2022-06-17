@@ -118,6 +118,13 @@
             "ioName": "Business_Type",
             "ioValue": "Private Limited company",
             "wrapperValue": "Limited Company Director"
+        },
+        {
+            "template": "Barclays",
+            "sectionCategory": "MortgageRequirements",
+            "ioName": "Source_Of_Deposit",
+            "ioValue": "Equity",
+            "wrapperValue": "Equity in Existing Residential Property"
         }
 
     ]
