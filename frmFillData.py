@@ -614,15 +614,7 @@ class FillData(ttk.Frame):
             if(value==""):
                 ch.select_by_visible_text("Please select",False)   
             else:
-                ch.select_by_visible_text(value,True)   
-                # alltext= ch.get_options_text()
-                # FoundData=False
-                # for d in alltext:
-                #     if(str(d).lower() == str(value).lower()):
-                #         FoundData=True
-                #         break
-                # if(FoundData):                    
-                #     ch.select_by_visible_text(value,True)   
+                ch.select_by_visible_text(value,True)                   
         except:
             ch=Chosen(self.driver, id)
             ch.select_by_visible_text("Please select",False)   
