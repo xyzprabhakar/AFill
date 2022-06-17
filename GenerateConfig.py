@@ -26,6 +26,7 @@ class GenerateConfig:
     SectionType=("Multiple","Single")
     SectionCategory=("PersonalDetails","CurrentAddress","PreviousAddress","ContactDetails","ProfessionalContacts","BankAccount","FamilyAndDependants","IDVerification","CurrentEmploymentDetails","Assets","Liabilities","Expenditure","ExistingMortgage","MortgageRequirements")
     SectionCategoryType=("Single","Single","Multiple","Single","Multiple","Multiple","Multiple","Single","Single","Multiple","Multiple","Multiple","Multiple","Multiple")
+    CustomFunction=("None","fncWrapper ","fncGetYear ","fncGetMonth ","fncCalculateYearDiff ","fncCalcualteMonthDiff ","fncGetApplicantName(1)","fncGetApplicantName(2)","fncGetApplicantName(3)","fncGetApplicantName(4)","fncGetApplicantName(@)")
     
 
     def set_icons(self):        
