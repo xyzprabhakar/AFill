@@ -119,9 +119,9 @@ class FillData(ttk.Frame):
             return
         
         self.frm_Applicant1Canvas = tk.Canvas(self.frmInnerContentFrame1, bg=  self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge',width=250)
-        scrollbar_y = tk.Scrollbar(self.frmInnerContentFrame1, orient=tk.VERTICAL, command=self.frm_Applicant1Canvas.yview)        
+        scrollbar_y = ttk.Scrollbar(self.frmInnerContentFrame1, orient=tk.VERTICAL, command=self.frm_Applicant1Canvas.yview)        
         scrollbar_y.pack(side=tk.RIGHT, fill="y")        
-        scrollbar_x = tk.Scrollbar(self.frmInnerContentFrame1, orient=tk.HORIZONTAL, command=self.frm_Applicant1Canvas.xview)        
+        scrollbar_x = ttk.Scrollbar(self.frmInnerContentFrame1, orient=tk.HORIZONTAL, command=self.frm_Applicant1Canvas.xview)        
         scrollbar_x.pack(side=tk.BOTTOM, fill="x")        
 
         self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))

@@ -3,7 +3,6 @@ from ast import Return
 import ctypes
 from email.headerregistry import Address
 import os
-from numpy import pad
 import tabula
 from tabula.io import read_pdf
 import pandas as pd
@@ -370,13 +369,13 @@ class ImportData:
             if(DetailTable.columns[0] == "Owner"):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Owner"):
+                if(str(row[0]).find("Owner")  != -1):
                     return True
         elif(tableName == "Mortgage Requirements"):            
-            if(DetailTable.columns[0] == "ortgage Requirements"):
+            if(DetailTable.columns[0] == "ortgage Requirements" or DetailTable.columns[0] == "Mortgage Requirements"):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Unique Identifier"):                    
+                if(str(row[0]).lower().find("unique identifier")  != -1):                    
                     return True
         elif(tableName == "Property Details"):            
             if(DetailTable.columns[0] == "roperty Details"):
