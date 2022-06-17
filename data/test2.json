@@ -17,7 +17,7 @@
         },
         "ContactDetails": {
             "Mobile": "07123456789",
-            "Email": "pankaj.aggarwal@pankaj.com",
+            "Email": "pankaj.aggarwal@pankaj.co\rm",
             "Home_Telephone": "",
             "Work_Telephone": ""
         },
@@ -56,6 +56,30 @@
                 "Residency_Status": "Tenant - private",
                 "Date_From": "01/01/2018",
                 "Date_To": "04/06/2019"
+            },
+            {
+                "Address_Line_1": "85",
+                "Address_Line_2": "Oxford Street",
+                "Address_Line_3": "",
+                "Address_Line_4": "",
+                "City": "London",
+                "Country": "United Kingdom",
+                "Postcode": "OX1 8HY",
+                "Residency_Status": "Tenant - private",
+                "Date_From": "01/07/2017",
+                "Date_To": "31/12/2017"
+            },
+            {
+                "Address_Line_1": "17",
+                "Address_Line_2": "Harrison Road",
+                "Address_Line_3": "",
+                "Address_Line_4": "",
+                "City": "Feltham",
+                "Country": "United Kingdom",
+                "Postcode": "FN8 3UH",
+                "Residency_Status": "Tenant - private",
+                "Date_From": "01/01/2017",
+                "Date_To": "30/06/2017"
             }
         ],
         "ProfessionalContacts": [
@@ -116,8 +140,8 @@
             },
             {
                 "Owner": "Joint",
-                "Bank_Name": "Barclays",
-                "Account_Holder": "Pankaj Aggarwal and Nidhi Pankaj",
+                "Bank_Name": "Bacrlays",
+                "Account_Holder": "Pankaj Aggarwal and Nidhi Pankaj\rAggarwal",
                 "Account_Number": "77558922",
                 "Sort_Code": "204578"
             }
@@ -159,7 +183,7 @@
         },
         "CurrentEmploymentDetails": {
             "Highest_rate_of_income_tax_paid": "45",
-            "Owner": "Pankaj Aggarwal",
+            "Owner": "",
             "Employment_Status": "Self-Employed",
             "Occupation": "Professional Photographer",
             "Shareholding_percentage": "",
@@ -174,7 +198,7 @@
             "City": "",
             "Country": "United Kingdom",
             "Post_Code": "NW6 2DS",
-            "Intended_Retirement_Age": "65",
+            "Intended_Retirement_Age": "70",
             "Start_Date": "21/07/2018",
             "Most_Recent_Annual_Accounts_Net_Profit": "",
             "Most_Recent_Annual_Accounts_Net_Dividend": "",
@@ -477,9 +501,9 @@
                 "Address_Line_2": "",
                 "Address_Line_3": "",
                 "Address_Line_4": "",
-                "City": "Hampton",
-                "Country": "United Kingdom",
-                "Post_Code": "TW12 2TN",
+                "City": "",
+                "Country": "",
+                "Post_Code": "",
                 "Rate_Type": "Fixed",
                 "Mortgage_Type": "Standard Residential",
                 "Are_you_a_First_Time_Buyer": "",
@@ -587,7 +611,7 @@
                 "Address_Line_4": "",
                 "City": "Hounslow",
                 "Country": "United Kingdom",
-                "Postcode": "TW4 5EZ",
+                "Postcode": "FN8 3UH",
                 "Residency_Status": "Tenant - private",
                 "Date_From": "05/06/2019",
                 "Date_To": "31/12/2020"
@@ -599,10 +623,34 @@
                 "Address_Line_4": "",
                 "City": "London",
                 "Country": "United Kingdom",
-                "Postcode": "W4 2TW",
+                "Postcode": "",
                 "Residency_Status": "Tenant - private",
                 "Date_From": "01/01/2018",
                 "Date_To": "04/06/2019"
+            },
+            {
+                "Address_Line_1": "85",
+                "Address_Line_2": "Oxford Street",
+                "Address_Line_3": "",
+                "Address_Line_4": "",
+                "City": "London",
+                "Country": "United Kingdom",
+                "Postcode": "",
+                "Residency_Status": "Tenant - private",
+                "Date_From": "01/07/2017",
+                "Date_To": "31/12/2017"
+            },
+            {
+                "Address_Line_1": "17",
+                "Address_Line_2": "Harrison Road",
+                "Address_Line_3": "",
+                "Address_Line_4": "",
+                "City": "Feltham",
+                "Country": "United Kingdom",
+                "Postcode": "FN8 3UH",
+                "Residency_Status": "Tenant - private",
+                "Date_From": "01/01/2017",
+                "Date_To": "30/06/2017"
             }
         ],
         "ProfessionalContacts": [],
@@ -633,7 +681,7 @@
         },
         "CurrentEmploymentDetails": {
             "Highest_rate_of_income_tax_paid": "40",
-            "Owner": "Nidhi Aggarwal",
+            "Owner": "",
             "Employment_Status": "Employed",
             "Occupation": "IT Consultatnt",
             "Shareholding_percentage": "",
