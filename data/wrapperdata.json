@@ -115,9 +115,9 @@
         {
             "template": "Barclays",
             "sectionCategory": "CurrentEmploymentDetails",
-            "ioName": "Business Type",
-            "ioValue": "Limited Company Director",
-            "wrapperValue": "Self Employed"
+            "ioName": "Business_Type",
+            "ioValue": "Private Limited company",
+            "wrapperValue": "Limited Company Director"
         }
 
     ]

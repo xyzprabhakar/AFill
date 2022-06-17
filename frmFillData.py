@@ -34,6 +34,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from choosen import Chosen
 from datetime import datetime
+from dateutill.relativedelta import relativedelta
 
 class FillData(ttk.Frame):
     config=None
@@ -220,17 +221,16 @@ class FillData(ttk.Frame):
         if(procType==1):
             return inputvalue[-4:]
         elif(procType==2):
-            return inputvalue[4:5]
+            return inputvalue[3:5]
         elif(procType==3):
-            EndDt=datetime.now
+            EndDt=datetime.today()
             StartDt=datetime.strptime(inputvalue, '%d/%m/%Y')
-            tempdt=EndDt-StartDt
-            tempdt.years
+            return relativedelta(EndDt,StartDt).years
+            
         elif(procType==4):
-            EndDt=datetime.now
+            EndDt=datetime.today()
             StartDt=datetime.strptime(inputvalue, '%d/%m/%Y')
-            tempdt=EndDt-StartDt
-            return tempdt.months%12
+            return relativedelta(EndDt,StartDt).months
 
 
     def Get_ActionValue(self,jsonKeyName,counter,ApplicantId):
@@ -280,13 +280,13 @@ class FillData(ttk.Frame):
                         if(HaveWrapper):
                             return self.Get_WrapperValue(HaveWrapper,sectionkeyname,datakeyname, tempData[sectionkeyname][counter][datakeyname])
                         elif(HaveGetYearFunction):
-                            self.GetYearMonth(tempData[sectionkeyname][counter][datakeyname],1)
+                            return self.GetYearMonth(tempData[sectionkeyname][counter][datakeyname],1)
                         elif(HaveGetMonthFunction):
-                            self.GetYearMonth(tempData[sectionkeyname][counter][datakeyname],2)
+                            return self.GetYearMonth(tempData[sectionkeyname][counter][datakeyname],2)
                         elif(HaveYearDiff):
-                            self.GetYearMonth(tempData[sectionkeyname][counter][datakeyname],3)
+                            return self.GetYearMonth(tempData[sectionkeyname][counter][datakeyname],3)
                         elif(HaveMonthDiff):
-                            self.GetYearMonth(tempData[sectionkeyname][counter][datakeyname],4)
+                           return self.GetYearMonth(tempData[sectionkeyname][counter][datakeyname],4)
                         else:
                            return tempData[sectionkeyname][counter][datakeyname]
         elif(sectionkeyname.find('[@]')!=-1):
@@ -297,13 +297,13 @@ class FillData(ttk.Frame):
                         if(HaveWrapper):
                             return self.Get_WrapperValue(HaveWrapper,sectionkeyname,datakeyname,tempData[sectionkeyname][self.FindIndex][datakeyname])
                         elif(HaveGetYearFunction):
-                            self.GetYearMonth(tempData[sectionkeyname][self.FindIndex][datakeyname],1)
+                            return self.GetYearMonth(tempData[sectionkeyname][self.FindIndex][datakeyname],1)
                         elif(HaveGetMonthFunction):
-                            self.GetYearMonth(tempData[sectionkeyname][self.FindIndex][datakeyname],2)
+                           return self.GetYearMonth(tempData[sectionkeyname][self.FindIndex][datakeyname],2)
                         elif(HaveYearDiff):
-                            self.GetYearMonth(tempData[sectionkeyname][self.FindIndex][datakeyname],3)
+                           return self.GetYearMonth(tempData[sectionkeyname][self.FindIndex][datakeyname],3)
                         elif(HaveMonthDiff):
-                            self.GetYearMonth(tempData[sectionkeyname][self.FindIndex][datakeyname],4)
+                           return self.GetYearMonth(tempData[sectionkeyname][self.FindIndex][datakeyname],4)
                         else:
                            return tempData[sectionkeyname][self.FindIndex][datakeyname]
         else:
@@ -312,13 +312,13 @@ class FillData(ttk.Frame):
                     if(HaveWrapper):
                         return self.Get_WrapperValue(HaveWrapper,sectionkeyname,datakeyname,tempData[sectionkeyname][datakeyname])
                     elif(HaveGetYearFunction):
-                            self.GetYearMonth(tempData[sectionkeyname][datakeyname],1)
+                        return self.GetYearMonth(tempData[sectionkeyname][datakeyname],1)
                     elif(HaveGetMonthFunction):
-                        self.GetYearMonth(tempData[sectionkeyname][datakeyname],2)
+                        return self.GetYearMonth(tempData[sectionkeyname][datakeyname],2)
                     elif(HaveYearDiff):
-                             self.GetYearMonth(tempData[sectionkeyname][datakeyname],3)
+                        return self.GetYearMonth(tempData[sectionkeyname][datakeyname],3)
                     elif(HaveMonthDiff):
-                             self.GetYearMonth(tempData[sectionkeyname][datakeyname],4)
+                        return self.GetYearMonth(tempData[sectionkeyname][datakeyname],4)
                     else:
                         return tempData[sectionkeyname][datakeyname]
         return ""
