@@ -1407,7 +1407,7 @@ class ImportData:
             scrollbar_y_Applicant1.pack(side=tk.RIGHT, fill="y")
             scrollbar_x_Applicant1.pack(side=tk.BOTTOM, fill="x")
             self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
-            self.frm_Applicant1Canvas.configure(yscrollcommand=scrollbar_y_Applicant1,xscrollcommand=scrollbar_x_Applicant1)
+            self.frm_Applicant1Canvas.configure(yscrollcommand=scrollbar_y_Applicant1.set,xscrollcommand=scrollbar_x_Applicant1.set)
             self.frm_Applicant1Canvas.bind("<Configure>",  lambda e: self.frm_Applicant1Canvas.configure(scrollregion=self.frm_Applicant1Canvas.bbox("all")))
             self.frm_Applicant1Canvas.bind_all("<MouseWheel>",   lambda e: self.OnMouseWheel1(e,1) )
             
@@ -1440,7 +1440,7 @@ class ImportData:
                 self.SkipTable=0
                 self.fnc_Read_PersonalDetails(frmInnerContentFrame2, 2)
                 self.ApplicantTab.add(self.frm_Applicant2Parent, text ='Applicant 2')
-                self.frm_Applicant2Canvas.configure(yscrollcommand=scrollbar_y_Applicant2,xscrollcommand=scrollbar_x_Applicant2)
+                self.frm_Applicant2Canvas.configure(yscrollcommand=scrollbar_y_Applicant2.set,xscrollcommand=scrollbar_x_Applicant2.set)
                 self.frm_Applicant2Canvas.bind("<Configure>",  lambda e: self.frm_Applicant2Canvas.configure(scrollregion=self.frm_Applicant2Canvas.bbox("all")))
                 self.frm_Applicant2Canvas.bind_all("<MouseWheel>",   lambda e: self.OnMouseWheel1(e,2) )
                 self.frm_Applicant2Canvas.create_window((0, 0), window=self.frm_Applicant2, anchor='nw')

@@ -118,14 +118,14 @@ class FillData(ttk.Frame):
             messagebox.showerror("Required", "Invalid template name")
             return
         
-        self.frm_Applicant1Canvas = tk.Canvas(self.frmInnerContentFrame1, bg=  self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge',width=250)
+        self.frm_Applicant1Canvas = tk.Canvas(self.frmInnerContentFrame1, bg=  self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge')
         scrollbar_y = ttk.Scrollbar(self.frmInnerContentFrame1, orient=tk.VERTICAL, command=self.frm_Applicant1Canvas.yview)        
         scrollbar_y.pack(side=tk.RIGHT, fill="y")        
         scrollbar_x = ttk.Scrollbar(self.frmInnerContentFrame1, orient=tk.HORIZONTAL, command=self.frm_Applicant1Canvas.xview)        
         scrollbar_x.pack(side=tk.BOTTOM, fill="x")        
-
-        self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
+        self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both")
         self.frm_Applicant1 = ttk.Frame(self.frm_Applicant1Canvas,border=1)            
+        
 
         if not os.path.exists(self.config.FilePath):
             os.makedirs(self.config.FilePath)
@@ -158,9 +158,8 @@ class FillData(ttk.Frame):
                                     ttk.Button(tempFrame, text =sect["sectionName"] ,  command =lambda sectionName=sect["sectionName"],aplId=ApplicantId: self.fill_data(sectionName,0,aplId)).grid(row=gridcounter,column=ApplicantId,pady=(8,3),padx=(2,2))
                                 gridcounter=gridcounter+1
         self.frm_Applicant1Canvas.create_window((0, 0), window=self.frm_Applicant1, anchor='nw')
-        self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
-        self.frm_Applicant1Canvas.configure(yscrollcommand=scrollbar_y,xscrollcommand=scrollbar_x)
-
+        self.frm_Applicant1Canvas.configure(yscrollcommand=scrollbar_y.set,xscrollcommand=scrollbar_x.set)
+        
         self.frm_Applicant1Canvas.bind("<Configure>",  lambda e: self.frm_Applicant1Canvas.configure(scrollregion=self.frm_Applicant1Canvas.bbox("all")))
         self.frm_Applicant1Canvas.bind_all("<MouseWheel>",   lambda e: self.OnMouseWheel1(e))
         
