@@ -34,7 +34,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from choosen import Chosen
 from datetime import datetime
-from dateutill.relativedelta import relativedelta
+from dateutil.relativedelta import relativedelta
 
 class FillData(ttk.Frame):
     config=None
