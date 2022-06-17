@@ -1462,7 +1462,7 @@
                         "rightManualValue": "",
                         "rightIOValue": "ExistingMortgage[]:Is_the_loan_subject_to_Redemption_Penalty",
                         "falseActionId": "33"
-                    },                    
+                    },
                     {
                         "actionId": "32",
                         "actionType": "Single Choosen Text",
@@ -1482,7 +1482,7 @@
                         "rightManualValue": "",
                         "rightIOValue": "",
                         "falseActionId": ""
-                    },                    
+                    },
                     {
                         "actionId": "33",
                         "actionType": "Single Choosen Text",
@@ -1562,7 +1562,7 @@
                         "rightManualValue": "",
                         "rightIOValue": "",
                         "falseActionId": ""
-                    },   
+                    },
                     {
                         "actionId": "37",
                         "actionType": "Wait",
@@ -1709,7 +1709,7 @@
                         "rightManualValue": "",
                         "rightIOValue": "",
                         "falseActionId": ""
-                    },                    
+                    },
                     {
                         "actionId": "2",
                         "actionType": "Fill Input",
@@ -1736,7 +1736,7 @@
                 "sectionName": "Employment Details",
                 "sectionCategory": "CurrentEmploymentDetails",
                 "sectionType": "Single",
-                "actions": [                    
+                "actions": [
                     {
                         "actionId": "1",
                         "actionType": "Condition",
@@ -1796,7 +1796,7 @@
                         "rightManualValue": "",
                         "rightIOValue": "",
                         "falseActionId": ""
-                    }, 
+                    },
                     {
                         "actionId": "11",
                         "actionType": "Wait",
@@ -1816,7 +1816,7 @@
                         "rightManualValue": "",
                         "rightIOValue": "",
                         "falseActionId": ""
-                    },    
+                    },
                     {
                         "actionId": "12",
                         "actionType": "Condition",
@@ -2177,7 +2177,6 @@
                         "rightIOValue": "",
                         "falseActionId": ""
                     },
-                    
                     {
                         "actionId": "103",
                         "actionType": "Single Choosen Text",
@@ -2318,7 +2317,33 @@
                         "rightIOValue": "",
                         "falseActionId": ""
                     }
-
+                ]
+            },
+            {
+                "sectionName": "Requirements",
+                "sectionCategory": "MortgageRequirements",
+                "sectionType": "Single",
+                "actions": [
+                    {
+                        "actionId": "1",
+                        "actionType": "Check Checkbox",
+                        "startupType": "Start",
+                        "selectorType": "ById",
+                        "control": "rdo_isSpecialSchemeNo",
+                        "inputType": "ManualValue",
+                        "manualValue": "T",
+                        "ioValue": "",
+                        "nextActionId": "2",
+                        "conditionType": "",
+                        "leftInputType": "",
+                        "leftManualValue": "",
+                        "leftIOValue": "",
+                        "trueActionId": "",
+                        "rightInputType": "IOValue",
+                        "rightManualValue": "",
+                        "rightIOValue": "",
+                        "falseActionId": ""
+                    }
                 ]
             }
         ]

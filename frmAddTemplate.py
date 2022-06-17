@@ -427,6 +427,8 @@ class AddTemplate:
                 if (self.varAllSection==None):
                     self.varAllSection=[]
                 self.varAllSection.append(tempSection)
+                #add data in tree view
+                self.treev1.insert("", 'end',values =(self.var_sectionName.get(), str( self.var_sectionType.get()),str(self.var_sectionCategory.get()),len(AllAction)))
             if(len(self.varAllSection) ==0):
                 messagebox.showerror("Required", "Required Section")
                 return
