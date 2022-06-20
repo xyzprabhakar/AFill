@@ -2363,8 +2363,8 @@
                         "rightManualValue": "",
                         "rightIOValue": "",
                         "falseActionId": ""
-                    }
-                    ,{
+                    },
+                    {
                         "actionId": "3",
                         "actionType": "Single Choosen Text",
                         "startupType": "Middle",
@@ -2520,6 +2520,39 @@
                         "leftIOValue": "",
                         "trueActionId": "",
                         "rightInputType": "",
+                        "rightManualValue": "",
+                        "rightIOValue": "",
+                        "falseActionId": ""
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "templateName": "HSBC",
+        "url": "https://www.hsbc.co.in/",
+        "sections": [
+            {
+                "sectionName": "Personal Details",
+                "sectionCategory": "PersonalDetails",
+                "sectionType": "Single",
+                "actions": [
+                    {
+                        "actionId": "1",
+                        "actionType": "Fill Input",
+                        "startupType": "Start",
+                        "selectorType": "ById",
+                        "control": "rdoFirstName",
+                        "inputType": "IOValue",
+                        "manualValue": "",
+                        "ioValue": "fncWrapper PersonalDetails:First_Name",
+                        "nextActionId": "2",
+                        "conditionType": "",
+                        "leftInputType": "ManualValue",
+                        "leftManualValue": "",
+                        "leftIOValue": "",
+                        "trueActionId": "",
+                        "rightInputType": "ManualValue",
                         "rightManualValue": "",
                         "rightIOValue": "",
                         "falseActionId": ""

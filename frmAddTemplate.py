@@ -1,7 +1,7 @@
 from dataclasses import field
 from pickle import NONE
 import tkinter as tk
-from tkinter import ttk
+from tkinter import LabelFrame, ttk
 from tkinter import messagebox
 from turtle import left
 from numpy import imag
@@ -100,12 +100,58 @@ class AddTemplate:
         else:
             return False
 
-    def BindKeyName(self,procType=1,IsSectionDropDown=False):
+    def BindKeyName(self,procType=1,IsSectionDropDown=False):        
+        concatString=""
         if(procType==1):
             if(self.var_0_FunctionName.get().lower().find("fncgetapplicantname") !=-1):
                 self.var_ioValue.set(self.var_0_FunctionName.get())
+                return
             if(IsSectionDropDown):
-                self.var_0_FunctionName
+                sectionData=self.BindAllKeyName(self.var_0_SectionName.get()) 
+                self.chdFrm1.children["frmchdFrm1_1"].children["var_0_KeyName"].configure(values=sectionData)
+                return
+            else:
+                if(self.var_0_FunctionName.get()!="None"):
+                    concatString= concatString+self.var_0_FunctionName.get()
+                concatString= concatString+self.var_0_SectionName.get()
+                if(self.GetSectiontype(self.var_0_SectionName.get())=="Multiple"):
+                    concatString= concatString+"[]"
+                concatString= concatString+":"+str(self.var_0_KeyName.get()).replace(' ','_')
+                self.var_ioValue.set(concatString)
+        if(procType==2):
+            if(self.var_1_FunctionName.get().lower().find("fncgetapplicantname") !=-1):
+                self.var_ioValue.set(self.var_1_FunctionName.get())
+                return
+            if(IsSectionDropDown):
+                sectionData=self.BindAllKeyName(self.var_1_SectionName.get()) 
+                self.chdFrm2.children["frmchdFrm2_1"].children["var_1_KeyName"].configure(values=sectionData)
+                return
+            else:
+                if(self.var_1_FunctionName.get()!="None"):
+                    concatString= concatString+self.var_1_FunctionName.get()
+                concatString= concatString+self.var_1_SectionName.get()
+                if(self.GetSectiontype(self.var_1_SectionName.get())=="Multiple"):
+                    concatString= concatString+"[]"
+                concatString= concatString+":"+ str(self.var_1_KeyName.get()).replace(' ','_') 
+                self.var_leftIOValue.set(concatString)
+        if(procType==3):
+            if(self.var_2_FunctionName.get().lower().find("fncgetapplicantname") !=-1):
+                self.var_ioValue.set(self.var_2_FunctionName.get())
+                return
+            if(IsSectionDropDown):
+                sectionData=self.BindAllKeyName(self.var_2_SectionName.get()) 
+                self.chdFrm2.children["frmchdFrm2_2"].children["var_2_KeyName"].configure(values=sectionData)
+                return
+            else:
+                if(self.var_2_FunctionName.get()!="None"):
+                    concatString= concatString+self.var_2_FunctionName.get()
+                concatString= concatString+self.var_2_SectionName.get()
+                if(self.GetSectiontype(self.var_2_SectionName.get())=="Multiple"):
+                    concatString= concatString+"[]"
+                concatString= concatString+":"+str(self.var_2_KeyName.get()).replace(' ','_') 
+                self.var_rightIOValue.set(concatString)
+
+                
 
     def BindAllKeyName(self,sectionName):        
         all_key=[]
@@ -226,9 +272,12 @@ class AddTemplate:
                 self.treev2.pack(fill=tk.BOTH,expand=True,pady=(10,10))
     
     def BindSectionType(self,event):
+        self.var_sectionType.set(self.GetSectiontype(self.var_sectionCategory.get())) 
+        
+    def GetSectiontype(self,selctionName):
         for i ,x in enumerate(self.var_allSectionCategory):
-            if(x==self.var_sectionCategory.get()):
-                self.var_sectionType.set(self.var_allSectionCategoryType[i])
+            if(x==selctionName):
+               return self.var_allSectionCategoryType[i]
 
     def clear_all_gridview(self,ProcType=1):
         if(ProcType==1):
@@ -408,7 +457,7 @@ class AddTemplate:
         self.fncChangeTemplateType(None)
         self.BindDropDownTemplateName()
                 
-    def fncSaveData(self,ProcType):
+    def fncSaveData(self,ProcType=1):
 
         list_of_bool = [True for elem in  self.varAllTemlate
                             if self.varCurrentTemplateName.get() in elem["templateName"]]
@@ -664,40 +713,62 @@ class AddTemplate:
             if(self.chdFrm1 != None):
                 self.chdFrm1.grid(row=2,column=0,columnspan=4)
     
-    def fncChangeInputType(self,event):
-        if(self.var_inputType.get()=="ManualValue"):
-            (self.chdFrm1.children["lblManualValue"]).grid(row=3,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-            (self.chdFrm1.children["txtManualValue"]).grid(row=3,column = 1,padx=(10, 10), pady=(5, 2))
-            (self.chdFrm1.children["lblfrmchdFrm1_1"]).grid_forget()
-            (self.chdFrm1.children["frmchdFrm1_1"]).grid_forget()
-            (self.chdFrm1.children["lblIOValue"]).grid_forget()
-            (self.chdFrm1.children["txtIOValue"]).grid_forget()      
-        elif(self.var_inputType.get()=="IOValue"):
-            (self.chdFrm1.children["lblManualValue"]).grid_forget()
-            (self.chdFrm1.children["txtManualValue"]).grid_forget()
-            (self.chdFrm1.children["lblfrmchdFrm1_1"]).grid(row=2,column = 0,padx=(0, 0), pady=(0, 0), sticky=tk.N+tk.S+tk.E)
-            (self.chdFrm1.children["frmchdFrm1_1"]).grid(row=2,column = 1,columnspan=3)
-            (self.chdFrm1.children["lblIOValue"]).grid(row=3,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-            (self.chdFrm1.children["txtIOValue"]).grid(row=3,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-        else:
-            self.var_inputType.set("ManualValue")
-            (self.chdFrm1.children["lblManualValue"]).grid(row=3,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-            (self.chdFrm1.children["txtManualValue"]).grid(row=3,column = 1,padx=(10, 10), pady=(5, 2))
-            (self.chdFrm1.children["lblfrmchdFrm1_1"]).grid_forget()
-            (self.chdFrm1.children["frmchdFrm1_1"]).grid_forget()
-            (self.chdFrm1.children["lblIOValue"]).grid_forget()
-            (self.chdFrm1.children["txtIOValue"]).grid_forget()      
+    def fncChangeInputType(self,event,ProcType=1):
+        if(ProcType==1):
+            if(self.var_inputType.get()=="ManualValue"):
+                (self.chdFrm1.children["lblManualValue"]).grid(row=1,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+                (self.chdFrm1.children["txtManualValue"]).grid(row=1,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+                (self.chdFrm1.children["frmchdFrm1_1"]).grid_forget()
+            elif(self.var_inputType.get()=="IOValue"):
+                (self.chdFrm1.children["lblManualValue"]).grid_forget()
+                (self.chdFrm1.children["txtManualValue"]).grid_forget()
+                (self.chdFrm1.children["frmchdFrm1_1"]).grid(row=2,column = 0,padx=(10, 10), pady=(0, 0), columnspan=4,sticky=tk.N+tk.W)            
+            else:
+                self.var_inputType.set("ManualValue")
+                (self.chdFrm1.children["lblManualValue"]).grid(row=2,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+                (self.chdFrm1.children["txtManualValue"]).grid(row=2,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+                (self.chdFrm1.children["frmchdFrm1_1"]).grid_forget()
+        elif(ProcType==2):
+            if(self.var_leftInputType.get()=="ManualValue"):
+                (self.chdFrm2.children["lblLeftManualValue"]).grid(row=2,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.E)
+                (self.chdFrm2.children["txtLeftManualValue"]).grid(row=2,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.W)
+                (self.chdFrm2.children["frmchdFrm2_1"]).grid_forget()
+            elif(self.var_leftInputType.get()=="IOValue"):
+                (self.chdFrm2.children["lblLeftManualValue"]).grid_forget()
+                (self.chdFrm2.children["txtLeftManualValue"]).grid_forget()
+                (self.chdFrm2.children["frmchdFrm2_1"]).grid(row=2,column = 0,columnspan=2,padx=(10, 10),sticky=tk.N+tk.W)
+            else:
+                self.var_leftInputType.set("ManualValue")
+                (self.chdFrm2.children["lblLeftManualValue"]).grid(row=2,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.E)
+                (self.chdFrm2.children["txtLeftManualValue"]).grid(row=2,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.W)
+                (self.chdFrm2.children["frmchdFrm2_1"]).grid_forget()
+        elif(ProcType==3):
+            if(self.var_rightInputType.get()=="ManualValue"):
+                (self.chdFrm2.children["lblRightManualValue"]).grid(row=2,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.E)
+                (self.chdFrm2.children["txtRightManualValue"]).grid(row=2,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.W)
+                (self.chdFrm2.children["frmchdFrm2_2"]).grid_forget()
+            elif(self.var_rightInputType.get()=="IOValue"):
+                (self.chdFrm2.children["lblRightManualValue"]).grid_forget()
+                (self.chdFrm2.children["txtRightManualValue"]).grid_forget()
+                (self.chdFrm2.children["frmchdFrm2_2"]).grid(row=2,column = 2,columnspan=2,padx=(10, 10),sticky=tk.N+tk.W)
+            else:
+                self.var_rightInputType.set("ManualValue")
+                (self.chdFrm2.children["lblRightManualValue"]).grid(row=2,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.E)
+                (self.chdFrm2.children["txtRightManualValue"]).grid(row=2,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.W)
+                (self.chdFrm2.children["frmchdFrm2_2"]).grid_forget()
+        
+
     
     def fncOpenInnerChildForm(self):    
         containter = tk.Toplevel(self.frmHeader1)        
         containter.title("Add Action")
-        containter.geometry("650x300")
+        containter.geometry("700x400")
         innercontainter=ttk.Frame(containter)        
         innercontainter.pack(expand="True",fill=tk.BOTH,anchor="nw",side=tk.LEFT)
         innercontainter.columnconfigure(0, weight=1)
         innercontainter.rowconfigure(0, weight=1)
         chdFrm=ttk.Frame(innercontainter)        
-        chdFrm.grid(row=0,column=0)
+        chdFrm.grid(row=0,column=0,sticky=tk.N+tk.W)
         chdFrm.columnconfigure(0, weight=1)
         chdFrm.columnconfigure(1, weight=1)
         chdFrm.columnconfigure(2, weight=1)
@@ -740,26 +811,32 @@ class AddTemplate:
         ttk.Label(self.chdFrm1,text = "Input Type :").grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
         cmbInputType =ttk.Combobox(self.chdFrm1, width = 24,state="readonly" , textvariable = self.var_inputType, values=self.var_allInputType)
         cmbInputType.grid(row=1,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+
         ttk.Label(self.chdFrm1,name="lblManualValue" ,text = "Manual Value :" ).grid(row=1,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
         self.txtManualValue=ttk.Entry(self.chdFrm1,name="txtManualValue", width = 26, textvariable = self.var_manualValue)
         self.txtManualValue.grid(row=1,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-        ttk.Label(self.chdFrm1,name="lblfrmchdFrm1_1" ,text = "IO Value (Choose) :").grid(row=2,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
         
-        chdFrm1_1=ttk.Frame(self.chdFrm1,name="frmchdFrm1_1")
-        chdFrm1_1.grid(row=2,column = 1,columnspan=3)
-        cmbvar_0_FunctionName=ttk.Combobox(chdFrm1_1, width = 18,state="readonly" , textvariable = self.var_0_FunctionName, values=self.val_AllFunctionName)
-        cmbvar_0_FunctionName.grid(row=0,column = 0,padx=(2, 10), pady=(5, 2))
-        cmbvar_0_SectionName=ttk.Combobox(chdFrm1_1, width = 18,state="readonly" , textvariable = self.var_0_SectionName,values=self.var_allSectionCategory)
-        cmbvar_0_SectionName.grid(row=0,column = 1,padx=(10, 10), pady=(5, 2))
-        cmbvar_0_KeyName=ttk.Combobox(chdFrm1_1, width = 18,state="readonly" , textvariable = self.var_0_KeyName)
-        cmbvar_0_KeyName.grid(row=0,column = 2,padx=(10, 10), pady=(5, 2))
+        chdFrm1_1=ttk.LabelFrame(self.chdFrm1,name="frmchdFrm1_1",text="Choose IO Value",style="Details.TLabelframe")
+        chdFrm1_1.grid(row=2,column = 0,columnspan=4,sticky=tk.N+tk.W)
+        ttk.Label(chdFrm1_1,text = "Function Name :").grid(row=0,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        cmbvar_0_FunctionName=ttk.Combobox(chdFrm1_1, width = 24,state="readonly" , textvariable = self.var_0_FunctionName, values=self.val_AllFunctionName)
+        cmbvar_0_FunctionName.grid(row=0,column = 1,padx=(10, 10), pady=(5, 2),sticky=tk.N+tk.S+tk.W)
+        ttk.Label(chdFrm1_1, text = "Section Name :").grid(row=0,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        cmbvar_0_SectionName=ttk.Combobox(chdFrm1_1, width = 24,state="readonly" , textvariable = self.var_0_SectionName,values=self.var_allSectionCategory)
+        cmbvar_0_SectionName.grid(row=0,column = 3,padx=(10, 10), pady=(5, 2),sticky=tk.N+tk.S+tk.W)
+        ttk.Label(chdFrm1_1 ,text = "Key Name :").grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        cmbvar_0_KeyName=ttk.Combobox(chdFrm1_1, name="var_0_KeyName",width = 24,state="readonly" , textvariable = self.var_0_KeyName)
+        cmbvar_0_KeyName.grid(row=1,column = 1,padx=(10, 10), pady=(5, 2),sticky=tk.N+tk.S+tk.W)
+        ttk.Label(chdFrm1_1, text = "IO Value :").grid(row=1,column = 2,padx=(10, 10), pady=(5, 5), sticky=tk.N+tk.S+tk.E)
+        self.txtIOValue=ttk.Entry(chdFrm1_1,name="txtIOValue" ,width = 26,state="readonly" , textvariable = self.var_ioValue)
+        self.txtIOValue.grid(row=1,column = 3,padx=(10, 10), pady=(5, 5), sticky=tk.N+tk.S+tk.W)
 
+        cmbvar_0_FunctionName.bind("<<ComboboxSelected>>", lambda event: self.BindKeyName(1,False))
+        cmbvar_0_SectionName.bind("<<ComboboxSelected>>", lambda event: self.BindKeyName(1,True))
+        cmbvar_0_KeyName.bind("<<ComboboxSelected>>", lambda event: self.BindKeyName(1,False))
 
-        ttk.Label(self.chdFrm1,name="lblIOValue", text = "IO Value :").grid(row=3,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-        self.txtIOValue=ttk.Entry(self.chdFrm1,name="txtIOValue" ,width = 26,state="readonly" , textvariable = self.var_ioValue)
-        self.txtIOValue.grid(row=3,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-        ttk.Label(self.chdFrm1,text = "Next Action Id :").grid(row=3,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-        ttk.Entry(self.chdFrm1, width = 26, textvariable = self.var_nextActionId).grid(row=3,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        ttk.Label(self.chdFrm1,text = "Next Action Id :").grid(row=3,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        ttk.Entry(self.chdFrm1, width = 26, textvariable = self.var_nextActionId).grid(row=3,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
 
         self.chdFrm2=ttk.Frame(chdFrm) 
         self.chdFrm2.grid(row=4,column=0,columnspan=4)
@@ -776,31 +853,79 @@ class AddTemplate:
         ttk.Label(self.chdFrm2,text = "Condition Type :").grid(row=0,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
         ttk.Combobox(self.chdFrm2, width = 24, textvariable = self.var_conditionType, values=self.var_allConditionType).grid(row=0,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
         ttk.Label(self.chdFrm2,text = "Left Input Type :").grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-        ttk.Combobox(self.chdFrm2, width = 24,state="readonly" , textvariable = self.var_leftInputType, values=self.var_allInputType).grid(row=1,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-        ttk.Label(self.chdFrm2,text = "Left Manual Value :" ).grid(row=2,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-        ttk.Entry(self.chdFrm2, width = 26, textvariable = self.var_leftManualValue).grid(row=2,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-        ttk.Label(self.chdFrm2,text = "Left IOValue :" ).grid(row=3,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-        ttk.Entry(self.chdFrm2, width = 26, textvariable = self.var_leftIOValue).grid(row=3,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        cmbLeftInputType=ttk.Combobox(self.chdFrm2, width = 24,state="readonly" , textvariable = self.var_leftInputType, values=self.var_allInputType)
+        cmbLeftInputType.grid(row=1,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+
+        ttk.Label(self.chdFrm2,name="lblLeftManualValue",text = "Left Manual Value :" ).grid(row=2,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        ttk.Entry(self.chdFrm2,name="txtLeftManualValue" ,width = 26, textvariable = self.var_leftManualValue).grid(row=2,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+
+        chdFrm2_1=ttk.LabelFrame(self.chdFrm2,name="frmchdFrm2_1",text="Choose Left IO Value",style="Details.TLabelframe")
+        chdFrm2_1.grid(row=3,column = 0,columnspan=2,padx=(10, 10),sticky=tk.N+tk.W)
+
+        ttk.Label(chdFrm2_1,text = "Function Name :").grid(row=0,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        cmbvar_1_FunctionName=ttk.Combobox(chdFrm2_1, width = 24,state="readonly" , textvariable = self.var_1_FunctionName, values=self.val_AllFunctionName)
+        cmbvar_1_FunctionName.grid(row=0,column = 1,padx=(10, 10), pady=(5, 2),sticky=tk.N+tk.S+tk.W)
+        ttk.Label(chdFrm2_1, text = "Section Name :").grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        cmbvar_1_SectionName=ttk.Combobox(chdFrm2_1, width = 24,state="readonly" , textvariable = self.var_1_SectionName,values=self.var_allSectionCategory)
+        cmbvar_1_SectionName.grid(row=1,column = 1,padx=(10, 10), pady=(5, 2),sticky=tk.N+tk.S+tk.W)
+        ttk.Label(chdFrm2_1 ,text = "Key Name :").grid(row=2,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        cmbvar_1_KeyName=ttk.Combobox(chdFrm2_1, name="var_1_KeyName",width = 24,state="readonly" , textvariable = self.var_1_KeyName)
+        cmbvar_1_KeyName.grid(row=2,column = 1,padx=(10, 10), pady=(5, 2),sticky=tk.N+tk.S+tk.W)
+        ttk.Label(chdFrm2_1, text = "IO Value :").grid(row=3,column = 0,padx=(10, 10), pady=(5, 5), sticky=tk.N+tk.S+tk.E)
+        txtLeftIOValue=ttk.Entry(chdFrm2_1,name="txtLeftIOValue" ,width = 26,state="readonly" , textvariable = self.var_leftIOValue)
+        txtLeftIOValue.grid(row=3,column = 1,padx=(10, 10), pady=(5, 5), sticky=tk.N+tk.S+tk.W)
+
+        cmbvar_1_FunctionName.bind("<<ComboboxSelected>>", lambda event: self.BindKeyName(2,False))
+        cmbvar_1_SectionName.bind("<<ComboboxSelected>>", lambda event: self.BindKeyName(2,True))
+        cmbvar_1_KeyName.bind("<<ComboboxSelected>>", lambda event: self.BindKeyName(2,False))
+
+        # ttk.Label(self.chdFrm2,text = "Left IOValue :" ).grid(row=3,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        # ttk.Entry(self.chdFrm2, width = 26, textvariable = self.var_leftIOValue).grid(row=3,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
         ttk.Label(self.chdFrm2,text = "True Next ActionId :" ).grid(row=4,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
         ttk.Entry(self.chdFrm2, width = 26, textvariable = self.var_trueActionId).grid(row=4,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-
-        self.var_rightInputType.set("IOValue")
         ttk.Label(self.chdFrm2,text = "Right Input Type :").grid(row=1,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-        ttk.Combobox(self.chdFrm2, width = 24, textvariable = self.var_rightInputType, values=self.var_allInputType).grid(row=1,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-        ttk.Label(self.chdFrm2,text = "Right Manual Value :" ).grid(row=2,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-        ttk.Entry(self.chdFrm2, width = 26, textvariable = self.var_rightManualValue).grid(row=2,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-        ttk.Label(self.chdFrm2,text = "Right IOValue :" ).grid(row=3,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
-        ttk.Entry(self.chdFrm2, width = 26, textvariable = self.var_rightIOValue).grid(row=3,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        cmbRightInputType=ttk.Combobox(self.chdFrm2, width = 24, textvariable = self.var_rightInputType, values=self.var_allInputType)
+        cmbRightInputType.grid(row=1,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        ttk.Label(self.chdFrm2,name="lblRightManualValue" ,text = "Right Manual Value :" ).grid(row=2,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        ttk.Entry(self.chdFrm2,name="txtRightManualValue" ,width = 26, textvariable = self.var_rightManualValue).grid(row=2,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+
+        chdFrm2_2=ttk.LabelFrame(self.chdFrm2,name="frmchdFrm2_2",text="Choose Right IO Value",style="Details.TLabelframe")
+        chdFrm2_2.grid(row=3,column = 2,columnspan=2,padx=(10, 10),sticky=tk.N+tk.W)
+
+        ttk.Label(chdFrm2_2,text = "Function Name :").grid(row=0,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        cmbvar_2_FunctionName=ttk.Combobox(chdFrm2_2, width = 24,state="readonly" , textvariable = self.var_2_FunctionName, values=self.val_AllFunctionName)
+        cmbvar_2_FunctionName.grid(row=0,column = 1,padx=(10, 10), pady=(5, 2),sticky=tk.N+tk.S+tk.W)
+        ttk.Label(chdFrm2_2, text = "Section Name :").grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        cmbvar_2_SectionName=ttk.Combobox(chdFrm2_2, width = 24,state="readonly" , textvariable = self.var_2_SectionName,values=self.var_allSectionCategory)
+        cmbvar_2_SectionName.grid(row=1,column = 1,padx=(10, 10), pady=(5, 2),sticky=tk.N+tk.S+tk.W)
+        ttk.Label(chdFrm2_2 ,text = "Key Name :").grid(row=2,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        cmbvar_2_KeyName=ttk.Combobox(chdFrm2_2, name="var_2_KeyName",width = 24,state="readonly" , textvariable = self.var_2_KeyName)
+        cmbvar_2_KeyName.grid(row=2,column = 1,padx=(10, 10), pady=(5, 2),sticky=tk.N+tk.S+tk.W)
+        ttk.Label(chdFrm2_2, text = "IO Value :").grid(row=3,column = 0,padx=(10, 10), pady=(5, 5), sticky=tk.N+tk.S+tk.E)
+        txtRightIOValue=ttk.Entry(chdFrm2_2,name="txtRightIOValue" ,width = 26,state="readonly" , textvariable = self.var_rightIOValue)
+        txtRightIOValue.grid(row=3,column = 1,padx=(10, 10), pady=(5, 5), sticky=tk.N+tk.S+tk.W)
+
+        cmbvar_2_FunctionName.bind("<<ComboboxSelected>>", lambda event: self.BindKeyName(3,False))
+        cmbvar_2_SectionName.bind("<<ComboboxSelected>>", lambda event: self.BindKeyName(3,True))
+        cmbvar_2_KeyName.bind("<<ComboboxSelected>>", lambda event: self.BindKeyName(3,False))
+
+
+        # ttk.Label(self.chdFrm2,text = "Right IOValue :" ).grid(row=3,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
+        # ttk.Entry(self.chdFrm2, width = 26, textvariable = self.var_rightIOValue).grid(row=3,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
         ttk.Label(self.chdFrm2,text = "False Next ActionId :" ).grid(row=4,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
         ttk.Entry(self.chdFrm2, width = 26, textvariable = self.var_falseActionId).grid(row=4,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
 
         ttk.Button(chdFrm, text ="Save", width=10, command =lambda: self.fncAddAction(containter)).grid(row=5,column = 1 , padx=(10,0),pady=(3,5),sticky=tk.N+tk.W)        
         containter.grab_set()
         self.fncChangeActionType(None)        
-        self.fncChangeInputType(None)
+        self.fncChangeInputType(None,1)
+        self.fncChangeInputType(None,2)
+        self.fncChangeInputType(None,3)
         containter.protocol("WM_DELETE_WINDOW", lambda :self.fncCloseInnerChild(containter))
         cmbActionType.bind("<<ComboboxSelected>>", lambda event: self.fncChangeActionType(event))
-        cmbInputType.bind("<<ComboboxSelected>>", lambda event: self.fncChangeInputType(event))
+        cmbInputType.bind("<<ComboboxSelected>>", lambda event: self.fncChangeInputType(event,1))
+        cmbLeftInputType.bind("<<ComboboxSelected>>", lambda event: self.fncChangeInputType(event,2))
+        cmbRightInputType.bind("<<ComboboxSelected>>", lambda event: self.fncChangeInputType(event,3))
         
 
     def fncCloseInnerChild(self,container):        
