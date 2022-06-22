@@ -87,9 +87,9 @@ class DataReport:
         
         frmbtn1 = ttk.Frame(self.frmHeader,name="frmTreeviewhandler")        
         frmbtn1.grid(row=3,column = 1, columnspan=3, sticky=tk.N+tk.W+tk.E)
-        btnReffreshData = tk.Button ( frmbtn1,name="btnReffreshData", text =fa.icons['sync'], relief='groove', width=3,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command = lambda :self.BindExistingTreeview() )
-        btnUpdateData = tk.Button ( frmbtn1,name="btnUpdateData" ,text =fa.icons['pencil-alt'], relief='groove', width=3, font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda : self.fncOpenChildForm() )        
-        btnRemoveData = tk.Button ( frmbtn1,name="btnRemoveData", text =fa.icons['trash'], relief='groove', width=3, font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda : self.fncRemove() )
+        btnReffreshData = tk.Button ( frmbtn1,name="btnReffreshData", image=self.config.ico_sync, relief='groove', width=3,font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command = lambda :self.BindExistingTreeview() )
+        btnUpdateData = tk.Button ( frmbtn1,name="btnUpdateData" ,image=self.config.ico_edit, relief='groove', width=3, font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda : self.fncOpenChildForm() )        
+        btnRemoveData = tk.Button ( frmbtn1,name="btnRemoveData", image=self.config.ico_delete, relief='groove', width=3, font=self.displayFont,bg=self.config.COLOR_MENU_BACKGROUND,fg=self.config.COLOR_TOP_BACKGROUND,  command =lambda : self.fncRemove() )
         
         btnReffreshData.grid(row=0,column = 0, padx=(10,0),pady=(3,5))
         btnUpdateData.grid(row=0,column = 1, padx=(10,0),pady=(3,5))
