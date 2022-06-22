@@ -2560,5 +2560,38 @@
                 ]
             }
         ]
+    },
+    {
+        "templateName": "axis1",
+        "url": "axis.com",
+        "sections": [
+            {
+                "sectionName": "personal Details",
+                "sectionCategory": "PersonalDetails",
+                "sectionType": "Single",
+                "actions": [
+                    {
+                        "actionId": "1",
+                        "actionType": "Fill Input",
+                        "startupType": "Start",
+                        "selectorType": "ByName",
+                        "control": "asd",
+                        "inputType": "ManualValue",
+                        "manualValue": "asd",
+                        "ioValue": "",
+                        "nextActionId": "2",
+                        "conditionType": "",
+                        "leftInputType": "ManualValue",
+                        "leftManualValue": "",
+                        "leftIOValue": "",
+                        "trueActionId": "",
+                        "rightInputType": "ManualValue",
+                        "rightManualValue": "",
+                        "rightIOValue": "",
+                        "falseActionId": ""
+                    }
+                ]
+            }
+        ]
     }
 ]

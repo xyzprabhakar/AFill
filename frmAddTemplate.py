@@ -58,6 +58,7 @@ class AddTemplate:
         self.val_AllFunctionName=self.config.CustomFunction
         self.var_actionType.set("Fill Input")
         self.var_ActionStartupType.set("Middle")
+        self.LoadAllJsonData()
         
     
     def fncChangeTemplateType(self,event):
