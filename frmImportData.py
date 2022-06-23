@@ -14,6 +14,7 @@ from tkinter import RAISED, ttk,messagebox
 import GenerateConfig as Gc
 import json
 from datetime import datetime
+import time
 
 
 
@@ -1377,10 +1378,19 @@ class ImportData:
         try:
             open_file = askopenfilename(initialdir="d:", title="Open Template", filetypes=[
                                         ('Pdf Files', '*.pdf')])
-            if open_file:            
+            if open_file:         
+                self.ContainerFrame.update()
+                self.varError_.insert(tk.END,"Loading Data..")
                 self.tables = tabula.read_pdf(open_file, pages="all")
-                self.varError_.insert(tk.END,self.tables)
+                print(self.tables)
+                self.ContainerFrame.update()
+                self.varError_.insert(tk.END,"\nPdf read Successfully")
+                #self.varError_.insert(tk.END,self.tables)
+                time.sleep(10)
+                self.ContainerFrame.update()
+                self.varError_.insert(tk.END,"\nGenrating Canvas")
                 
+
                 self.CurrentAddressFound = False
                 self.hide_unhide_applicant(None)            
                 
@@ -1404,6 +1414,8 @@ class ImportData:
                 frmInnerContentFrame1 = ttk.Frame(self.frm_Applicant1,name="frmInnerContentFrame1")
                 frmInnerContentFrame1.grid(row=5, column=0, sticky=tk.E+tk.W+tk.N+tk.S)            
                 self.SkipTable=0
+                self.ContainerFrame.update()
+                self.varError_.insert(tk.END,"\nGenrating Control (Applicant 1)")                
                 self.fnc_Read_PersonalDetails(frmInnerContentFrame1, 1)
                 self.frm_Applicant1Canvas.create_window((0, 0), window=self.frm_Applicant1, anchor='nw')
                 self.ApplicantTab.add(self.frm_Applicant1Parent, text ='Applicant 1')
@@ -1417,6 +1429,8 @@ class ImportData:
                 self.frm_Applicant1Canvas.bind_all("<MouseWheel>",   lambda e: self.OnMouseWheel1(e,1) )
         
             if(self.varApplicantType.get() == "Co Applicant"):
+                self.ContainerFrame.update()
+                self.varError_.insert(tk.END,"\nGenrating Canvas (Applicant 2)")
                 self.frm_Applicant2Canvas = tk.Canvas(self.frm_Applicant2Parent, bg=self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge')
                 self.frm_Applicant2 = ttk.Frame(self.frm_Applicant2Canvas)
                 scrollbar_y_Applicant2 = ttk.Scrollbar(self.frm_Applicant2Parent, orient=tk.VERTICAL, command=self.frm_Applicant2Canvas.yview)
@@ -1439,15 +1453,20 @@ class ImportData:
                 frmInnerContentFrame2 = ttk.Frame(self.frm_Applicant2,name="frmInnerContentFrame2" )
                 frmInnerContentFrame2.grid(row=5, column=0, sticky=tk.E+tk.W+tk.N+tk.S)            
                 self.SkipTable=0
+                self.ContainerFrame.update()
+                self.varError_.insert(tk.END,"\nGenrating Control (Applicant 2)")
                 self.fnc_Read_PersonalDetails(frmInnerContentFrame2, 2)
                 self.ApplicantTab.add(self.frm_Applicant2Parent, text ='Applicant 2')
                 self.frm_Applicant2Canvas.configure(yscrollcommand=scrollbar_y_Applicant2.set,xscrollcommand=scrollbar_x_Applicant2.set)
                 self.frm_Applicant2Canvas.bind("<Configure>",  lambda e: self.frm_Applicant2Canvas.configure(scrollregion=self.frm_Applicant2Canvas.bbox("all")))
                 self.frm_Applicant2Canvas.bind_all("<MouseWheel>",   lambda e: self.OnMouseWheel1(e,2) )
                 self.frm_Applicant2Canvas.create_window((0, 0), window=self.frm_Applicant2, anchor='nw')
+                self.ContainerFrame.update()
+                self.varError_.insert(tk.END,"\nDone")
             
-            self.ApplicantTab.update_idletasks()
+            #self.ApplicantTab.update_idletasks()
         except Exception as ex:
+            print(ex)
             self.varError_.insert(tk.END,ex)
 
     def save_data(self):

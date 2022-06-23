@@ -6,7 +6,7 @@ block_cipher = None
 
 a = Analysis(['frmLogin.py'],
              pathex=[],
-             binaries=[],
+             binaries=[('C:\\Users\\prabhakarsingh\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python310\\site-packages\\tabula\\tabula-1.0.5-jar-with-dependencies.jar', './tabula/')],
              datas=[],
              hiddenimports=[],
              hookspath=[],

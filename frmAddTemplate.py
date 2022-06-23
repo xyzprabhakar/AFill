@@ -790,7 +790,7 @@ class AddTemplate:
         ttk.Label(chdFrm,text = "Startup Type :").grid(row=1,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
         rdoFrm=ttk.Frame(chdFrm)
         rdoFrm.grid(row=1,column = 1,padx=(10, 10),columnspan=3, pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-        ttk.Radiobutton(rdoFrm,text="Strat",value="Start",variable = self.var_ActionStartupType).grid(row=0,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
+        ttk.Radiobutton(rdoFrm,text="Start",value="Start",variable = self.var_ActionStartupType).grid(row=0,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
         ttk.Radiobutton(rdoFrm,text="End",value="End",variable =  self.var_ActionStartupType).grid(row=0,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
         ttk.Radiobutton(rdoFrm,text="Middle",value="Middle",variable =  self.var_ActionStartupType).grid(row=0,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
 
