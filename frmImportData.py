@@ -1408,6 +1408,7 @@ class ImportData:
 
     def open_file(self):
         try:
+            self.varError_.delete("1.0","end")
             open_file = askopenfilename(initialdir="d:", title="Open Template", filetypes=[
                                         ('Pdf Files', '*.pdf')])
             if open_file:         
@@ -1421,14 +1422,10 @@ class ImportData:
                 time.sleep(10)
                 self.ContainerFrame.update()
                 self.varError_.insert(tk.END,"\nGenrating Canvas")
-                
-
                 self.CurrentAddressFound = False
-                self.hide_unhide_applicant(None)            
-                
+                self.hide_unhide_applicant(None)                
                 self.frm_Applicant1Parent=ttk.Frame(self.ApplicantTab)
                 self.frm_Applicant2Parent=ttk.Frame(self.ApplicantTab)
-
                 self.frm_Applicant1Canvas = tk.Canvas(self.frm_Applicant1Parent, bg=self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge')
                 self.frm_Applicant1 = ttk.Frame(self.frm_Applicant1Canvas)            
                 self.frm_Applicant1.columnconfigure(0, weight=1)
@@ -1458,44 +1455,42 @@ class ImportData:
                 self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
                 self.frm_Applicant1Canvas.configure(yscrollcommand=scrollbar_y_Applicant1.set,xscrollcommand=scrollbar_x_Applicant1.set)
                 self.frm_Applicant1Canvas.bind("<Configure>",  lambda e: self.frm_Applicant1Canvas.configure(scrollregion=self.frm_Applicant1Canvas.bbox("all")))
-                self.frm_Applicant1Canvas.bind_all("<MouseWheel>",   lambda e: self.OnMouseWheel1(e,1) )
-        
-            if(self.varApplicantType.get() == "Co Applicant"):
-                self.ContainerFrame.update()
-                self.varError_.insert(tk.END,"\nGenrating Canvas (Applicant 2)")
-                self.frm_Applicant2Canvas = tk.Canvas(self.frm_Applicant2Parent, bg=self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge')
-                self.frm_Applicant2 = ttk.Frame(self.frm_Applicant2Canvas)
-                scrollbar_y_Applicant2 = ttk.Scrollbar(self.frm_Applicant2Parent, orient=tk.VERTICAL, command=self.frm_Applicant2Canvas.yview)
-                scrollbar_x_Applicant2 = ttk.Scrollbar(self.frm_Applicant2Parent, orient=tk.HORIZONTAL, command=self.frm_Applicant2Canvas.xview)
-                scrollbar_y_Applicant2.pack(side=tk.RIGHT, fill="y")
-                scrollbar_x_Applicant2.pack(side=tk.BOTTOM, fill="x")
-                self.frm_Applicant2Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
-                self.frm_Applicant2.columnconfigure(0, weight=1)
-                self.frm_Applicant2.rowconfigure(0, weight=1)
-                self.frm_Applicant2.rowconfigure(1, weight=1)
-                self.frm_Applicant2.rowconfigure(2, weight=1)
-                self.frm_Applicant2.rowconfigure(3, weight=1)
-                self.frm_Applicant2.rowconfigure(4, weight=1)
-                self.frm_Applicant2.rowconfigure(5, weight=100)                                
-                ttk.Frame(self.frm_Applicant2, height=10).grid(row=0, column=0, sticky=tk.E+tk.W)
-                ttk.Label(self.frm_Applicant2, text="Applicant 2", textvariable=self.varApplicant2, style="H1.TLabel").grid(row=1, column=0, sticky=tk.N+tk.W)
-                ttk.Frame(self.frm_Applicant2, height=10).grid(row=2, column=0, sticky=tk.E+tk.W)
-                ttk.Frame(self.frm_Applicant2, style="Separator.TFrame", height=1).grid(row=3, column=0, sticky=tk.E+tk.W)
-                ttk.Frame(self.frm_Applicant2, height=10).grid(row=4, column=0, sticky=tk.E+tk.W)
-                frmInnerContentFrame2 = ttk.Frame(self.frm_Applicant2,name="frmInnerContentFrame2" )
-                frmInnerContentFrame2.grid(row=5, column=0, sticky=tk.E+tk.W+tk.N+tk.S)            
-                self.SkipTable=0
-                self.ContainerFrame.update()
-                self.varError_.insert(tk.END,"\nGenrating Control (Applicant 2)")
-                self.fnc_Read_PersonalDetails(frmInnerContentFrame2, 2)
-                self.ApplicantTab.add(self.frm_Applicant2Parent, text ='Applicant 2')
-                self.frm_Applicant2Canvas.configure(yscrollcommand=scrollbar_y_Applicant2.set,xscrollcommand=scrollbar_x_Applicant2.set)
-                self.frm_Applicant2Canvas.bind("<Configure>",  lambda e: self.frm_Applicant2Canvas.configure(scrollregion=self.frm_Applicant2Canvas.bbox("all")))
-                self.frm_Applicant2Canvas.bind_all("<MouseWheel>",   lambda e: self.OnMouseWheel1(e,2) )
-                self.frm_Applicant2Canvas.create_window((0, 0), window=self.frm_Applicant2, anchor='nw')
-                self.ContainerFrame.update()
+                self.frm_Applicant1Canvas.bind_all("<MouseWheel>",   lambda e: self.OnMouseWheel1(e,1) )        
+                if(self.varApplicantType.get() == "Co Applicant"):
+                    self.ContainerFrame.update()
+                    self.varError_.insert(tk.END,"\nGenrating Canvas (Applicant 2)")
+                    self.frm_Applicant2Canvas = tk.Canvas(self.frm_Applicant2Parent, bg=self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge')
+                    self.frm_Applicant2 = ttk.Frame(self.frm_Applicant2Canvas)
+                    scrollbar_y_Applicant2 = ttk.Scrollbar(self.frm_Applicant2Parent, orient=tk.VERTICAL, command=self.frm_Applicant2Canvas.yview)
+                    scrollbar_x_Applicant2 = ttk.Scrollbar(self.frm_Applicant2Parent, orient=tk.HORIZONTAL, command=self.frm_Applicant2Canvas.xview)
+                    scrollbar_y_Applicant2.pack(side=tk.RIGHT, fill="y")
+                    scrollbar_x_Applicant2.pack(side=tk.BOTTOM, fill="x")
+                    self.frm_Applicant2Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
+                    self.frm_Applicant2.columnconfigure(0, weight=1)
+                    self.frm_Applicant2.rowconfigure(0, weight=1)
+                    self.frm_Applicant2.rowconfigure(1, weight=1)
+                    self.frm_Applicant2.rowconfigure(2, weight=1)
+                    self.frm_Applicant2.rowconfigure(3, weight=1)
+                    self.frm_Applicant2.rowconfigure(4, weight=1)
+                    self.frm_Applicant2.rowconfigure(5, weight=100)                                
+                    ttk.Frame(self.frm_Applicant2, height=10).grid(row=0, column=0, sticky=tk.E+tk.W)
+                    ttk.Label(self.frm_Applicant2, text="Applicant 2", textvariable=self.varApplicant2, style="H1.TLabel").grid(row=1, column=0, sticky=tk.N+tk.W)
+                    ttk.Frame(self.frm_Applicant2, height=10).grid(row=2, column=0, sticky=tk.E+tk.W)
+                    ttk.Frame(self.frm_Applicant2, style="Separator.TFrame", height=1).grid(row=3, column=0, sticky=tk.E+tk.W)
+                    ttk.Frame(self.frm_Applicant2, height=10).grid(row=4, column=0, sticky=tk.E+tk.W)
+                    frmInnerContentFrame2 = ttk.Frame(self.frm_Applicant2,name="frmInnerContentFrame2" )
+                    frmInnerContentFrame2.grid(row=5, column=0, sticky=tk.E+tk.W+tk.N+tk.S)            
+                    self.SkipTable=0
+                    self.ContainerFrame.update()
+                    self.varError_.insert(tk.END,"\nGenrating Control (Applicant 2)")
+                    self.fnc_Read_PersonalDetails(frmInnerContentFrame2, 2)
+                    self.ApplicantTab.add(self.frm_Applicant2Parent, text ='Applicant 2')
+                    self.frm_Applicant2Canvas.configure(yscrollcommand=scrollbar_y_Applicant2.set,xscrollcommand=scrollbar_x_Applicant2.set)
+                    self.frm_Applicant2Canvas.bind("<Configure>",  lambda e: self.frm_Applicant2Canvas.configure(scrollregion=self.frm_Applicant2Canvas.bbox("all")))
+                    self.frm_Applicant2Canvas.bind_all("<MouseWheel>",   lambda e: self.OnMouseWheel1(e,2) )
+                    self.frm_Applicant2Canvas.create_window((0, 0), window=self.frm_Applicant2, anchor='nw')
+                    self.ContainerFrame.update()
                 self.varError_.insert(tk.END,"\nDone")
-            
             #self.ApplicantTab.update_idletasks()
         except Exception as ex:
             print(ex)
@@ -2024,7 +2019,7 @@ class ImportData:
         self.ApplicantTab= ttk.Notebook(self.ContainerFrame, height=600)
         self.ApplicantTab.grid(row=4,column=0,columnspan=3,sticky=tk.N+tk.S+tk.W+tk.E)
         
-        self.varError_=tk.Text(self.ContainerFrame,width=100, height=5)
+        self.varError_=tk.Text(self.ContainerFrame,width=100, height=4)
         self.varError_.grid(row=5, column=0,columnspan=3 ,sticky=tk.N+tk.S+tk.W+tk.E, pady=(5, 2), padx=(10, 10))
 
 

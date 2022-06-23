@@ -195,12 +195,12 @@ class GenerateConfig:
         self.config_file.set("AFill_Register", "ContactNo", "")
         self.config_file.add_section("InputTemplate")
         self.config_file.set("InputTemplate", "IO_Name", "Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,Marital Status,"+
-        "Country of Birth,Nationality,National Insurance No.,Country Of Residence,Country of Birth,"+
+        "Country of Birth,Nationality,National Insurance No,Country Of Residence,Country of Birth,"+
         "CurrentAddress[G],PreviousAddress[A],Mobile,E Mail, Home Telephone[M],Work Telephone[M],ProfessionalContact[A],BankAccount[A],"+                
         "FamilyAndDependants[A],IDVerification[G],CurrentEmployment[G],Asset[A],Liabilities[A],Expenditure[A],Source of Deposit[M][D]," +
         "ExistingMortgage[A],MortgageRequirements[A]"
         )
-        self.config_file.set("InputTemplate", "IO_Name_PersonalDetails","Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,Marital Status,Country of Birth,Nationality,National Insurance No.,Country Of Residence")
+        self.config_file.set("InputTemplate", "IO_Name_PersonalDetails","Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,Marital Status,Country of Birth,Nationality,National Insurance No,Country Of Residence")
         self.config_file.set("InputTemplate", "IO_Template_PersonalDetails","Title,First Name,Middle Name,Last Name,Salutation,Date of Birth,Gender,Marital Status,Country of Birth,Nationality,National Insurance No.,Country Of Residence")
         self.config_file.set("InputTemplate", "IO_Name_CurrentAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City,Country,Postcode,Residency Status,Date From")
         self.config_file.set("InputTemplate", "IO_Template_CurrentAddress","Address Line 1,Address Line 2,Address Line 3,Address Line 4,City / Town,Country,Postcode,Residency Status,Date From")
