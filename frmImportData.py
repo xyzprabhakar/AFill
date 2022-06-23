@@ -79,26 +79,33 @@ class ImportData:
         frmTopFrame.pack(fill="both",anchor="nw")        
 
         if(self.varTemplateType.get() == "IO Template"): 
+            
             self.varError_.insert(tk.END,"\nAdding Personal Details")
+            self.ContainerFrame.update()
             frmDetailFrame = ttk.Frame(frmTopFrame ,name="frmDetailFrame_"+str(Applicantid)) 
             frmPersonalDetailsFrame = ttk.LabelFrame(frmDetailFrame,name="frmPersonalDetailsFrame_"+str(Applicantid), text="Personal Details", style="Details.TLabelframe")
             frmPersonalDetailsFrame.grid(row=0, column=0, sticky=tk.N+tk.W, pady=(10, 10), padx=(10, 10))
             self.fnc_Read_PersonalDetails_IO_Template(frmPersonalDetailsFrame, Applicantid)            
 
-            self.varError_.insert(tk.END,"\nAdding Current Address")
+            
             frmAddressFrame = ttk.Notebook(frmDetailFrame,name="tab_Section_Address_"+str(Applicantid))
             # Add Current Address
+            self.varError_.insert(tk.END,"\nAdding Current Address")
+            self.ContainerFrame.update()
+            
             frmCurrentAddressFrame = ttk.Frame(frmAddressFrame, name="frmCurrentAddressFrame_"+str(Applicantid))    
             self.fnc_Read_CurrentAddress_IO_Template(frmCurrentAddressFrame, Applicantid)
             frmAddressFrame.add(frmCurrentAddressFrame, text ='Current Address')            
 
             # Add Previous Address
             self.varError_.insert(tk.END,"\nAdding Previous Address")
+            self.ContainerFrame.update()            
             frmPreviousAddressFrame = ttk.Frame(frmAddressFrame,name="frmPreviousAddressFrame_"+str(Applicantid))
             self.fnc_Read_PreviousAddress_IO_Template(frmPreviousAddressFrame, Applicantid)
             frmAddressFrame.add(frmPreviousAddressFrame, text ='Previous Address')
             # Contact Details
             self.varError_.insert(tk.END,"\nAdding Contact Details")
+            self.ContainerFrame.update()            
             frmContactDetailFrame = ttk.LabelFrame(frmDetailFrame,name="frmContactDetailFrame_"+str(Applicantid) ,text="Contact Details", style="Details.TLabelframe")            
             self.fnc_Read_ContactDetails_IO_Template(frmContactDetailFrame, Applicantid)
             frmContactDetailFrame.grid(row=1, column=0, sticky=tk.N+tk.W, pady=(10, 10), padx=(10, 10))
@@ -106,11 +113,13 @@ class ImportData:
             
             # ProfessionalContacts
             self.varError_.insert(tk.END,"\nAdding Professional Contacts")
+            self.ContainerFrame.update()
             frmProfessionalContactsFrame = ttk.Frame(frmAddressFrame,name="frmProfessionalContactsFrame_"+str(Applicantid))
             self.fnc_Read_ProfessionalContact_IO_Template(frmProfessionalContactsFrame, Applicantid)
             frmAddressFrame.add(frmProfessionalContactsFrame, text ='Professional Contacts')
             # Bank Details
             self.varError_.insert(tk.END,"\nAdding Bank Details")
+            self.ContainerFrame.update()
             frmBankDetailFrame = ttk.Frame(frmAddressFrame,name="frmBankDetailFrame_"+str(Applicantid))
             self.fnc_Read_BankAccountDetails_IO_Template(frmBankDetailFrame, Applicantid)
             frmAddressFrame.add(frmBankDetailFrame, text ='Bank Details')
@@ -123,17 +132,20 @@ class ImportData:
             
             # Family And Dependants
             self.varError_.insert(tk.END,"\nAdding Family And Dependants")
+            self.ContainerFrame.update()
             frmFamilyAndDependantsrame = ttk.LabelFrame(frmTopFrame,name="frmFamilyAndDependantsrame_"+str(Applicantid), text="Family And Dependants", style="Details.TLabelframe")
             self.fnc_Read_FamilyAndDependants_IO_Template(frmFamilyAndDependantsrame, Applicantid)
             frmTopFrame.add(frmFamilyAndDependantsrame, text ='Family')
             # ID Verfication
             self.varError_.insert(tk.END,"\nAdding ID Verfication")
+            self.ContainerFrame.update()
             frmIDVerificationFrame = ttk.Frame(frmTopFrame,name="frmIDVerificationFrame_"+str(Applicantid))
             self.fnc_Read_IDVerification_IO_Template(frmIDVerificationFrame, Applicantid)
             frmTopFrame.add(frmIDVerificationFrame, text ='ID Verification')
 
             # Current Employment Details
             self.varError_.insert(tk.END,"\nAdding Current Employment Details")
+            self.ContainerFrame.update()
             frmCurrentEmploymentDetailsFrame = ttk.LabelFrame(frmTopFrame,name="frmCurrentEmploymentDetailsFrame_"+str(Applicantid),text="Current Employment Details",style="Details.TLabelframe")
             self.fnc_Read_CurrentEmploymentDetails_IO_Template(frmCurrentEmploymentDetailsFrame, Applicantid)           
             frmTopFrame.add(frmCurrentEmploymentDetailsFrame, text ='Employment')
@@ -141,6 +153,7 @@ class ImportData:
 
             frmAssetsLiabilitiesFrame=ttk.Notebook(frmTopFrame,name="frmAssetsLiabilitiesFrame_"+str(Applicantid))            
             self.varError_.insert(tk.END,"\nAdding Assets")
+            self.ContainerFrame.update()
             # Assets Details            
             frmAssetsFrame = ttk.Frame(frmAssetsLiabilitiesFrame,name="frmAssetsFrame_"+str(Applicantid))
             self.fnc_Read_Assets_IO_Template(frmAssetsFrame, Applicantid)            
@@ -149,17 +162,20 @@ class ImportData:
             
             # Liabilities
             self.varError_.insert(tk.END,"\nAdding Liabilities")
+            self.ContainerFrame.update()
             frmLiabilitiesFrame = ttk.Frame(frmAssetsLiabilitiesFrame,name="frmLiabilitiesFrame_"+str(Applicantid))
             self.fnc_Read_Liabilities_IO_Template(frmLiabilitiesFrame, Applicantid)
             frmAssetsLiabilitiesFrame.add(frmLiabilitiesFrame, text ='Liabilities')
             # Expenditure
             self.varError_.insert(tk.END,"\nAdding Expenditure")
+            self.ContainerFrame.update()
             frmExpenditureFrame = ttk.Frame(frmAssetsLiabilitiesFrame,name="frmExpenditureFrame_"+str(Applicantid))
             self.fnc_Read_Expenditure_IO_Template(frmExpenditureFrame, Applicantid)
             frmAssetsLiabilitiesFrame.add(frmExpenditureFrame, text ='Expenditure')
             frmTopFrame.add(frmAssetsLiabilitiesFrame, text ='Assets/Liabilities')
 
             frmMortgageFrame = ttk.Notebook(frmTopFrame,name="frmMortgageFrame_"+str(Applicantid))
+            self.ContainerFrame.update()
             # ExistingMortgage
             self.varError_.insert(tk.END,"\nAdding Existing Mortgage")
             frmExistingMortgageFrame = ttk.Frame(frmMortgageFrame,name="frmExistingMortgageFrame_"+str(Applicantid))
@@ -167,6 +183,7 @@ class ImportData:
             frmMortgageFrame.add(frmExistingMortgageFrame, text ='Existing Mortgage')
             #Mortage Requirement
             self.varError_.insert(tk.END,"\nAdding Mortage Requirement")
+            self.ContainerFrame.update()
             frmMortgageRequirementsFrame = ttk.Frame(frmMortgageFrame,name="frmMortgageRequirementsFrame_"+str(Applicantid))
             self.fnc_Read_MortgageRequirements_IO_Template(frmMortgageRequirementsFrame, Applicantid)
             frmMortgageFrame.add(frmMortgageRequirementsFrame, text ='Mortgage Requirements')
