@@ -21,7 +21,7 @@ class AddTemplate:
     combostyle=None
     treeViewStyle=None
     varAllTemlate,varAllTemlateName,varCurrentTemplate,varAllSection,varCurrentSection,varAllAction=[],[],None,[],None,[]    
-    IsUpdateSection=False,False
+    IsUpdateSection,IsUpdateAction=False,False
     
     varActionType= None    
     varCurrentTemplateName=None
@@ -758,6 +758,8 @@ class AddTemplate:
                 (self.chdFrm2.children["txtRightManualValue"]).grid(row=2,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.W)
                 (self.chdFrm2.children["frmchdFrm2_2"]).grid_forget()
         
+    def fncUpdateInnerChildForm(self):
+        self.IsUpdateAction=True
 
     
     def fncOpenInnerChildForm(self):    
