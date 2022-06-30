@@ -21,7 +21,7 @@ class AddTemplate:
     combostyle=None
     treeViewStyle=None
     varAllTemlate,varAllTemlateName,varCurrentTemplate,varAllSection,varCurrentSection,varAllAction=[],[],None,[],None,[]    
-    IsUpdateSection,IsUpdateAction=False,False
+    IsUpdateSection,IsUpdateAction,treev2_selected_items,treev2_selected_index=False,False,None,-1
     
     varActionType= None    
     varCurrentTemplateName=None
@@ -290,7 +290,8 @@ class AddTemplate:
             self.frmHeader.children["frmTreeviewhandler"].children["btnMoveDownAction"]["state"]=tk.DISABLED
         elif(ProcType==2) :
             for item in self.treev2.get_children():
-                self.treev2.delete(item)
+                self.treev2.delete(item)            
+            self.frmHeader1.children["frmTreeviewhandler1"].children["btnEditAction"]["state"]=tk.DISABLED
             self.frmHeader1.children["frmTreeviewhandler1"].children["btnRemoveAction"]["state"]=tk.DISABLED
             self.frmHeader1.children["frmTreeviewhandler1"].children["btnMoveUpAction"]["state"]=tk.DISABLED
             self.frmHeader1.children["frmTreeviewhandler1"].children["btnMoveDownAction"]["state"]=tk.DISABLED
@@ -400,6 +401,7 @@ class AddTemplate:
         elif (procType==2):
             selected=self.treev2.focus()        
             if(len(selected)>0):                
+                self.frmHeader1.children["frmTreeviewhandler1"].children["btnEditAction"]["state"]=tk.NORMAL
                 self.frmHeader1.children["frmTreeviewhandler1"].children["btnRemoveAction"]["state"]=tk.NORMAL
                 self.frmHeader1.children["frmTreeviewhandler1"].children["btnMoveUpAction"]["state"]=tk.NORMAL
                 self.frmHeader1.children["frmTreeviewhandler1"].children["btnMoveDownAction"]["state"]=tk.NORMAL
@@ -620,13 +622,15 @@ class AddTemplate:
         frmbtn1 = ttk.Frame(self.frmHeader1,name="frmTreeviewhandler1")
         frmbtn1.grid(row=3,column = 1, columnspan=4, sticky=tk.N+tk.W+tk.E)
         btnAddAction = ttk.Button ( frmbtn1,name="btnAddAction" , image=self.config.ico_add ,command =lambda: self.fncOpenInnerChildForm() )        
+        btnEditAction = ttk.Button ( frmbtn1,name="btnEditAction" , image=self.config.ico_edit ,command =lambda: self.fncUpdateInnerChildForm() )        
         btnRemoveAction = ttk.Button ( frmbtn1,name="btnRemoveAction", image=self.config.ico_delete, state=tk.DISABLED, command =lambda: self.fncRemove(2) )
         btnMoveUpAction = ttk.Button ( frmbtn1,name="btnMoveUpAction", image=self.config.ico_up,  state=tk.DISABLED,  command =lambda: self.fncMoveUp(2) )
         btnMoveDownAction = ttk.Button ( frmbtn1,name="btnMoveDownAction",  image=self.config.ico_down,state=tk.DISABLED,  command =lambda: self.fncMoveDown(2) )
         btnAddAction.grid(row=0,column = 0, padx=(10,0),pady=(3,5))
-        btnRemoveAction.grid(row=0,column =1, padx=(10,0),pady=(3,5))
-        btnMoveUpAction.grid(row=0,column =2, padx=(10,0),pady=(3,5))
-        btnMoveDownAction.grid(row=0,column =3, padx=(10,0),pady=(3,5))
+        btnEditAction.grid(row=0,column = 1, padx=(10,0),pady=(3,5))
+        btnRemoveAction.grid(row=0,column =2, padx=(10,0),pady=(3,5))
+        btnMoveUpAction.grid(row=0,column =3, padx=(10,0),pady=(3,5))
+        btnMoveDownAction.grid(row=0,column =4, padx=(10,0),pady=(3,5))
 
         frmBody=ttk.Frame(innercontainter)
         frmBody.grid(row=1,column = 0,  sticky=tk.N+tk.S+tk.W+tk.E)
@@ -758,9 +762,34 @@ class AddTemplate:
                 (self.chdFrm2.children["txtRightManualValue"]).grid(row=2,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.W)
                 (self.chdFrm2.children["frmchdFrm2_2"]).grid_forget()
         
-    def fncUpdateInnerChildForm(self):
-        self.IsUpdateAction=True
+    def fncUpdateInnerChildForm(self):        
+        selected_items = self.treev2.selection()         
+        for x in selected_items:            
+            self.var_actionId.set(self.treev2.item(x)["values"][0])  
+            self.var_actionType.set(self.treev2.item(x)["values"][1])  
+            self.var_ActionStartupType.set(self.treev2.item(x)["values"][2])  
+            self.var_controlSelectorType.set(self.treev2.item(x)["values"][3])  
+            self.var_control.set(self.treev2.item(x)["values"][4])  
+            self.var_inputType.set(self.treev2.item(x)["values"][5])  
+            self.var_manualValue.set(self.treev2.item(x)["values"][6])  
+            self.var_ioValue.set(self.treev2.item(x)["values"][7])  
+            self.var_nextActionId.set(self.treev2.item(x)["values"][8])  
+            self.var_conditionType.set(self.treev2.item(x)["values"][9])  
+            self.var_leftInputType.set(self.treev2.item(x)["values"][10])  
+            self.var_leftManualValue.set(self.treev2.item(x)["values"][11])  
+            self.var_leftIOValue.set(self.treev2.item(x)["values"][12])  
+            self.var_trueActionId.set(self.treev2.item(x)["values"][13])  
+            self.var_rightInputType.set(self.treev2.item(x)["values"][14])  
+            self.var_rightManualValue.set(self.treev2.item(x)["values"][15])  
+            self.var_rightIOValue.set(self.treev2.item(x)["values"][16])              
+            self.var_falseActionId.set(self.treev2.item(x)["values"][17])              
+            
+            self.treev2_selected_items=x
+            self.treev2_selected_index=self.treev2.index(x)
+            self.IsUpdateAction=True
+        self.fncOpenInnerChildForm()
 
+        
     
     def fncOpenInnerChildForm(self):    
         containter = tk.Toplevel(self.frmHeader1)        
@@ -917,8 +946,7 @@ class AddTemplate:
         # ttk.Entry(self.chdFrm2, width = 26, textvariable = self.var_rightIOValue).grid(row=3,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
         ttk.Label(self.chdFrm2,text = "False Next ActionId :" ).grid(row=4,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
         ttk.Entry(self.chdFrm2, width = 26, textvariable = self.var_falseActionId).grid(row=4,column = 3,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-
-        ttk.Button(chdFrm, text ="Save", width=10, command =lambda: self.fncAddAction(containter)).grid(row=5,column = 1 , padx=(10,0),pady=(3,5),sticky=tk.N+tk.W)        
+        ttk.Button(chdFrm, text ="Save", width=10, command =lambda: self.fncAddAction(containter)).grid(row=5,column = 1 , padx=(10,0),pady=(3,5),sticky=tk.N+tk.W)
         containter.grab_set()
         self.fncChangeActionType(None)        
         self.fncChangeInputType(None,1)
@@ -1004,11 +1032,20 @@ class AddTemplate:
             if(self.var_falseActionId==None or self.var_falseActionId.get()==""):
                 messagebox.showerror("Required", "Required False Action Id")
                 return
-        self.treev2.insert("", 'end',values =(self.var_actionId.get(), self.var_actionType.get(),self.var_ActionStartupType.get(),
-        self.var_controlSelectorType.get(),self.var_control.get(),self.var_inputType.get(),self.var_manualValue.get(),self.var_ioValue.get(),self.var_nextActionId.get(),
-        self.var_conditionType.get(),self.var_leftInputType.get(),self.var_leftManualValue.get(),self.var_leftIOValue.get(),self.var_trueActionId.get(),
-        self.var_rightInputType.get(),self.var_rightManualValue.get(),self.var_rightIOValue.get(),self.var_falseActionId.get()
-        ))
+        if(self.IsUpdateAction):
+            self.treev2.delete(self.treev2_selected_items)
+            self.treev2.insert("", self.treev2_selected_index,values =(self.var_actionId.get(), self.var_actionType.get(),self.var_ActionStartupType.get(),
+            self.var_controlSelectorType.get(),self.var_control.get(),self.var_inputType.get(),self.var_manualValue.get(),self.var_ioValue.get(),self.var_nextActionId.get(),
+            self.var_conditionType.get(),self.var_leftInputType.get(),self.var_leftManualValue.get(),self.var_leftIOValue.get(),self.var_trueActionId.get(),
+            self.var_rightInputType.get(),self.var_rightManualValue.get(),self.var_rightIOValue.get(),self.var_falseActionId.get()
+            ))
+            self.IsUpdateAction=False
+        else:
+            self.treev2.insert("", 'end',values =(self.var_actionId.get(), self.var_actionType.get(),self.var_ActionStartupType.get(),
+            self.var_controlSelectorType.get(),self.var_control.get(),self.var_inputType.get(),self.var_manualValue.get(),self.var_ioValue.get(),self.var_nextActionId.get(),
+            self.var_conditionType.get(),self.var_leftInputType.get(),self.var_leftManualValue.get(),self.var_leftIOValue.get(),self.var_trueActionId.get(),
+            self.var_rightInputType.get(),self.var_rightManualValue.get(),self.var_rightIOValue.get(),self.var_falseActionId.get()
+            ))
         #reset the data
         self.var_control.set("")
         self.var_manualValue.set("")
