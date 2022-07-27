@@ -305,133 +305,133 @@ class ImportData:
 
     def fnc_IsTable_Found(self, DetailTable, tableName):
         if(tableName == "Professional Contacts"):
-            if(DetailTable.columns[0] == "rofessional Contacts"):
+            if( str(DetailTable.columns[0]).find("rofessional Contacts")>=0 ):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Company Name"):
+                if(str(row[0]).find("Company Name")>=0 ):
                     return True
-        elif(tableName == "Bank Account Details"):
-            if(DetailTable.columns[0] == "ank Account Details"):
+        elif(  tableName==("Bank Account Details") ):
+            if( str(DetailTable.columns[0]).find("ank Account Details")>=0):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Bank Name" or row[0] =="Account Holder(s)"):
+                if(str(row[0]).find("Bank Name")>=0  or str(row[0]).find("Account Holder(s)")>=0):
                     return True
-        elif(tableName == "Family And Dependants"):
-            if(DetailTable.columns[0] == "amily And Dependants"):
+        elif( tableName ==("Family And Dependants")):
+            if( str(DetailTable.columns[0]).find("amily And Dependants")>=0):
                 return True
-            if(DetailTable.columns[0] == "Full Name" and DetailTable.columns[1] == "Date of Birth" and DetailTable.columns[2] == "Age"):
+            if(str(DetailTable.columns[0]).find("Full Name")>=0 and str(DetailTable.columns[1]).find("Date of Birth")>=0 and str(DetailTable.columns[2]).find("Age")>=0):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Full Name" and row[1] == "Date of Birth" and row[2] == "Age"):
+                if(str(row[0]).find("Full Name")>=0 and str(row[1]).find("Date of Birth")>=0 and str(row[2]).find("Age")>=0 ):
                     return True
-        elif(tableName == "ID Verification"):
-            if(DetailTable.columns[0] == "D Verification"):
+        elif(tableName==("ID Verification")):
+            if(str(DetailTable.columns[0]).find("D Verification")>=0):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Original Driving Licence Seen" or row[0] == "Driving Licence Ref"):
+                if(str(row[0]).find("Original Driving Licence Seen")>=0 or str(row[0]).find("Driving Licence Ref")>=0):
                     return True
-        elif(tableName == "Electronic ID Verification"):
-            if(DetailTable.columns[0] == "lectronic ID Verification"):
+        elif(str(tableName)==("Electronic ID Verification")):
+            if(str(DetailTable.columns[0]).find("lectronic ID Verification")>=0):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "ID Check Completed Date" or row[0] == "ID Check Expiry Date"):
+                if(str(row[0]).find("ID Check Completed Date")>=0 or str(row[0]).find("ID Check Expiry Date")>=0):
                     return True
-        elif(tableName == "Current Employment Details"):
-            if(DetailTable.columns[0] == "urrent Employment Details"):
+        elif(str(tableName)==("Current Employment Details")):
+            if(str(DetailTable.columns[0]).find("urrent Employment Details")>=0 ):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Highest rate of income tax paid (%)" or row[0] == "Employment Status" or row[0] == "Most Recent Annual Accounts Net Profit"):
+                if(str(row[0]).find("Highest rate of income tax paid")>=0 or str(row[0]).find("Employment Status")>=0 or str(row[0]).find("Most Recent Annual Accounts Net Profit")>=0):
                     return True
         elif(tableName == "Assets"):
-            if(DetailTable.columns[0] == "ssets" or DetailTable.columns[0] == "Do you have any assets?" ):
+            if(str(DetailTable.columns[0]).find("ssets")>=0 or str(DetailTable.columns[0]).find("Do you have any assets")>=0 ):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Do you have any assets?" ):
+                if(str(row[0]).find("Do you have any assets")>=0 ):
                     return True
-        elif(tableName == "Assets1"):
-            if(DetailTable.columns[0] == "Owner" or DetailTable.columns[1] == "Category" ):
+        elif(str(tableName)==("Assets1")):
+            if(str(DetailTable.columns[0]).find("Owner")>=0 or str(DetailTable.columns[1]).find("Category" )>=0):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Owner" or row[1] == "Category"):
+                if(str(row[0]).find("Owner")>=0 or str(row[1]).find("Category")>=0):
                     return True
-        elif(tableName == "Liabilities"):
-            if(DetailTable.columns[0] == "iabilities" or DetailTable.columns[0] == "Do you have any liabilities?" ):
+        elif(str(tableName)==("Liabilities")):
+            if(str(DetailTable.columns[0]).find("iabilities")>=0 or str(DetailTable.columns[0]).find("Do you have any liabilities")>=0  ):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Do you have any liabilities?"):
+                if(str(row[0]).find("Do you have any liabilities")>=0):
                     return True
-        elif(tableName == "Liabilities1"):            
+        elif(str(tableName)==("Liabilities1")):            
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Owner" or row[0] == "Client does not wish to disclose"):
+                if(str(row[0]).find("Owner")>=0 or str(row[0]).find("Liability Account Number")>=0):
                     return True
         elif(tableName == "Income"):            
-            if(DetailTable.columns[0] == "ncome" or DetailTable.columns[0] == "Do you have any liabilities?" ):
+            if(DetailTable.columns[0].find("ncome")>=0 or DetailTable.columns[0].find("Do you have any liabilities")>=0 ):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Total Gross Annual Earnings or Net Relevant Earnings"):
+                if(str(row[0]).find("Total Gross Annual Earnings")>=0):
                     return True
-        elif(tableName == "Expenditure"):
-            if(DetailTable.columns[0] == "xpenditure" or DetailTable.columns[0] == "Do you wish to carry out a detailed expenditure analysis? If 'no' then please" ):
+        elif(str(tableName)==("Expenditure")):
+            if(str(DetailTable.columns[0]).find("xpenditure")>=0 or str(DetailTable.columns[0]).find("Do you wish to carry out a detailed" )>=0):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Do you wish to carry out a detailed expenditure analysis? If 'no' then please" ):
+                if(str(row[0]).find("Do you wish to carry out a detailed")>=0 ):
                     return True
         elif(tableName == "Expenditure1"):
-            if(DetailTable.columns[0] == "Category" or DetailTable.columns[1] == "Owner" ):
+            if(str(DetailTable.columns[0]).find("Category")>=0 or str(DetailTable.columns[1]).find("Owner")>=0):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Category" or row[1] == "Owner"):
+                if(str(row[0]).find("Category")>=0 or str(row[1]).find("Owner")>=0):
                     return True
         elif(tableName == "Expenditure Details"):
-            if(DetailTable.columns[0] == "xpenditure Details"):
+            if(str(DetailTable.columns[0]).find("xpenditure Details")>=0):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Calculated Total Monthly Household Expenditure" ):
+                if(str(row[0]).find("Calculated Total Monthly Household Expenditure")>=0 ):
                     return True
-        elif(tableName == "Current Monthly Cash Flow"):
-            if(DetailTable.columns[0] == "urrent Monthly Cash Flow"):
+        elif(str(tableName)==("Current Monthly Cash Flow")):
+            if(DetailTable.columns.find("urrent Monthly Cash Flow")>=0):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Total Net Monthly Income" ):
+                if(row[0].find("Total Net Monthly Income")>=0  ):
                     return True
-        elif(tableName == "Existing Mortgage Details"):            
-            if(DetailTable.columns[0] == "xisting Mortgage Details" or DetailTable.columns[0] == "Do you have an existing mortgage?" ):
+        elif(str(tableName)==("Existing Mortgage Details")):            
+            if(str(DetailTable.columns[0]).find("xisting Mortgage Detai")>=0  or str(DetailTable.columns[0]).find("Do you have an existing mortgage?")>=0):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Do you have an existing mortgage?"):
+                if(str(row[0]).find("Do you have an existing mortgage?")>=0):
                     return True
-        elif(tableName == "Existing Mortgage Details1"):
-            if(DetailTable.columns[0] == "Owner"):
+        elif(str(tableName)==("Existing Mortgage Details1")):
+            if(str(DetailTable.columns[0]).find("Owner")>=0):
                 return True
             for i, row in DetailTable.iterrows():
-                if(str(row[0]).find("Owner")  != -1):
+                if(str(row[0]).find("Owner")>=0  ):
                     return True
-        elif(tableName == "Mortgage Requirements"):            
-            if(DetailTable.columns[0] == "ortgage Requirements" or DetailTable.columns[0] == "Mortgage Requirements"):
+        elif(str(tableName)==("Mortgage Requirements")):            
+            if(str(DetailTable.columns[0]).find("ortgage Requirements")>=0 or str(DetailTable.columns[0]).find("Mortgage Requirements")>=0):
                 return True
             for i, row in DetailTable.iterrows():
-                if(str(row[0]).lower().find("unique identifier")  != -1):                    
+                if(str(row[0]).lower().find("unique identifier")>=0) :                    
                     return True
-        elif(tableName == "Property Details"):            
-            if(DetailTable.columns[0] == "roperty Details"):
+        elif(str(tableName)==("Property Details")):            
+            if(str(DetailTable.columns[0]).find("roperty Details")>=0):
                 return True    
-        elif(tableName == "Mortgage Preferences & Attitude to Risk"):            
-            if(DetailTable.columns[0] == "ortgage Preferences & Attitude to Risk"):
+        elif(str(tableName).find("Mortgage Preferences & Attitude to Risk")>=0):            
+            if(str(DetailTable.columns[0]).find("ortgage Preferences & Attitude to Risk")>=0):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Do you want the certainty of the mortgage being repaid at the end of the term?"):
+                if(str(row[0]).find("Do you want the certainty of the")>=0):
                     return True        
-        elif(tableName == "Which of the following are important to you?"):            
-            if(DetailTable.columns[0] == "hich of the following are important to you?"):
+        elif(str(tableName)==("Which of the following are important to you")):            
+            if(str(DetailTable.columns[0]).find("hich of the following are important to you")>=0):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "The maximum early redemption period I would accept is"):
+                if(str(row[0]).find("The maximum early redemption period I would accept is")>=0):
                     return True        
-        elif(tableName == "Final Salary Pension Schemes"):            
-            if(DetailTable.columns[0] == "inal Salary Pension Schemes" or DetailTable.columns[0]=="Do you have any existing final salary schemes?"):
+        elif(str(tableName)==("Final Salary Pension Schemes")):            
+            if(str(DetailTable.columns[0]).find("inal Salary Pension Schemes")>=0 or str(DetailTable.columns[0]).find("Do you have any existing final salary schemes")>=0):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0] == "Do you have any existing final salary schemes?"):
+                if(str(row[0]).find("Do you have any existing final salary schemes")>=0):
                     return True        
         return False
 
