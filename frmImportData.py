@@ -191,7 +191,7 @@ class ImportData:
 
             
                 
-    def fnc_GenrateControl(self, ParentContainer, DetailTable, FindingColumnIndex, FromPosition, IO_Name, IO_Template_Name, Suffix):
+    def fnc_GenrateControl(self, ParentContainer, DetailTable, FindingColumnIndex, FromPosition, IO_Name, IO_Template_Name, Suffix,HaveDtValue=True):
         if(IO_Name=="Repayment Method"):
             pass
         if(self.IsEvenColumn):
@@ -202,7 +202,7 @@ class ImportData:
             self.gridcolumnindex = 0
             self.gridrowindex = self.gridrowindex+1
         FindingValue = ""
-        if ((not("[M]" in IO_Name)) and (DetailTable != None)):
+        if ((not("[M]" in IO_Name)) and HaveDtValue):
             for i, j in DetailTable.iterrows():
                 if(i < FromPosition):
                     continue
@@ -224,7 +224,7 @@ class ImportData:
         entrybox.grid(row=self.gridrowindex, column=(
             self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
 
-    def fnc_GenrateControl_Vertical(self, ParentContainer, DetailTable, FindingColumnIndex, FindingRowIndex, IO_Name, IO_Template_Name, Suffix,CastToInt=False):
+    def fnc_GenrateControl_Vertical(self, ParentContainer, DetailTable, FindingColumnIndex, FindingRowIndex, IO_Name, IO_Template_Name, Suffix,CastToInt=False,HaveDtValue=True):
         if(self.IsEvenColumn):
             self.IsEvenColumn = False
             self.gridcolumnindex = 2
@@ -233,7 +233,7 @@ class ImportData:
             self.gridcolumnindex = 0
             self.gridrowindex = self.gridrowindex+1
         FindingValue = ""
-        if ((not("[M]" in IO_Name) and FindingRowIndex > 0) and DetailTable != None):
+        if ((not("[M]" in IO_Name) and FindingRowIndex > 0) and HaveDtValue):
             for i, j in DetailTable.iterrows():
                 if(i < FindingRowIndex):
                     continue
@@ -256,7 +256,7 @@ class ImportData:
         entrybox.grid(row=self.gridrowindex, column=(
             self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
 
-    def fnc_GenrateControl_Vertical_asset(self, ParentContainer, FindingValue, IO_Name, Suffix):
+    def fnc_GenrateControl_Vertical_asset(self, ParentContainer, FindingValue, IO_Name, Suffix,HaveDtValue=True):
         if(self.IsEvenColumn):
             self.IsEvenColumn = False
             self.gridcolumnindex = 2
@@ -636,7 +636,7 @@ class ImportData:
         else:
             for ioindex, x in enumerate(self.config.IO_Name_CurrentAddress):
                         self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x,
-                                                self.config.IO_Template_CurrentAddress[ioindex], "txt_CurrentAddress_"+str(Applicantid))
+                                                self.config.IO_Template_CurrentAddress[ioindex], "txt_CurrentAddress_"+str(Applicantid),False)
 
 
     def fnc_Read_PreviousAddress_IO_Template(self, ParentContainer, Applicantid):
