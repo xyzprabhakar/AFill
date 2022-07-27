@@ -202,7 +202,7 @@ class ImportData:
             self.gridcolumnindex = 0
             self.gridrowindex = self.gridrowindex+1
         FindingValue = ""
-        if (not("[M]" in IO_Name)):
+        if ((not("[M]" in IO_Name)) and (DetailTable != None)):
             for i, j in DetailTable.iterrows():
                 if(i < FromPosition):
                     continue
@@ -233,7 +233,7 @@ class ImportData:
             self.gridcolumnindex = 0
             self.gridrowindex = self.gridrowindex+1
         FindingValue = ""
-        if (not("[M]" in IO_Name) and FindingRowIndex > 0):
+        if ((not("[M]" in IO_Name) and FindingRowIndex > 0) and DetailTable != None):
             for i, j in DetailTable.iterrows():
                 if(i < FindingRowIndex):
                     continue
@@ -633,6 +633,11 @@ class ImportData:
                     self.gridrowindex = self.gridrowindex+1
                     #ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
                 PreviousAddressCounter += 1
+        else:
+            for ioindex, x in enumerate(self.config.IO_Name_CurrentAddress):
+                        self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x,
+                                                self.config.IO_Template_CurrentAddress[ioindex], "txt_CurrentAddress_"+str(Applicantid))
+
 
     def fnc_Read_PreviousAddress_IO_Template(self, ParentContainer, Applicantid):
         self.gridrowindex, self.gridcolumnindex = -1, 0
