@@ -192,86 +192,95 @@ class ImportData:
             
                 
     def fnc_GenrateControl(self, ParentContainer, DetailTable, FindingColumnIndex, FromPosition, IO_Name, IO_Template_Name, Suffix,HaveDtValue=True):
-        if(IO_Name=="Repayment Method"):
-            pass
-        if(self.IsEvenColumn):
-            self.IsEvenColumn = False
-            self.gridcolumnindex = 2
-        else:
-            self.IsEvenColumn = True
-            self.gridcolumnindex = 0
-            self.gridrowindex = self.gridrowindex+1
-        FindingValue = ""
-        if ((not("[M]" in IO_Name)) and HaveDtValue):
-            for i, j in DetailTable.iterrows():
-                if(i < FromPosition):
-                    continue
-                try:
-                    if(j[0] == IO_Template_Name):
-                        FindingValue = j[FindingColumnIndex]
+        try:
+            if(IO_Name=="Repayment Method"):
+                pass
+            if(self.IsEvenColumn):
+                self.IsEvenColumn = False
+                self.gridcolumnindex = 2
+            else:
+                self.IsEvenColumn = True
+                self.gridcolumnindex = 0
+                self.gridrowindex = self.gridrowindex+1
+            FindingValue = ""
+            if ((not("[M]" in IO_Name)) and HaveDtValue):
+                for i, j in DetailTable.iterrows():
+                    if(i < FromPosition):
+                        continue
+                    try:
+                        if(j[0] == IO_Template_Name):
+                            FindingValue = j[FindingColumnIndex]
+                            if(str(FindingValue) == "nan"):
+                                FindingValue = ""
+                            break
+
+                    except Exception as ex:
+                        print("Error", ex)
+            ttk.Label(ParentContainer, text=IO_Name.replace('[M]', '').replace('[D]', '')).grid(
+                row=self.gridrowindex, column=self.gridcolumnindex, sticky=tk.N+tk.S+tk.E, padx=(10, 10), pady=(5, 2))
+            txtboxname = Suffix+IO_Name.strip().replace(' ',
+                                                        '_').replace('[M]', '').replace('[D]', '')
+            entrybox = ttk.Entry(ParentContainer, name=txtboxname)
+            entrybox.insert(0, self.fncReplaceName(FindingValue) )
+            entrybox.grid(row=self.gridrowindex, column=(
+                self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
+        except Exception as ex:
+                print("Error", ex)
+
+    def fnc_GenrateControl_Vertical(self, ParentContainer, DetailTable, FindingColumnIndex, FindingRowIndex, IO_Name, IO_Template_Name, Suffix,CastToInt=False,HaveDtValue=True):
+        try:
+            if(self.IsEvenColumn):
+                self.IsEvenColumn = False
+                self.gridcolumnindex = 2
+            else:
+                self.IsEvenColumn = True
+                self.gridcolumnindex = 0
+                self.gridrowindex = self.gridrowindex+1
+            FindingValue = ""
+            if ((not("[M]" in IO_Name) and FindingRowIndex > 0) and HaveDtValue):
+                for i, j in DetailTable.iterrows():
+                    if(i < FindingRowIndex):
+                        continue
+                    try:
+                        if(CastToInt):
+                            FindingValue = int(j[FindingColumnIndex]) 
+                        else:
+                            FindingValue = j[FindingColumnIndex] 
                         if(str(FindingValue) == "nan"):
                             FindingValue = ""
                         break
-
-                except Exception as ex:
-                    print("Error", ex)
-        ttk.Label(ParentContainer, text=IO_Name.replace('[M]', '').replace('[D]', '')).grid(
-            row=self.gridrowindex, column=self.gridcolumnindex, sticky=tk.N+tk.S+tk.E, padx=(10, 10), pady=(5, 2))
-        txtboxname = Suffix+IO_Name.strip().replace(' ',
-                                                    '_').replace('[M]', '').replace('[D]', '')
-        entrybox = ttk.Entry(ParentContainer, name=txtboxname)
-        entrybox.insert(0, self.fncReplaceName(FindingValue) )
-        entrybox.grid(row=self.gridrowindex, column=(
-            self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
-
-    def fnc_GenrateControl_Vertical(self, ParentContainer, DetailTable, FindingColumnIndex, FindingRowIndex, IO_Name, IO_Template_Name, Suffix,CastToInt=False,HaveDtValue=True):
-        if(self.IsEvenColumn):
-            self.IsEvenColumn = False
-            self.gridcolumnindex = 2
-        else:
-            self.IsEvenColumn = True
-            self.gridcolumnindex = 0
-            self.gridrowindex = self.gridrowindex+1
-        FindingValue = ""
-        if ((not("[M]" in IO_Name) and FindingRowIndex > 0) and HaveDtValue):
-            for i, j in DetailTable.iterrows():
-                if(i < FindingRowIndex):
-                    continue
-                try:
-                    if(CastToInt):
-                        FindingValue = int(j[FindingColumnIndex]) 
-                    else:
-                        FindingValue = j[FindingColumnIndex] 
-                    if(str(FindingValue) == "nan"):
-                        FindingValue = ""
-                    break
-                except Exception as ex:
-                    print("Error", ex)
-        ttk.Label(ParentContainer, text=IO_Name.replace('[M]', '').replace('[D]', '')).grid(
-            row=self.gridrowindex, column=self.gridcolumnindex, sticky=tk.N+tk.S+tk.E, padx=(10, 10), pady=(5, 2))
-        txtboxname = Suffix+IO_Name.strip().replace(' ',
-                                                    '_').replace('[M]', '').replace('[D]', '')
-        entrybox = ttk.Entry(ParentContainer, name=txtboxname)
-        entrybox.insert(0,self.fncReplaceName(FindingValue) )
-        entrybox.grid(row=self.gridrowindex, column=(
-            self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
+                    except Exception as ex:
+                        print("Error", ex)
+            ttk.Label(ParentContainer, text=IO_Name.replace('[M]', '').replace('[D]', '')).grid(
+                row=self.gridrowindex, column=self.gridcolumnindex, sticky=tk.N+tk.S+tk.E, padx=(10, 10), pady=(5, 2))
+            txtboxname = Suffix+IO_Name.strip().replace(' ',
+                                                        '_').replace('[M]', '').replace('[D]', '')
+            entrybox = ttk.Entry(ParentContainer, name=txtboxname)
+            entrybox.insert(0,self.fncReplaceName(FindingValue) )
+            entrybox.grid(row=self.gridrowindex, column=(
+                self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
+        except Exception as ex:
+                print("Error", ex)
 
     def fnc_GenrateControl_Vertical_asset(self, ParentContainer, FindingValue, IO_Name, Suffix,HaveDtValue=True):
-        if(self.IsEvenColumn):
-            self.IsEvenColumn = False
-            self.gridcolumnindex = 2
-        else:
-            self.IsEvenColumn = True
-            self.gridcolumnindex = 0
-            self.gridrowindex = self.gridrowindex+1          
-        ttk.Label(ParentContainer, text=IO_Name.replace('[M]', '').replace('[D]', '')).grid(
-            row=self.gridrowindex, column=self.gridcolumnindex, sticky=tk.N+tk.S+tk.E, padx=(10, 10), pady=(5, 2))
-        txtboxname = Suffix+IO_Name.strip().replace(' ',
-                                                    '_').replace('[M]', '').replace('[D]', '')
-        entrybox = ttk.Entry(ParentContainer, name=txtboxname)
-        entrybox.insert(0,self.fncReplaceName( FindingValue))
-        entrybox.grid(row=self.gridrowindex, column=(
-            self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
+        try:
+            if(self.IsEvenColumn):
+                self.IsEvenColumn = False
+                self.gridcolumnindex = 2
+            else:
+                self.IsEvenColumn = True
+                self.gridcolumnindex = 0
+                self.gridrowindex = self.gridrowindex+1          
+            ttk.Label(ParentContainer, text=IO_Name.replace('[M]', '').replace('[D]', '')).grid(
+                row=self.gridrowindex, column=self.gridcolumnindex, sticky=tk.N+tk.S+tk.E, padx=(10, 10), pady=(5, 2))
+            txtboxname = Suffix+IO_Name.strip().replace(' ',
+                                                        '_').replace('[M]', '').replace('[D]', '')
+            entrybox = ttk.Entry(ParentContainer, name=txtboxname)
+            entrybox.insert(0,self.fncReplaceName( FindingValue))
+            entrybox.grid(row=self.gridrowindex, column=(
+                self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
+        except Exception as ex:
+                print("Error", ex)
 
 
     def fun_mergetables(self, table, IsPrentTable, IncludeHeader=False):
@@ -491,7 +500,7 @@ class ImportData:
                     continue
                 if(row[0] == "Addressee" and (not FoundApplicant)):
                     RowIndex = i
-                    if(row[ColumnIndex] == Adressee):
+                    if(str(row[ColumnIndex]).replace(' ','').lower() == str(Adressee).replace(' ','').lower() ):
                         FoundApplicant = True
                     else:
                         if(ColumnIndex+1 <= columnLength-1):
@@ -499,7 +508,7 @@ class ImportData:
                         else:
                             return self.fnc_Read_Address_GetRowColumnIndex(DetailTable, PreviousRowIndex+10, 0, Adressee, IsCurrentAddress)
                 if(FoundApplicant):
-                    if(row[0] == "Address Status" and ((IsCurrentAddress and row[ColumnIndex] == "Current Address") or (row[ColumnIndex] == "Previous Address"))):
+                    if(str(row[0]).lower().replace(' ','')  == "addressstatus" and ((IsCurrentAddress and str(row[ColumnIndex]).replace(' ','').lower()  == "currentaddress") or (str(row[ColumnIndex]).replace(' ','').lower()  == "previousaddress"))):
                         IsFound = True
                         break
                     if(row[0] == "Addressee" and i > RowIndex):
@@ -540,7 +549,7 @@ class ImportData:
                     continue
                 if(row[0] == "Owner"):
                     RowIndex = i
-                    if(row[ColumnIndex] == Adressee or row[ColumnIndex] == Adressee+".1" or row[ColumnIndex] == Adressee+".2" or row[ColumnIndex] == Adressee+".3" or (ApplicantId == 1 and row[ColumnIndex] == "Joint")):
+                    if(str(row[ColumnIndex]).lower().replace(' ','')  == str(Adressee).lower().replace(' ','')  or str(row[ColumnIndex]).lower().replace(' ','') == str(Adressee+".1").lower().replace(' ','') or str(row[ColumnIndex]).lower().replace(' ','') == str(Adressee+".2").lower().replace(' ','') or str(row[ColumnIndex]).lower().replace(' ','') == str(Adressee+".3").lower().replace(' ','') or (ApplicantId == 1 and row[ColumnIndex] == "Joint")):
                         IsFound = True
                         break
                     else:
@@ -563,32 +572,35 @@ class ImportData:
         return CurrentIndex
 
     def fnc_Read_Vertical_GetRowColumnIndex(self, DetailTable, PreviousRowIndex, PreviousColumnIndex, Adressee, KeyData, KeyColumn):
-        IsFound = False
-        RowIndex = PreviousRowIndex
-        ColumnIndex = PreviousColumnIndex
-        CurrentIndex = {"row": RowIndex,
-                        "column": ColumnIndex, "IsFound": IsFound}
-        for i, row in DetailTable.iterrows():
-            try:
-                if(i < PreviousRowIndex):
-                    continue
-                if((row[ColumnIndex] == Adressee or row[ColumnIndex] == "Joint") and row[KeyColumn] == KeyData):
-                    RowIndex = i
-                    IsFound = True
-                    break
-            except Exception as ex:
+        try:
+            IsFound = False
+            RowIndex = PreviousRowIndex
+            ColumnIndex = PreviousColumnIndex
+            CurrentIndex = {"row": RowIndex,
+                            "column": ColumnIndex, "IsFound": IsFound}
+            for i, row in DetailTable.iterrows():
+                try:
+                    if(i < PreviousRowIndex):
+                        continue
+                    if(( str(row[ColumnIndex]).lower().replace(' ','') == str(Adressee).lower().replace(' ','') or row[ColumnIndex] == "Joint") and row[KeyColumn] == KeyData):
+                        RowIndex = i
+                        IsFound = True
+                        break
+                except Exception as ex:
+                    print("Error", ex)
+            if(IsFound):
+                CurrentIndex["row"] = RowIndex
+                CurrentIndex["column"] = ColumnIndex
+                CurrentIndex["IsFound"] = True
+            return CurrentIndex
+        except Exception as ex:
                 print("Error", ex)
-        if(IsFound):
-            CurrentIndex["row"] = RowIndex
-            CurrentIndex["column"] = ColumnIndex
-            CurrentIndex["IsFound"] = True
-        return CurrentIndex
 
     def fnc_Read_CurrentAddress_IO_Template(self, ParentContainer, Applicantid):
         self.gridrowindex, self.gridcolumnindex = -1, 0
         columnIndex, rowIndex = 0, 0
         DetailTable = None
-        foundTable, foundItem = False, False
+        foundTable, foundItem,foundAnyItem = False, False,False
         self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
         for tableindex, table in enumerate(self.tables):
             if(tableindex<self.SkipTable):
@@ -621,6 +633,7 @@ class ImportData:
                     DetailTable, PreviousRowIndex, PreviousColumnIndex, Addressee, True)
                 foundItem = tempData["IsFound"]
                 if(foundItem):
+                    foundAnyItem=True
                     PreviousColumnIndex = tempData["column"]
                     PreviousRowIndex = tempData["row"]
                     rowIndex = PreviousRowIndex
@@ -633,7 +646,7 @@ class ImportData:
                     self.gridrowindex = self.gridrowindex+1
                     #ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
                 PreviousAddressCounter += 1
-        else:
+        if ((not foundAnyItem) and Applicantid == 1):
             for ioindex, x in enumerate(self.config.IO_Name_CurrentAddress):
                         self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x,
                                                 self.config.IO_Template_CurrentAddress[ioindex], "txt_CurrentAddress_"+str(Applicantid),False)
@@ -643,7 +656,7 @@ class ImportData:
         self.gridrowindex, self.gridcolumnindex = -1, 0
         columnIndex, rowIndex = 0, 0
         DetailTable = None
-        foundTable, foundItem = False, False
+        foundTable, foundItem,foundAnyItem = False, False,False
         self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
 
         if(self.CurrentAddressFound):
@@ -686,6 +699,7 @@ class ImportData:
                     PreviousRowIndex = tempData["row"]
                     rowIndex = PreviousRowIndex
                     columnIndex = PreviousColumnIndex
+                    foundAnyItem=True
                     for ioindex, x in enumerate(self.config.IO_Name_PreviousAddress):
                         self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x,
                                                 self.config.IO_Template_PreviousAddress[ioindex], "txt_PreviousAddress_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid))
@@ -694,6 +708,12 @@ class ImportData:
                     ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
                         row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
                 PreviousAddressCounter += 1
+        if ((not foundAnyItem) and Applicantid == 1):
+            PreviousAddressCounter=0
+            for ioindex, x in enumerate(self.config.IO_Name_PreviousAddress):
+                        self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x,
+                                                self.config.IO_Template_PreviousAddress[ioindex], "txt_PreviousAddress_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid),False)
+
 
     def fnc_Read_ContactDetails_IO_Template(self, ParentContainer, Applicantid):
         self.gridrowindex, self.gridcolumnindex = -1, 0
@@ -738,7 +758,7 @@ class ImportData:
         self.gridrowindex, self.gridcolumnindex = -1, 0
         columnIndex, rowIndex, columnLength = 0, 0,0
         DetailTable = None
-        foundTable, foundItem = False, False
+        foundTable, foundItem ,foundAnyItem = False, False,False
         self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
         
         for tableindex, table in enumerate(self.tables):
@@ -774,6 +794,7 @@ class ImportData:
                     PreviousRowIndex = tempData["row"]
                     rowIndex = PreviousRowIndex
                     columnIndex = PreviousColumnIndex
+                    foundAnyItem=True
                     for ioindex, x in enumerate(self.config.IO_Name_ProfessionalContacts):
                         self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x,
                                                 self.config.IO_Template_ProfessionalContacts[ioindex], "txt_ProfessionalContacts_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid))
@@ -783,12 +804,17 @@ class ImportData:
                         row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
                     PreviousColumnIndex+1
                 PreviousAddressCounter += 1
+        if ((not foundAnyItem) and Applicantid == 1):
+            PreviousAddressCounter=0
+            for ioindex, x in enumerate(self.config.IO_Name_ProfessionalContacts):                
+                self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x,
+                                                self.config.IO_Template_ProfessionalContacts[ioindex], "txt_ProfessionalContacts_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid),False)
 
     def fnc_Read_BankAccountDetails_IO_Template(self, ParentContainer, Applicantid):
         self.gridrowindex, self.gridcolumnindex = -1, 0
         columnIndex, rowIndex = 0, 0
         DetailTable = None
-        foundTable, foundItem = False, False
+        foundTable, foundItem ,foundAnyItem = False, False,False
         self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
         for tableindex, table in enumerate(self.tables):
             if(tableindex<self.SkipTable):
@@ -824,6 +850,7 @@ class ImportData:
                     PreviousRowIndex = tempData["row"]
                     rowIndex = PreviousRowIndex
                     columnIndex = PreviousColumnIndex
+                    foundAnyItem = True
                     for ioindex, x in enumerate(self.config.IO_Name_BankAccountDetails):
                         self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x, self.config.IO_Template_BankAccountDetails[
                                                 ioindex], "txt_BankAccountDetails_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid))
@@ -832,11 +859,17 @@ class ImportData:
                     ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
                         row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
                 PreviousAddressCounter += 1
+        if ((not foundAnyItem) and Applicantid == 1):
+            PreviousAddressCounter=0
+            for ioindex, x in enumerate(self.config.IO_Name_BankAccountDetails):
+                        self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x, self.config.IO_Template_BankAccountDetails[
+                                                ioindex], "txt_BankAccountDetails_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid),False)
+
     
     def fnc_Read_FamilyAndDependants_IO_Template(self, ParentContainer, Applicantid):
         self.gridrowindex, self.gridcolumnindex = -1, 0
         DetailTable = None
-        foundTable, foundItem = False, False
+        foundTable, foundAnyItem = False, False
         membercounter=0
         self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
         for tableindex, table in enumerate(self.tables):
@@ -861,7 +894,9 @@ class ImportData:
                 Applicantid == 1) else self.varApplicant2.get() if (Applicantid == 2) else ""
             for i, row in DetailTable.iterrows():
                 try:
+                    
                     if(row[4] == Addressee or  (row[4] == "Joint" and Applicantid== 1)):
+                        foundAnyItem=True
                         membercounter=membercounter+1
                         self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 0,i, "Full Name",
                                                  "Full Name", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid))
@@ -884,12 +919,30 @@ class ImportData:
                         self.IsEvenColumn = False
                 except Exception as ex:
                     print("Error", ex) 
+        if ((not foundAnyItem) and Applicantid == 1):
+            membercounter=1
+            i=0
+            self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 0,i, "Full Name",
+                                                 "Full Name", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid),False,False)
+            self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 1,i, "Date of Birth",
+                                        "Date of Birth", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid),False,False)                        
+            self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 2,i, "Age",
+                                        "Age", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid),False,False)
+            self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 3,i, "Relationship",
+                                        "Relationship", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid),False,False)
+            self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 4,i, "Related To",
+                                        "Related To", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid),False,False)
+            self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 5,i, "Financially Dependant",
+                                        "Financially Dependant", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid),False,False)
+            self.fnc_GenrateControl_Vertical(ParentContainer, DetailTable, 7,i, "Dependant Living with Client",
+                                        "Dependant Living with Client", "txt_FamilyAndDependants_"+str(membercounter)+"_"+str(Applicantid),False,False)
+
             
     def fnc_Read_IDVerification_IO_Template(self, ParentContainer, Applicantid):
         self.gridrowindex, self.gridcolumnindex = -1, 0
         columnIndex, rowIndex = 0, 0
         DetailTable = None
-        foundTable, foundItem = False, False
+        foundTable, foundItem ,foundAnyItem = False, False,False
         self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
         for tableindex, table in enumerate(self.tables):
             if(tableindex<self.SkipTable):
@@ -925,6 +978,7 @@ class ImportData:
                     PreviousRowIndex = tempData["row"]
                     rowIndex = PreviousRowIndex
                     columnIndex = PreviousColumnIndex
+                    foundAnyItem=True
                     for ioindex, x in enumerate(self.config.IO_Name_IDVerification):
                         self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x,
                                                 self.config.IO_Template_IDVerification[ioindex], "txt_IDVerification_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid))
@@ -933,12 +987,17 @@ class ImportData:
                     ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
                         row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
                 PreviousAddressCounter += 1
+        if ((not foundAnyItem) and Applicantid == 1):
+            PreviousAddressCounter=0
+            for ioindex, x in enumerate(self.config.IO_Name_IDVerification):
+                        self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x,
+                                                self.config.IO_Template_IDVerification[ioindex], "txt_IDVerification_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid),False)
     
     def fnc_Read_CurrentEmploymentDetails_IO_Template(self, ParentContainer, Applicantid):
         self.gridrowindex, self.gridcolumnindex = -1, 0
         columnIndex, rowIndex = 0, 0
         DetailTable = None
-        foundTable, foundItem = False, False
+        foundTable, foundItem ,foundAnyItem = False, False,False
         
         self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
         for tableindex, table in enumerate(self.tables):
@@ -979,6 +1038,7 @@ class ImportData:
                     PreviousRowIndex = tempData["row"]
                     rowIndex = PreviousRowIndex
                     columnIndex = PreviousColumnIndex
+                    foundAnyItem=True
                     for ioindex, x in enumerate(self.config.IO_Name_CurrentEmploymentDetails):
                         self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x,
                                                 self.config.IO_Template_CurrentEmploymentDetails[ioindex], "txt_CurrentEmploymentDetails_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid))
@@ -986,6 +1046,11 @@ class ImportData:
                     self.gridrowindex = self.gridrowindex+1
                     #ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
                 PreviousAddressCounter += 1
+        if ((not foundAnyItem) and Applicantid == 1):
+            PreviousAddressCounter=0
+            for ioindex, x in enumerate(self.config.IO_Name_CurrentEmploymentDetails):                
+                        self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x,
+                                                self.config.IO_Template_CurrentEmploymentDetails[ioindex], "txt_CurrentEmploymentDetails_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid),False)
 
     def fnc_combinedRows(self,combinedRows,r1,r2,r3,r4):
         if(r1==None):
@@ -1050,7 +1115,7 @@ class ImportData:
     def fnc_Read_Assets_IO_Template(self, ParentContainer, Applicantid):
         self.gridrowindex, self.gridcolumnindex = -1, 0
         DetailTable = None
-        foundTable, foundItem,foundAssetTable = False, False,False
+        foundTable, foundItem,foundAssetTable,foundAnyItem = False, False,False,False
         membercounter=0
         self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
         for tableindex, table in enumerate(self.tables):
@@ -1073,7 +1138,7 @@ class ImportData:
                 foundTable = True
                 self.CurrentAddressFound = True
                 break
-        if(foundTable):
+        if (foundTable):
             Addressee = self.varApplicant1.get() if (
                 Applicantid == 1) else self.varApplicant2.get() if (Applicantid == 2) else ""
             combinedRows=0            
@@ -1087,6 +1152,7 @@ class ImportData:
                     continue
                 if (combinedRows>0):                    
                     try:
+                        foundAnyItem=True
                         membercounter=membercounter+1
                         rowValue= self.fnc_combinedRows(combinedRows,DetailTable.iloc[i][0],  DetailTable.iloc[i+1][0] if(combinedRows>1)else "" ,DetailTable.iloc[i+2][0] if(combinedRows>2)else "",DetailTable.iloc[i+3][0] if(combinedRows>3)else "")                        
                         self.fnc_GenrateControl_Vertical_asset(ParentContainer,rowValue, "Owner", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid))
@@ -1119,12 +1185,29 @@ class ImportData:
                     except Exception as ex:
                         print("Error", ex) 
                     i=i+combinedRows
+        if ((not foundAnyItem) and Applicantid == 1):
+            membercounter=1
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Owner", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid),False)            
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Category", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid),False)            
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Related To Address", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid),False)
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Address Line 1[M]", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid),False)
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Address Line 2[M]", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid),False)
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Address Line 3[M]", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid),False)
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Address Line 4[M]", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid),False)
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "City[M]", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid),False)
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Country[M]", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid),False)
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Postcode[M]", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid),False)
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Original Value", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid),False)
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Purchased On", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid),False)
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Value", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid),False)
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Valuation Date", "txt_Assets_"+str(membercounter)+"_"+str(Applicantid),False)
+                        
 
     def fnc_Read_Liabilities_IO_Template(self, ParentContainer, Applicantid):
         self.gridrowindex, self.gridcolumnindex = -1, 0
         columnIndex, rowIndex = 0, 0
         DetailTable = None
-        foundTable, foundItem,Liabilities = False, False,False        
+        foundTable, foundItem,Liabilities,foundAnyItem = False, False,False,False
         self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
         for tableindex, table in enumerate(self.tables):
             if(tableindex<self.SkipTable):
@@ -1150,7 +1233,7 @@ class ImportData:
                 foundTable = True
                 self.CurrentAddressFound = True
                 break
-        if(foundTable):
+        if (foundTable):
             PreviousAddressCounter = 0
             PreviousColumnIndex = 0
             PreviousRowIndex = 0
@@ -1167,6 +1250,7 @@ class ImportData:
                     PreviousRowIndex = tempData["row"]
                     rowIndex = PreviousRowIndex
                     columnIndex = PreviousColumnIndex
+                    foundAnyItem=True
                     for ioindex, x in enumerate(self.config.IO_Name_Liabilities):
                         self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x, self.config.IO_Template_Liabilities[
                                                 ioindex], "txt_Liabilities_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid))
@@ -1175,11 +1259,16 @@ class ImportData:
                     ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
                         row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
                 PreviousAddressCounter += 1
+        if ((not foundAnyItem) and Applicantid == 1):
+            for ioindex, x in enumerate(self.config.IO_Name_Liabilities):
+                        self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x, self.config.IO_Template_Liabilities[
+                                                ioindex], "txt_Liabilities_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid),False)
+
 
     def fnc_Read_Expenditure_IO_Template(self, ParentContainer, Applicantid):
         self.gridrowindex, self.gridcolumnindex = -1, 0
         DetailTable = None
-        foundTable, foundItem,Expenditure,membercounter = False, False,False,0
+        foundTable, foundItem,Expenditure,membercounter,foundAnyItem = False, False,False,0,False
         self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
         for tableindex, table in enumerate(self.tables):
             if(tableindex<self.SkipTable):
@@ -1205,7 +1294,7 @@ class ImportData:
                 foundTable = True
                 self.CurrentAddressFound = True
                 break
-        if(foundTable):
+        if (foundTable):
             Addressee = self.varApplicant1.get() if (
                 Applicantid == 1) else self.varApplicant2.get() if (Applicantid == 2) else ""
             for ioindex, x in enumerate(self.config.IO_Name_Expenditure1):
@@ -1216,6 +1305,7 @@ class ImportData:
                         DetailTable, 0, 1, Addressee, self.config.IO_Template_Expenditure1[ioindex], 0)
                     foundItem = tempData["IsFound"]
                     if(foundItem):
+                        foundAnyItem=True
                         membercounter=membercounter+1
                         PreviousRowIndex = tempData["row"]                        
                         self.fnc_GenrateControl_Vertical_asset(ParentContainer,x, "Category", "txt_Expenditure_"+str(membercounter)+"_"+str(Applicantid))
@@ -1232,12 +1322,20 @@ class ImportData:
                         row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
                         self.gridrowindex = self.gridrowindex+1
                         self.IsEvenColumn = False
+        if ((not foundAnyItem) and Applicantid == 1):
+            membercounter=1                        
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Category", "txt_Expenditure_"+str(membercounter)+"_"+str(Applicantid),False)            
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Owner", "txt_Expenditure_"+str(membercounter)+"_"+str(Applicantid),False)
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Description", "txt_Expenditure_"+str(membercounter)+"_"+str(Applicantid),False)
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Net Amount", "txt_Expenditure_"+str(membercounter)+"_"+str(Applicantid),False)
+            self.fnc_GenrateControl_Vertical_asset(ParentContainer,"", "Frequency", "txt_Expenditure_"+str(membercounter)+"_"+str(Applicantid),False)
+
 
     def fnc_Read_ExistingMortgageDetails_IO_Template(self, ParentContainer, Applicantid):
         self.gridrowindex, self.gridcolumnindex = -1, 0
         columnIndex, rowIndex = 0, 0
         DetailTable = None
-        foundTable, foundItem,ExistingMortgageDetails= False, False,False        
+        foundTable, foundItem,ExistingMortgageDetails,foundAnyItem = False, False,False ,False
         self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
         for tableindex, table in enumerate(self.tables):
             if(tableindex<self.SkipTable):
@@ -1284,6 +1382,7 @@ class ImportData:
                     PreviousRowIndex = tempData["row"]
                     rowIndex = PreviousRowIndex
                     columnIndex = PreviousColumnIndex
+                    foundAnyItem=True
                     for ioindex, x in enumerate(self.config.IO_Name_ExistingMortgage):
                         self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x, self.config.IO_Template_ExistingMortgage[
                                                 ioindex], "txt_ExistingMortgage_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid))
@@ -1292,12 +1391,16 @@ class ImportData:
                     ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
                         row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
                 PreviousAddressCounter += 1
+        if ((not foundAnyItem) and Applicantid == 1):
+            for ioindex, x in enumerate(self.config.IO_Name_ExistingMortgage):
+                    self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x, self.config.IO_Template_ExistingMortgage[
+                                                ioindex], "txt_ExistingMortgage_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid),False)
 
     def fnc_Read_MortgageRequirements_IO_Template(self, ParentContainer, Applicantid):
         self.gridrowindex, self.gridcolumnindex = -1, 0
         columnIndex, rowIndex = 0, 0
         DetailTable = None
-        foundTable, foundItem= False, False
+        foundTable, foundItem, foundAnyItem= False, False,False
         self.RecursionDepthCount, self.CurrentDepthCount = 15, 0
         for tableindex, table in enumerate(self.tables):
             if(tableindex<self.SkipTable):
@@ -1335,6 +1438,7 @@ class ImportData:
                     PreviousRowIndex = tempData["row"]
                     rowIndex = PreviousRowIndex
                     columnIndex = PreviousColumnIndex
+                    foundAnyItem=True
                     for ioindex, x in enumerate(self.config.IO_Name_MortgageRequirements):                        
                         self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x, self.config.IO_Template_MortgageRequirements[
                                                 ioindex], "txt_MortgageRequirements_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid))
@@ -1343,6 +1447,12 @@ class ImportData:
                     ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(
                         row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
                 PreviousAddressCounter += 1
+        if ((not foundAnyItem) and Applicantid == 1):
+            PreviousAddressCounter=0
+            for ioindex, x in enumerate(self.config.IO_Name_MortgageRequirements):                        
+                        self.fnc_GenrateControl(ParentContainer, DetailTable, columnIndex, rowIndex, x, self.config.IO_Template_MortgageRequirements[
+                                                ioindex], "txt_MortgageRequirements_" + str(PreviousAddressCounter+1)+"_" + str(Applicantid),False)
+        
 
     def fnc_Read_whichofthefollowingareimportant_IO_Template(self, ParentContainer, Applicantid):
         if(Applicantid!=1):
