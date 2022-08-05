@@ -2143,12 +2143,12 @@ if __name__ == '__main__':
 
     #ctypes.windll.shcore.SetProcessDpiAwareness(1)
     root = tk.Tk()
-    sizex = 700
-    sizey = 500
+    sizex = 1000
+    sizey = 800
     posx = 100
     posy = 100
     root.wm_geometry("%dx%d+%d+%d" % (sizex, sizey, posx, posy))
-    myframe = tk.Frame(root, relief=tk.GROOVE, width=500, height=600, bd=1)
+    myframe = tk.Frame(root, relief=tk.GROOVE, width=800, height=800, bd=1)
     myframe.pack(fill="both", expand=tk.TRUE, anchor=tk.N+tk.W)
     config.set_theme(None, myframe)
     ImportData(myframe, config)
