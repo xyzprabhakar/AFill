@@ -1,5 +1,6 @@
 
 from ast import Return
+from csv import excel
 import ctypes
 from email.headerregistry import Address
 import os
@@ -85,7 +86,11 @@ class ImportData:
             frmDetailFrame = ttk.Frame(frmTopFrame ,name="frmDetailFrame_"+str(Applicantid)) 
             frmPersonalDetailsFrame = ttk.LabelFrame(frmDetailFrame,name="frmPersonalDetailsFrame_"+str(Applicantid), text="Personal Details", style="Details.TLabelframe")
             frmPersonalDetailsFrame.grid(row=0, column=0, sticky=tk.N+tk.W, pady=(10, 10), padx=(10, 10))
-            self.fnc_Read_PersonalDetails_IO_Template(frmPersonalDetailsFrame, Applicantid)            
+            try:
+                self.fnc_Read_PersonalDetails_IO_Template(frmPersonalDetailsFrame, Applicantid)            
+            except Exception as ex:
+                self.varError_.insert(tk.END,"\Error in Personal Detail "+ str(ex) )
+                
 
             
             frmAddressFrame = ttk.Notebook(frmDetailFrame,name="tab_Section_Address_"+str(Applicantid))
@@ -95,20 +100,29 @@ class ImportData:
             
             frmCurrentAddressFrame = ttk.Frame(frmAddressFrame, name="frmCurrentAddressFrame_"+str(Applicantid))    
             self.fnc_Read_CurrentAddress_IO_Template(frmCurrentAddressFrame, Applicantid)
-            frmAddressFrame.add(frmCurrentAddressFrame, text ='Current Address')            
+            try:
+                frmAddressFrame.add(frmCurrentAddressFrame, text ='Current Address')            
+            except Exception as ex:
+                self.varError_.insert(tk.END,"\Error in Current Address "+ str(ex))
 
             # Add Previous Address
             self.varError_.insert(tk.END,"\nAdding Previous Address")
             self.ContainerFrame.update()            
             frmPreviousAddressFrame = ttk.Frame(frmAddressFrame,name="frmPreviousAddressFrame_"+str(Applicantid))
             self.fnc_Read_PreviousAddress_IO_Template(frmPreviousAddressFrame, Applicantid)
-            frmAddressFrame.add(frmPreviousAddressFrame, text ='Previous Address')
+            try:
+                frmAddressFrame.add(frmPreviousAddressFrame, text ='Previous Address')
+            except Exception as ex:
+                self.varError_.insert(tk.END,"\Error in Previous Address "+ str(ex))
             # Contact Details
             self.varError_.insert(tk.END,"\nAdding Contact Details")
             self.ContainerFrame.update()            
             frmContactDetailFrame = ttk.LabelFrame(frmDetailFrame,name="frmContactDetailFrame_"+str(Applicantid) ,text="Contact Details", style="Details.TLabelframe")            
             self.fnc_Read_ContactDetails_IO_Template(frmContactDetailFrame, Applicantid)
-            frmContactDetailFrame.grid(row=1, column=0, sticky=tk.N+tk.W, pady=(10, 10), padx=(10, 10))
+            try:
+                frmContactDetailFrame.grid(row=1, column=0, sticky=tk.N+tk.W, pady=(10, 10), padx=(10, 10))
+            except Exception as ex:
+                self.varError_.insert(tk.END,"\Error in Contact Detail "+ str(ex))
 
             
             # ProfessionalContacts
@@ -116,13 +130,19 @@ class ImportData:
             self.ContainerFrame.update()
             frmProfessionalContactsFrame = ttk.Frame(frmAddressFrame,name="frmProfessionalContactsFrame_"+str(Applicantid))
             self.fnc_Read_ProfessionalContact_IO_Template(frmProfessionalContactsFrame, Applicantid)
-            frmAddressFrame.add(frmProfessionalContactsFrame, text ='Professional Contacts')
+            try:
+                frmAddressFrame.add(frmProfessionalContactsFrame, text ='Professional Contacts')
+            except Exception as ex:
+                self.varError_.insert(tk.END,"\Error in Professional Contatct "+ str(ex))
             # Bank Details
             self.varError_.insert(tk.END,"\nAdding Bank Details")
             self.ContainerFrame.update()
             frmBankDetailFrame = ttk.Frame(frmAddressFrame,name="frmBankDetailFrame_"+str(Applicantid))
             self.fnc_Read_BankAccountDetails_IO_Template(frmBankDetailFrame, Applicantid)
-            frmAddressFrame.add(frmBankDetailFrame, text ='Bank Details')
+            try:
+                frmAddressFrame.add(frmBankDetailFrame, text ='Bank Details')
+            except Exception as ex:
+                self.varError_.insert(tk.END,"\Error in Banks Detail "+ str(ex))
 
             frmAddressFrame.grid(row=2, column=0, sticky=tk.N+tk.W+tk.E)
             frmTopFrame.add(frmDetailFrame, text ='Details')
@@ -135,19 +155,28 @@ class ImportData:
             self.ContainerFrame.update()
             frmFamilyAndDependantsrame = ttk.LabelFrame(frmTopFrame,name="frmFamilyAndDependantsrame_"+str(Applicantid), text="Family And Dependants", style="Details.TLabelframe")
             self.fnc_Read_FamilyAndDependants_IO_Template(frmFamilyAndDependantsrame, Applicantid)
-            frmTopFrame.add(frmFamilyAndDependantsrame, text ='Family')
+            try:
+                frmTopFrame.add(frmFamilyAndDependantsrame, text ='Family')
+            except Exception as ex:
+                self.varError_.insert(tk.END,"\Error in Family Details "+ str(ex))
             # ID Verfication
             self.varError_.insert(tk.END,"\nAdding ID Verfication")
             self.ContainerFrame.update()
             frmIDVerificationFrame = ttk.Frame(frmTopFrame,name="frmIDVerificationFrame_"+str(Applicantid))
-            self.fnc_Read_IDVerification_IO_Template(frmIDVerificationFrame, Applicantid)
+            try:
+                self.fnc_Read_IDVerification_IO_Template(frmIDVerificationFrame, Applicantid)
+            except Exception as ex:
+                self.varError_.insert(tk.END,"\Error in ID Verification "+ str(ex))
             frmTopFrame.add(frmIDVerificationFrame, text ='ID Verification')
 
             # Current Employment Details
             self.varError_.insert(tk.END,"\nAdding Current Employment Details")
             self.ContainerFrame.update()
             frmCurrentEmploymentDetailsFrame = ttk.LabelFrame(frmTopFrame,name="frmCurrentEmploymentDetailsFrame_"+str(Applicantid),text="Current Employment Details",style="Details.TLabelframe")
-            self.fnc_Read_CurrentEmploymentDetails_IO_Template(frmCurrentEmploymentDetailsFrame, Applicantid)           
+            try:
+                self.fnc_Read_CurrentEmploymentDetails_IO_Template(frmCurrentEmploymentDetailsFrame, Applicantid)           
+            except Exception as ex:
+                self.varError_.insert(tk.END,"\Error in Employment Detail "+ str(ex))
             frmTopFrame.add(frmCurrentEmploymentDetailsFrame, text ='Employment')
 
 
@@ -156,7 +185,10 @@ class ImportData:
             self.ContainerFrame.update()
             # Assets Details            
             frmAssetsFrame = ttk.Frame(frmAssetsLiabilitiesFrame,name="frmAssetsFrame_"+str(Applicantid))
-            self.fnc_Read_Assets_IO_Template(frmAssetsFrame, Applicantid)            
+            try:
+                self.fnc_Read_Assets_IO_Template(frmAssetsFrame, Applicantid)            
+            except Exception as ex:
+                self.varError_.insert(tk.END,"\Error in Assets "+ str(ex))
             frmAssetsLiabilitiesFrame.add(frmAssetsFrame, text ='Assets')
 
             
@@ -164,13 +196,19 @@ class ImportData:
             self.varError_.insert(tk.END,"\nAdding Liabilities")
             self.ContainerFrame.update()
             frmLiabilitiesFrame = ttk.Frame(frmAssetsLiabilitiesFrame,name="frmLiabilitiesFrame_"+str(Applicantid))
-            self.fnc_Read_Liabilities_IO_Template(frmLiabilitiesFrame, Applicantid)
+            try:
+                self.fnc_Read_Liabilities_IO_Template(frmLiabilitiesFrame, Applicantid)
+            except Exception as ex:
+                self.varError_.insert(tk.END,"\Error in Libilities "+ str(ex))
             frmAssetsLiabilitiesFrame.add(frmLiabilitiesFrame, text ='Liabilities')
             # Expenditure
             self.varError_.insert(tk.END,"\nAdding Expenditure")
             self.ContainerFrame.update()
             frmExpenditureFrame = ttk.Frame(frmAssetsLiabilitiesFrame,name="frmExpenditureFrame_"+str(Applicantid))
-            self.fnc_Read_Expenditure_IO_Template(frmExpenditureFrame, Applicantid)
+            try:
+                self.fnc_Read_Expenditure_IO_Template(frmExpenditureFrame, Applicantid)
+            except Exception as ex:
+                self.varError_.insert(tk.END,"\Error in Expenditure "+ str(ex))
             frmAssetsLiabilitiesFrame.add(frmExpenditureFrame, text ='Expenditure')
             frmTopFrame.add(frmAssetsLiabilitiesFrame, text ='Assets/Liabilities')
 
@@ -179,13 +217,19 @@ class ImportData:
             # ExistingMortgage
             self.varError_.insert(tk.END,"\nAdding Existing Mortgage")
             frmExistingMortgageFrame = ttk.Frame(frmMortgageFrame,name="frmExistingMortgageFrame_"+str(Applicantid))
-            self.fnc_Read_ExistingMortgageDetails_IO_Template(frmExistingMortgageFrame, Applicantid)
+            try:
+                self.fnc_Read_ExistingMortgageDetails_IO_Template(frmExistingMortgageFrame, Applicantid)
+            except Exception as ex:
+                self.varError_.insert(tk.END,"\Error in Existing Mortage "+ str(ex))
             frmMortgageFrame.add(frmExistingMortgageFrame, text ='Existing Mortgage')
             #Mortage Requirement
             self.varError_.insert(tk.END,"\nAdding Mortage Requirement")
             self.ContainerFrame.update()
             frmMortgageRequirementsFrame = ttk.Frame(frmMortgageFrame,name="frmMortgageRequirementsFrame_"+str(Applicantid))
-            self.fnc_Read_MortgageRequirements_IO_Template(frmMortgageRequirementsFrame, Applicantid)
+            try:
+                self.fnc_Read_MortgageRequirements_IO_Template(frmMortgageRequirementsFrame, Applicantid)
+            except Exception as ex:
+                self.varError_.insert(tk.END,"\Error in Mortagage Requirement "+ str(ex))
             frmMortgageFrame.add(frmMortgageRequirementsFrame, text ='Mortgage Requirements')
             frmTopFrame.add(frmMortgageFrame, text ='Mortgage')
 
@@ -398,10 +442,10 @@ class ImportData:
                 if(str(row[0]).find("Calculated Total Monthly Household Expenditure")>=0 ):
                     return True
         elif(str(tableName)==("Current Monthly Cash Flow")):
-            if(DetailTable.columns.find("urrent Monthly Cash Flow")>=0):
+            if(str(DetailTable.columns[0]).find("urrent Monthly Cash Flow")>=0):
                 return True
             for i, row in DetailTable.iterrows():
-                if(row[0].find("Total Net Monthly Income")>=0  ):
+                if(str(row[0]).find("Total Net Monthly Income")>=0  ):
                     return True
         elif(str(tableName)==("Existing Mortgage Details")):            
             if(str(DetailTable.columns[0]).find("xisting Mortgage Detai")>=0  or str(DetailTable.columns[0]).find("Do you have an existing mortgage?")>=0):
