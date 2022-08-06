@@ -1,2 +1,2 @@
 import tkinter
-print(tkinter.TkVersion)
+print("hello World")

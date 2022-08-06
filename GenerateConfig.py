@@ -3,7 +3,7 @@ import wget
 import configparser,os
 #from msilib.schema import Directory
 from ttkthemes import ThemedStyle
-
+from tkinter import messagebox
 
 
 class GenerateConfig:
@@ -115,15 +115,23 @@ class GenerateConfig:
 
     def __init__(self):   
         self.headerFonts= ("Verdana", 15, "bold")             
+        #self.initlizeAllVriable()
         self.LoadAllData()        
         if(self.FilePath ==None or self.FilePath==""):
             self.FilePath=os.getcwd()+"/data"
         
+    def initlizeAllVriable(self):
+        os.chdir(os.path.dirname(os.path.abspath(__file__)))
         
     
     def LoadAllData(self):
         if not os.path.exists(self.ConfigFileName):
+            print("Genrating new Fileat ",os.getcwd())
             self.fnc_CreateDefaultFile()
+            print( "Completed ",os.getcwd())
+        else:
+            print( "File Already genrated at ",os.getcwd())
+            
         self.config_file.read(self.ConfigFileName)
         
         self.Name = self.config_file['AFill_Register']['Name']
@@ -169,8 +177,6 @@ class GenerateConfig:
         self.IO_Template_Expenditure1=self.config_file['InputTemplate']['IO_Template_Expenditure1'].split(",")
         self.IO_Name_Whichofthefollowingareimportant=self.config_file['InputTemplate']['IO_Name_Whichofthefollowingareimportant'].split(",")
         self.IO_Template_Whichofthefollowingareimportant=self.config_file['InputTemplate']['IO_Template_Whichofthefollowingareimportant'].split(",")
-
-
         self.themeName= self.config_file['Themes']['Theme_Name']
 
         
@@ -350,7 +356,7 @@ class GenerateConfig:
         wget.download(url, out=dirpath)
         url="http://wms.galway.in/afill/Wrapper-1.png"
         wget.download(url, out=dirpath)
-        self.LoadAllData()
+        #self.LoadAllData()
         print("Config file 'configurations.ini' created")
 
     def fnc_RegisterUser(self,Name,Email,ContactNo):
