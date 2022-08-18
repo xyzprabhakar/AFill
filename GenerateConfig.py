@@ -26,6 +26,7 @@ class GenerateConfig:
     SectionType=("Multiple","Single")
     SectionCategory=("PersonalDetails","CurrentAddress","PreviousAddress","ContactDetails","ProfessionalContacts","BankAccount","FamilyAndDependants","IDVerification","CurrentEmploymentDetails","Assets","Liabilities","Expenditure","ExistingMortgage","MortgageRequirements")
     SectionCategoryType=("Single","Single","Multiple","Single","Multiple","Multiple","Multiple","Single","Single","Multiple","Multiple","Multiple","Multiple","Multiple")
+    SectionCategoryTextPrefix=("txt_PersonalDetails_","txt_CurrentAddress_","txt_PreviousAddress_","txt_ContactDetails_","txt_ProfessionalContacts_","txt_BankAccountDetails_","txt_FamilyAndDependants_","txt_IDVerification_","txt_CurrentEmploymentDetails_","txt_Assets_","txt_Liabilities_","txt_Expenditure_","txt_ExistingMortgage_","txt_MortgageRequirements_")
     CustomFunction=("None","fncWrapper ","fncGetYear ","fncGetMonth ","fncCalculateYearDiff ","fncCalcualteMonthDiff ","fncGetApplicantName(1)","fncGetApplicantName(2)","fncGetApplicantName(3)","fncGetApplicantName(4)","fncGetApplicantName(@)")
     
 

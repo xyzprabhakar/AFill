@@ -17,8 +17,6 @@ import json
 from datetime import datetime
 import time
 
-
-
 class ImportData:
     varError=None;
     config = None
@@ -73,9 +71,6 @@ class ImportData:
 
 
     def fnc_Read_PersonalDetails(self, ParentContainer, Applicantid):
-        
-        
-        
         frmTopFrame = ttk.Notebook(ParentContainer,name="tab_Section_"+str(Applicantid))
         frmTopFrame.pack(fill="both",anchor="nw")        
 
@@ -325,6 +320,46 @@ class ImportData:
                 self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
         except Exception as ex:
                 print("Error", ex)
+
+    
+
+    def fnc_GenrateControl_Json(self,sectionName,configkeyData,isMultiple,jsonData):
+        if (self.checkKey(jsonData,keyName)):
+            tempdata=jsonData[keyName]
+            if(isMultiple):
+                for sectCounter, sect in enumerate(tempdata) :
+            else:
+                
+    def fnc_GetConfigData(self,sectionName):
+        if(sectionName=="Personal Details"):
+            return self.config.IO_Name_PersonalDetails
+        if(sectionName=="Current Address"):
+            return self.config.IO_Name_CurrentAddress
+        if(sectionName=="Previous Address"):
+            return self.config.IO_Name_PreviousAddress
+        if(sectionName=="Contact Details"):
+            return self.config.IO_Name_ContactDetails
+        if(sectionName=="Professional Contacts"):
+            return self.config.IO_Name_ProfessionalContacts
+        if(sectionName=="BankAccountDetails"):
+            return self.config.IO_Name_BankAccountDetails
+        if(sectionName=="FamilyAndDependants"):
+            return self.config.IO_Name_FamilyAndDependants
+        if(sectionName=="IDVerification"):
+            return self.config.IO_Name_IDVerification
+        if(sectionName=="CurrentEmploymentDetails"):
+            return self.config.IO_Name_CurrentEmploymentDetails
+        if(sectionName=="Assets"):
+            return self.config.IO_Name_Assets
+        if(sectionName=="Liabilities"):
+            return self.config.IO_Name_Liabilities
+        if(sectionName=="ExistingMortgage"):
+            return self.config.IO_Name_ExistingMortgage
+        if(sectionName=="MortgageRequirements"):
+            return self.config.IO_Name_MortgageRequirements
+
+
+
 
 
     def fun_mergetables(self, table, IsPrentTable, IncludeHeader=False):
