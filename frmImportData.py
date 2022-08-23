@@ -323,12 +323,50 @@ class ImportData:
 
     
 
-    def fnc_GenrateControl_Json(self,sectionName,configkeyData,isMultiple,jsonData):
+    def fnc_GenrateControl_Json(self,sectionName,applicantId,jsonData,ParentContainer):        
+        keyindex=self.config.SectionNames(sectionName)
+        keyName=self.config.SectionCategory[keyindex]
+        textPrefix=self.config.SectionCategoryTextPrefix[keyindex]
+        configDatas=self.fnc_GetConfigData(sectionName)
+        isMultiple=False
+        FindingValue = ""
+        if(self.config.SectionCategoryType[keyindex]=="Multiple"):
+            isMultiple=True        
         if (self.checkKey(jsonData,keyName)):
             tempdata=jsonData[keyName]
             if(isMultiple):
-                for sectCounter, sect in enumerate(tempdata) :
+                for sectCounter, sect in enumerate(tempdata) :                    
+                    for  cfd in configDatas :
+                        HeaderName=cfd.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')                        
+                        FindingValue = sect[HeaderName]
+                        txtboxname = textPrefix+ str(sectCounter)+"_"+str(applicantId) +HeaderName
+                        if(self.IsEvenColumn):
+                            self.IsEvenColumn = False
+                            self.gridcolumnindex = 2
+                        else:
+                            self.IsEvenColumn = True
+                            self.gridcolumnindex = 0
+                            self.gridrowindex = self.gridrowindex+1
+                        ttk.Label(ParentContainer, text=cfd.replace('[M]', '').replace('[D]', '')).grid(row=self.gridrowindex, column=self.gridcolumnindex, sticky=tk.N+tk.S+tk.E, padx=(10, 10), pady=(5, 2))                        
+                        entrybox = ttk.Entry(ParentContainer, name=txtboxname)
+                        entrybox.insert(0, self.fncReplaceName(FindingValue) )
+                        entrybox.grid(row=self.gridrowindex, column=(self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
             else:
+                for  cfd in configDatas :
+                    HeaderName=cfd.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')                        
+                    FindingValue = tempdata[HeaderName]
+                    txtboxname = textPrefix+ str(sectCounter)+"_"+str(applicantId) +HeaderName
+                    if(self.IsEvenColumn):
+                        self.IsEvenColumn = False
+                        self.gridcolumnindex = 2
+                    else:
+                        self.IsEvenColumn = True
+                        self.gridcolumnindex = 0
+                        self.gridrowindex = self.gridrowindex+1
+                    ttk.Label(ParentContainer, text=cfd.replace('[M]', '').replace('[D]', '')).grid(row=self.gridrowindex, column=self.gridcolumnindex, sticky=tk.N+tk.S+tk.E, padx=(10, 10), pady=(5, 2))                        
+                    entrybox = ttk.Entry(ParentContainer, name=txtboxname)
+                    entrybox.insert(0, self.fncReplaceName(FindingValue) )
+                    entrybox.grid(row=self.gridrowindex, column=(self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
                 
     def fnc_GetConfigData(self,sectionName):
         if(sectionName=="Personal Details"):
