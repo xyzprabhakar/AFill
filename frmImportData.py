@@ -21,9 +21,9 @@ class ImportData:
     varError=None;
     config = None
     varApplicant1,varApplicant2 = None,None     
-    varTemplateType,varApplicantType,varFileName = None,None  ,None   
+    varImportType,varTemplateType,varApplicantType,varFileName = None,None  ,None ,None 
     varStarttingPoint = 0
-    varAllJsonData = []     
+    varAllJsonData,varAllJsonFileName = [],[]
     ContainerCanvas,ContainerFrame,ApplicantTab,frm_Applicant1,frm_Applicant1Canvas,frm_Applicant1Parent,frm_Applicant2,frm_Applicant2Canvas,frm_Applicant2Parent = None,None,None,None,None ,None,None ,None,None   
     Parent_Height = 500
     Parent_Width = 600
@@ -38,6 +38,7 @@ class ImportData:
         self.varApplicant1 = tk.StringVar()
         self.varApplicant2 = tk.StringVar()
         self.varFileName = tk.StringVar()
+        self.varImportType=tk.StringVar()
 
         self.ContainerFrame=ttk.Frame(Container)
         self.ContainerFrame.pack(expand=tk.TRUE, fill="both",pady=(5,3))       
@@ -57,6 +58,18 @@ class ImportData:
     def fnc_resizeScroll(self,event):
         self.ContainerCanvas.configure(scrollregion=self.ContainerCanvas.bbox("all"))
 
+    def LoadAllJsonData(self):
+        if not os.path.exists(self.config.FilePath):
+            os.makedirs(self.config.FilePath)
+        if os.path.isfile(os.path.join(self.config.FilePath, self.config.DataFileName)) is False:
+            with io.open(os.path.join(self.config.FilePath, self.config.DataFileName), 'w') as fp:
+                print('Empty File Created')
+        else:
+            with io.open(os.path.join(self.config.FilePath, self.config.DataFileName)) as fp:
+                self.varAllJsonData = json.load(fp)
+                self.varAllJsonFileName.clear()
+                for x in self.varAllJsonData:
+                    self.varAllJsonFileName.append(x["FileName"])
 
     def fncReplaceName(self,value):
         if(not(  str(value).find(self.varApplicant1.get(),0) ==-1 and str(value).find(self.varApplicant2.get(),0) ==-1)):
