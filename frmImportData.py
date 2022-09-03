@@ -334,7 +334,7 @@ class ImportData:
         except Exception as ex:
                 print("Error", ex)
 
-    
+   
 
     def fnc_GenrateControl_Json(self,sectionName,applicantId,jsonData,ParentContainer):        
         keyindex=self.config.SectionNames(sectionName)
@@ -408,9 +408,6 @@ class ImportData:
             return self.config.IO_Name_ExistingMortgage
         if(sectionName=="MortgageRequirements"):
             return self.config.IO_Name_MortgageRequirements
-
-
-
 
 
     def fun_mergetables(self, table, IsPrentTable, IncludeHeader=False):
