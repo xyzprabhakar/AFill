@@ -241,7 +241,6 @@ class ImportData:
             frmMortgageFrame.add(frmMortgageRequirementsFrame, text ='Mortgage Requirements')
             frmTopFrame.add(frmMortgageFrame, text ='Mortgage')
 
-            
                 
     def fnc_GenrateControl(self, ParentContainer, DetailTable, FindingColumnIndex, FromPosition, IO_Name, IO_Template_Name, Suffix,HaveDtValue=True):
         try:
@@ -2221,48 +2220,59 @@ class ImportData:
     def fncCreateItems(self):
         self.ContainerFrame.columnconfigure(0, weight=1)
         self.ContainerFrame.columnconfigure(1, weight=1)
-        self.ContainerFrame.columnconfigure(2, weight=100)
+        self.ContainerFrame.columnconfigure(2, weight=1)
+        self.ContainerFrame.columnconfigure(3, weight=1)
+        self.ContainerFrame.columnconfigure(4, weight=100)
         self.ContainerFrame.rowconfigure(0, weight=1)
         self.ContainerFrame.rowconfigure(1, weight=1)
         self.ContainerFrame.rowconfigure(2, weight=1)
-        self.ContainerFrame.rowconfigure(3, weight=1)
-        self.ContainerFrame.rowconfigure(4, weight=100)
-        self.ContainerFrame.rowconfigure(5, weight=1)
+        self.ContainerFrame.rowconfigure(3, weight=100)
+        self.ContainerFrame.rowconfigure(4, weight=1)        
         self.varApplicantType.set("Co Applicant")
         self.varTemplateType.set("IO Template")
+        self.varImportType.set("New")
+
         
-        ttk.Label(self.ContainerFrame, text="File Name").grid(row=0, column=0, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
-        ttk.Entry(self.ContainerFrame, name="txtFileName", textvariable=self.varFileName, width=25).grid(row=0, column=1, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
+
+
+        # row 1
+        ttk.Label(self.ContainerFrame, text="Import Type").grid(row=0, column=0, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
+        cmbImporType = ttk.Combobox(self.ContainerFrame, width=23, textvariable=self.varImportType, values=["New","Edit"])
+        cmbImporType.grid(row=0, column=1, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
+        
+        ttk.Label(self.ContainerFrame, text="File Name").grid(row=0, column=2, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
+        ttk.Entry(self.ContainerFrame, name="txtFileName", textvariable=self.varFileName, width=25).grid(row=0, column=3, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
+
+        # row 2
         ttk.Label(self.ContainerFrame, text="Template Type").grid(row=1, column=0, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
         cmbTemplateType = ttk.Combobox(self.ContainerFrame, width=23, textvariable=self.varTemplateType)
         # Adding combobox drop down list
         cmbTemplateType['values'] = ('IO Template', 'Fact Find')
         cmbTemplateType.grid(row=1, column=1, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
-        ttk.Label(self.ContainerFrame, text="Applicant Type").grid(row=2, column=0, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
 
+        ttk.Label(self.ContainerFrame, text="Applicant Type").grid(row=1, column=2, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
         cmbApplicantType = ttk.Combobox(self.ContainerFrame, width=23, textvariable=self.varApplicantType)
         cmbApplicantType['values'] = ('Single', 'Co Applicant')
-        cmbApplicantType.grid(row=2, column=1, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
+        cmbApplicantType.grid(row=1, column=3, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
         cmbApplicantType.bind("<<ComboboxSelected>>",lambda e: self.hide_unhide_applicant(e))
 
         btnFrame = ttk.Frame(self.ContainerFrame)
-        btnFrame.grid(row=0, rowspan=3, column=2, sticky=tk.N+tk.S+tk.W)
+        btnFrame.grid(row=0, rowspan=2, column=4, sticky=tk.N+tk.S+tk.W)
 
         btnImport = ttk.Button(btnFrame, text="Import",width=10,  command=lambda: self.open_file())
         #btnLoad = ttk.Button(btnFrame, text="Load", width=10,command=lambda: self.open_file())
         btnSave = ttk.Button(btnFrame, text="Save", width=10,command=lambda: self.save_data())
         btnReset = ttk.Button(btnFrame, text="Reset",width=10, command=lambda: self.reset_data())
         
-        btnImport.grid(row=0, column=0, sticky=tk.N+tk.S+tk.W, padx=(5, 5), pady=(5, 5))
-        #btnLoad.grid(row=0, column=1, sticky=tk.N+tk.S+tk.W, padx=(5, 5), pady=(5, 5))
+        btnImport.grid(row=0, column=0, sticky=tk.N+tk.S+tk.W, padx=(5, 5), pady=(5, 5))        
         btnSave.grid(row=1, column=0, sticky=tk.N+tk.S+tk.W, padx=(5, 5), pady=(5, 5))
         btnReset.grid(row=1, column=1, sticky=tk.N+tk.S+tk.W, padx=(5, 5), pady=(5, 5))
-        ttk.Frame(self.ContainerFrame,height=5).grid(row=3,column=0,columnspan=3,sticky=tk.W+tk.E)
+        ttk.Frame(self.ContainerFrame,height=5).grid(row=2,column=0,columnspan=5,sticky=tk.W+tk.E)
         self.ApplicantTab= ttk.Notebook(self.ContainerFrame, height=600)
-        self.ApplicantTab.grid(row=4,column=0,columnspan=3,sticky=tk.N+tk.S+tk.W+tk.E)
+        self.ApplicantTab.grid(row=3,column=0,columnspan=5,sticky=tk.N+tk.S+tk.W+tk.E)
         
         self.varError_=tk.Text(self.ContainerFrame,width=100, height=4)
-        self.varError_.grid(row=5, column=0,columnspan=3 ,sticky=tk.N+tk.S+tk.W+tk.E, pady=(5, 2), padx=(10, 10))
+        self.varError_.grid(row=4, column=0,columnspan=5 ,sticky=tk.N+tk.S+tk.W+tk.E, pady=(5, 2), padx=(10, 10))
 
 
 if __name__ == '__main__':
