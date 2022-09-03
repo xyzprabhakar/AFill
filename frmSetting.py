@@ -75,7 +75,7 @@ class Setting(ttk.Frame):
         frmbtn1 = ttk.Frame(frmHeader)        
         frmbtn1.grid(row=0,column = 1, columnspan=3, sticky=tk.N+tk.W+tk.E)
         btnReffreshData = tk.Button ( frmbtn1,name="btnReffreshData", text =fa.icons['sync'],image=self.config.ico_sync,  command = lambda :self.LoadData() )
-        btnReffreshData.grid(row=0,column = 0, padx=(10,0),pady=(3,5))
+        btnReffreshData.grid(row=0,column = 0,sticky=tk.E ,padx=(10,0),pady=(3,5))
         
         frmUserDetails=ttk.LabelFrame(frmBody,text="User Details",style="Details.TLabelframe")
         frmUserDetails.columnconfigure(0, weight=100) 

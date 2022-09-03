@@ -41,7 +41,8 @@ class ImportData:
         self.varImportType=tk.StringVar()
 
         self.ContainerFrame=ttk.Frame(Container)
-        self.ContainerFrame.pack(expand=tk.TRUE, fill="both",pady=(5,3))       
+        self.ContainerFrame.pack(expand=tk.TRUE, fill="both",pady=(5,3))    
+        self.LoadAllJsonData()   
         self.fncCreateItems()
         
     def OnMouseWheel1(self, event,canvas_):
@@ -603,6 +604,7 @@ class ImportData:
             for ioindex, x in enumerate(self.config.IO_Name_PersonalDetails):
                 self.fnc_GenrateControl(ParentContainer, PersonalDetailTable, Applicantid, 0, x,
                                         self.config.IO_Template_PersonalDetails[ioindex], "txt_PersonalDetails_"+str(Applicantid))
+
 
     def fnc_Read_Address_GetRowColumnIndex(self, DetailTable, PreviousRowIndex, PreviousColumnIndex, Adressee, IsCurrentAddress):
         FoundApplicant = False
@@ -1640,12 +1642,24 @@ class ImportData:
                 self.ApplicantTab.forget(self.frm_Applicant2Parent)      
                 self.clear_frame(self.frm_Applicant2Parent)
                 self.frm_Applicant2Parent=None
+
+    def hide_unhide_FineName(self,event):
+        if(self.varImportType.get()=="New"):
+            self.ContainerFrame.children["txtFileName"].grid(row=1, column=3, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
+            self.ContainerFrame.children["cmbFileName"].grid_forget()
+            self.varFileName.set("")
+        else:
+            self.ContainerFrame.children["cmbFileName"].grid(row=1, column=3, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
+            self.ContainerFrame.children["txtFileName"].grid_forget()
+
                         
     def clear_frame(self, frame):
         for widgets in frame.winfo_children():
             widgets.destroy()
 
-    
+    def ReffreshData(self):
+        self.LoadAllJsonData()
+        self.ContainerFrame.children["cmbFileName"]["values"]=self.varAllJsonFileName
 
     def open_file(self):
         try:
@@ -2226,38 +2240,49 @@ class ImportData:
         self.ContainerFrame.rowconfigure(0, weight=1)
         self.ContainerFrame.rowconfigure(1, weight=1)
         self.ContainerFrame.rowconfigure(2, weight=1)
-        self.ContainerFrame.rowconfigure(3, weight=100)
-        self.ContainerFrame.rowconfigure(4, weight=1)        
+        self.ContainerFrame.rowconfigure(3, weight=1)
+        self.ContainerFrame.rowconfigure(4, weight=100)        
+        self.ContainerFrame.rowconfigure(5, weight=1)        
         self.varApplicantType.set("Co Applicant")
         self.varTemplateType.set("IO Template")
         self.varImportType.set("New")
 
         
-
+        frmbtn1 = ttk.Frame(self.ContainerFrame,)        
+        frmbtn1.grid(row=0,column = 0, columnspan=5, sticky=tk.N+tk.W+tk.E)
+        frmbtn1.columnconfigure(0, weight=1)
+        frmbtn1.rowconfigure(0, weight=1)
+        btnReffreshData = tk.Button ( frmbtn1,name="btnReffreshData", image=self.config.ico_sync,  command = lambda :self.ReffreshData() )
+        btnReffreshData.grid(row=0,column = 0,sticky=tk.E, padx=(0,10),pady=(3,5))
 
         # row 1
-        ttk.Label(self.ContainerFrame, text="Import Type").grid(row=0, column=0, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
+        ttk.Label(self.ContainerFrame, text="Import Type").grid(row=1, column=0, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
         cmbImporType = ttk.Combobox(self.ContainerFrame, width=23, textvariable=self.varImportType, values=["New","Edit"])
-        cmbImporType.grid(row=0, column=1, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
+        cmbImporType.grid(row=1, column=1, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
         
-        ttk.Label(self.ContainerFrame, text="File Name").grid(row=0, column=2, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
-        ttk.Entry(self.ContainerFrame, name="txtFileName", textvariable=self.varFileName, width=25).grid(row=0, column=3, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
+        ttk.Label(self.ContainerFrame, text="File Name").grid(row=1, column=2, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
+        ttk.Entry(self.ContainerFrame, name="txtFileName", textvariable=self.varFileName, width=25).grid(row=1, column=3, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
+        cmbFileName = ttk.Combobox(self.ContainerFrame,name="cmbFileName" ,width=23, textvariable=self.varFileName,values=self.varAllJsonFileName)        
+        #cmbTemplateType['values'] = ('IO Template', 'Fact Find')
+        cmbFileName.grid(row=1, column=3, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
+        cmbFileName.grid_forget()
+        cmbImporType.bind("<<ComboboxSelected>>",lambda e: self.hide_unhide_FineName(e))
 
         # row 2
-        ttk.Label(self.ContainerFrame, text="Template Type").grid(row=1, column=0, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
+        ttk.Label(self.ContainerFrame, text="Template Type").grid(row=2, column=0, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
         cmbTemplateType = ttk.Combobox(self.ContainerFrame, width=23, textvariable=self.varTemplateType)
         # Adding combobox drop down list
         cmbTemplateType['values'] = ('IO Template', 'Fact Find')
-        cmbTemplateType.grid(row=1, column=1, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
+        cmbTemplateType.grid(row=2, column=1, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
 
-        ttk.Label(self.ContainerFrame, text="Applicant Type").grid(row=1, column=2, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
+        ttk.Label(self.ContainerFrame, text="Applicant Type").grid(row=2, column=2, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
         cmbApplicantType = ttk.Combobox(self.ContainerFrame, width=23, textvariable=self.varApplicantType)
         cmbApplicantType['values'] = ('Single', 'Co Applicant')
-        cmbApplicantType.grid(row=1, column=3, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
+        cmbApplicantType.grid(row=2, column=3, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
         cmbApplicantType.bind("<<ComboboxSelected>>",lambda e: self.hide_unhide_applicant(e))
 
         btnFrame = ttk.Frame(self.ContainerFrame)
-        btnFrame.grid(row=0, rowspan=2, column=4, sticky=tk.N+tk.S+tk.W)
+        btnFrame.grid(row=1, rowspan=2, column=4, sticky=tk.N+tk.S+tk.W)
 
         btnImport = ttk.Button(btnFrame, text="Import",width=10,  command=lambda: self.open_file())
         #btnLoad = ttk.Button(btnFrame, text="Load", width=10,command=lambda: self.open_file())
@@ -2267,12 +2292,13 @@ class ImportData:
         btnImport.grid(row=0, column=0, sticky=tk.N+tk.S+tk.W, padx=(5, 5), pady=(5, 5))        
         btnSave.grid(row=1, column=0, sticky=tk.N+tk.S+tk.W, padx=(5, 5), pady=(5, 5))
         btnReset.grid(row=1, column=1, sticky=tk.N+tk.S+tk.W, padx=(5, 5), pady=(5, 5))
-        ttk.Frame(self.ContainerFrame,height=5).grid(row=2,column=0,columnspan=5,sticky=tk.W+tk.E)
+
+        ttk.Frame(self.ContainerFrame,height=5).grid(row=3,column=0,columnspan=5,sticky=tk.W+tk.E)
         self.ApplicantTab= ttk.Notebook(self.ContainerFrame, height=600)
-        self.ApplicantTab.grid(row=3,column=0,columnspan=5,sticky=tk.N+tk.S+tk.W+tk.E)
+        self.ApplicantTab.grid(row=4,column=0,columnspan=5,sticky=tk.N+tk.S+tk.W+tk.E)
         
         self.varError_=tk.Text(self.ContainerFrame,width=100, height=4)
-        self.varError_.grid(row=4, column=0,columnspan=5 ,sticky=tk.N+tk.S+tk.W+tk.E, pady=(5, 2), padx=(10, 10))
+        self.varError_.grid(row=5, column=0,columnspan=5 ,sticky=tk.N+tk.S+tk.W+tk.E, pady=(5, 2), padx=(10, 10))
 
 
 if __name__ == '__main__':
@@ -2288,5 +2314,6 @@ if __name__ == '__main__':
     myframe = tk.Frame(root, relief=tk.GROOVE, width=800, height=800, bd=1)
     myframe.pack(fill="both", expand=tk.TRUE, anchor=tk.N+tk.W)
     config.set_theme(None, myframe)
+    config.set_icons()
     ImportData(myframe, config)
     root.mainloop()
