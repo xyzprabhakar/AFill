@@ -23,7 +23,7 @@ class ImportData:
     varApplicant1,varApplicant2 = None,None     
     varImportType,varTemplateType,varApplicantType,varFileName = None,None  ,None ,None 
     varStarttingPoint = 0
-    varAllJsonData,varAllJsonFileName = [],[]
+    varOneJsonFileJsonData,varAllJsonData,varAllJsonFileName = [],[],[]
     ContainerCanvas,ContainerFrame,ApplicantTab,frm_Applicant1,frm_Applicant1Canvas,frm_Applicant1Parent,frm_Applicant2,frm_Applicant2Canvas,frm_Applicant2Parent = None,None,None,None,None ,None,None ,None,None   
     Parent_Height = 500
     Parent_Width = 600
@@ -72,6 +72,19 @@ class ImportData:
                 for x in self.varAllJsonData:
                     self.varAllJsonFileName.append(x["FileName"])
 
+    def LoadJsonData(self):
+        if not os.path.exists(self.config.FilePath):
+            os.makedirs(self.config.FilePath)
+        if os.path.isfile(os.path.join(self.config.FilePath, self.varFileName.get())) is False:
+            messagebox.showerror("Invalid", "File name is invalid or removed")
+        else:
+            with io.open(os.path.join(self.config.FilePath, self.varFileName.get())) as fp:
+                self.varOneJsonFileJsonData = json.load(fp)
+                print(self.varOneJsonFileJsonData)
+                # self.varAllJsonFileName.clear()
+                # for x in self.varAllJsonData:
+                #     self.varAllJsonFileName.append(x["FileName"])
+
     def fncReplaceName(self,value):
         if(not(  str(value).find(self.varApplicant1.get(),0) ==-1 and str(value).find(self.varApplicant2.get(),0) ==-1)):
             for i in range(1 ,30):
@@ -82,7 +95,6 @@ class ImportData:
                 if(value=="Joint."+str(i)):
                     return "Joint"
         return value
-
 
     def fnc_Read_PersonalDetails(self, ParentContainer, Applicantid):
         frmTopFrame = ttk.Notebook(ParentContainer,name="tab_Section_"+str(Applicantid))
@@ -335,7 +347,6 @@ class ImportData:
                 print("Error", ex)
 
    
-
     def fnc_GenrateControl_Json(self,sectionName,applicantId,jsonData,ParentContainer):        
         keyindex=self.config.SectionNames(sectionName)
         keyName=self.config.SectionCategory[keyindex]
