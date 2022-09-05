@@ -6,7 +6,7 @@ import os
 from cryptography.fernet import Fernet
 import tabula 
 #from tabula import read_pdf
-#from tabulate import tabulate
+#from tabulate import tabulate  SakshemIT@1234
 import GenerateConfig as Gc
 import io
 import tkinter as tk
