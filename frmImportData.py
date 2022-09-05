@@ -101,6 +101,8 @@ class ImportData:
                 #     self.varAllJsonFileName.append(x["FileName"])
 
     def fncReplaceName(self,value):
+        value=str(value).replace('\r',' ') 
+        value=str(value).replace('\n',' ') 
         if(not(  str(value).find(self.varApplicant1.get(),0) ==-1 and str(value).find(self.varApplicant2.get(),0) ==-1)):
             for i in range(1 ,30):
                 if(value==self.varApplicant1.get()+"."+str(i)):
@@ -344,6 +346,7 @@ class ImportData:
                 row=self.gridrowindex, column=self.gridcolumnindex, sticky=tk.N+tk.S+tk.E, padx=(10, 10), pady=(5, 2))
             txtboxname = Suffix+IO_Name.strip().replace(' ',
                                                         '_').replace('[M]', '').replace('[D]', '')
+            FindingValue=FindingValue.replace('\r',' ').replace('\n',' ')
             entrybox = ttk.Entry(ParentContainer, name=txtboxname)
             entrybox.insert(0, self.fncReplaceName(FindingValue) )
             entrybox.grid(row=self.gridrowindex, column=(
@@ -379,6 +382,7 @@ class ImportData:
                 row=self.gridrowindex, column=self.gridcolumnindex, sticky=tk.N+tk.S+tk.E, padx=(10, 10), pady=(5, 2))
             txtboxname = Suffix+IO_Name.strip().replace(' ',
                                                         '_').replace('[M]', '').replace('[D]', '')
+            FindingValue=FindingValue.replace('\r',' ').replace('\n',' ')
             entrybox = ttk.Entry(ParentContainer, name=txtboxname)
             entrybox.insert(0,self.fncReplaceName(FindingValue) )
             entrybox.grid(row=self.gridrowindex, column=(
@@ -399,6 +403,7 @@ class ImportData:
                 row=self.gridrowindex, column=self.gridcolumnindex, sticky=tk.N+tk.S+tk.E, padx=(10, 10), pady=(5, 2))
             txtboxname = Suffix+IO_Name.strip().replace(' ',
                                                         '_').replace('[M]', '').replace('[D]', '')
+            FindingValue=FindingValue.replace('\r',' ').replace('\n',' ')
             entrybox = ttk.Entry(ParentContainer, name=txtboxname)
             entrybox.insert(0,self.fncReplaceName( FindingValue))
             entrybox.grid(row=self.gridrowindex, column=(

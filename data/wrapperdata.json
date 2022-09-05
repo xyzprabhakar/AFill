@@ -16,10 +16,31 @@
         },
         {
             "template": "Barclays",
+            "sectionCategory": "PersonalDetails",
+            "ioName": "Nationality",
+            "ioValue": "Indian",
+            "wrapperValue": "India"
+        },
+        {
+            "template": "Barclays",
             "sectionCategory": "CurrentAddress",
             "ioName": "Country",
             "ioValue": "United Kingdom",
             "wrapperValue": "UK"
+        },
+        {
+            "template": "Barclays",
+            "sectionCategory": "CurrentAddress",
+            "ioName": "Residency_Status",
+            "ioValue": "Tenant - private",
+            "wrapperValue": "Private tenant"
+        },
+        {
+            "template": "Barclays",
+            "sectionCategory": "CurrentAddress",
+            "ioName": "Residency_Status",
+            "ioValue": "Owner Occupier - mortgaged",
+            "wrapperValue": "Owner occupier with mortgage"
         },
         {
             "template": "Barclays",

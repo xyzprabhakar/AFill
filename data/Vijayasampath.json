@@ -72,7 +72,7 @@
         ],
         "FamilyAndDependants": [
             {
-                "Full_Name": "Krishav\rVijayasampath\rKayalvizhi",
+                "Full_Name": "Krishav Vijayasampath Kayalvizhi",
                 "Date_of_Birth": "19/06/2015",
                 "Age": "7",
                 "Relationship": "Child",
@@ -81,7 +81,7 @@
                 "Dependant_Living_with_Client": "Yes"
             },
             {
-                "Full_Name": "Paviksha\rVijayasamptah",
+                "Full_Name": "Paviksha Vijayasamptah",
                 "Date_of_Birth": "06/04/2020",
                 "Age": "2",
                 "Relationship": "Child",
@@ -301,128 +301,17 @@
             "National_Insurance_No": "SY850799D",
             "Country_Of_Residence": "United Kingdom"
         },
-        "ContactDetails": {
-            "Mobile": "07440761412",
-            "Email": "kayal_vijay@yahoo.com",
-            "Home_Telephone": "",
-            "Work_Telephone": ""
-        },
-        "CurrentAddress": {
-            "Address_Line_1": "2 Redgrave House",
-            "Address_Line_2": "Denmark Street",
-            "Address_Line_3": "",
-            "Address_Line_4": "",
-            "City": "Altrincham",
-            "Country": "United Kingdom",
-            "Postcode": "WA14 2WF",
-            "Residency_Status": "Tenant - private",
-            "Date_From": "01/09/2019"
-        },
-        "PreviousAddress": [
-            {
-                "Address_Line_1": "Apartment 17",
-                "Address_Line_2": "26 Sandycroft Avenue",
-                "Address_Line_3": "Wythenshawe",
-                "Address_Line_4": "",
-                "City": "Manchester",
-                "Country": "United Kingdom",
-                "Postcode": "M22 9AL",
-                "Residency_Status": "Tenant - private",
-                "Date_From": "01/03/2018",
-                "Date_To": "01/09/2019"
-            }
-        ],
+        "ContactDetails": {},
+        "CurrentAddress": {},
+        "PreviousAddress": [],
         "ProfessionalContacts": [],
-        "BankAccount": [
-            {
-                "Owner": "Kayalvizhi Ezhilarasan",
-                "Bank_Name": "TSB Bank",
-                "Account_Holder": "Kayalvizhi Ezhilarasan",
-                "Account_Number": "00013521",
-                "Sort_Code": "771957"
-            }
-        ],
+        "BankAccount": [],
         "FamilyAndDependants": [],
-        "IDVerification": {
-            "Original_Driving_Licence_Seen": "",
-            "Driving_Licence_Ref": "",
-            "Driving_Licence_Expiry_Date": "",
-            "Original_Passport_Seen": "09/08/2022",
-            "Country_of_Origin": "India",
-            "Passport_ref": "R4749604",
-            "Passport_Expiry_Date": "02/10/2027",
-            "Mother_Maiden_Name": "Vijayanthi",
-            "Electricity_Bill_Ref": "",
-            "Bank_Statement_Seen": "",
-            "Mortgage_Statement_Seen": "",
-            "Council_Tax_Bill_Seen": "09/08/2022",
-            "Utilities_Bill_Seen": ""
-        },
-        "CurrentEmploymentDetails": {
-            "Highest_rate_of_income_tax_paid": "20",
-            "Owner": "",
-            "Employment_Status": "Employed",
-            "Occupation": "Senior Design Quality Engineer (Quality)",
-            "Shareholding_percentage": "",
-            "Contractor": "",
-            "Inside_IR35": "",
-            "Employer": "Micromass UK Ltd",
-            "Business_Type": "",
-            "Address_Line_1": "",
-            "Address_Line_2": "",
-            "Address_Line_3": "",
-            "Address_Line_4": "",
-            "City": "",
-            "Country": "United Kingdom",
-            "Post_Code": "SK9 4AX",
-            "Intended_Retirement_Age": "70",
-            "Start_Date": "16/04/2019",
-            "Most_Recent_Annual_Accounts_Net_Profit": "",
-            "Most_Recent_Annual_Accounts_Net_Dividend": "",
-            "Most_Recent_Annual_Accounts_Salary": "",
-            "Most_Recent_Annual_Accounts_Year_End": "",
-            "Year_2_Annual_Accounts_Net_Profit": "",
-            "Year_2_Annual_Accounts_Net_Dividend": "",
-            "Year_2_Annual_Accounts_Salary": "",
-            "Year_2_Year_End": "",
-            "Year_3_Annual_Accounts_Net_Profit": "",
-            "Year_3_Annual_Accounts_Net_Dividend": "",
-            "Year_3_Annual_Accounts_Salary": "",
-            "Year_3_Year_End": "",
-            "Gross_Basic_Annual_Income": "£44,618.00",
-            "Net_Basic_Monthly_Income": "£3,202.00",
-            "Do_you_receive_Overtime_Income": "",
-            "Gross_Guaranteed_Annual_Overtime": "",
-            "Net_Guaranteed_Monthly_Overtime": "",
-            "Gross_Regular_Annual_Overtime": "",
-            "Net_Regular_Monthly_Overtime": "",
-            "Do_you_receive_Bonus_Income": "",
-            "Gross_Guaranteed_Annual_Bonus": "",
-            "Net_Guaranteed_Annual_Bonus": "",
-            "Gross_Regular_Annual_Bonus": "",
-            "Net_Regular_Annual_Bonus": "",
-            "Other_Gross_Income": "",
-            "Total_Gross_Annual_Earnings": "£44,618.00",
-            "In_Probation": "No"
-        },
+        "IDVerification": {},
+        "CurrentEmploymentDetails": {},
         "Assets": [],
         "Liabilities": [],
-        "Expenditure": [
-            {
-                "Category": "Council Tax",
-                "Owner": "Kayalvizhi Ezhilarasan",
-                "Description": "NaN",
-                "Net_Amount": "£178.00",
-                "Frequency": "Monthly"
-            },
-            {
-                "Category": "Water",
-                "Owner": "Kayalvizhi Ezhilarasan",
-                "Description": "UNITED UTIL WATER",
-                "Net_Amount": "£44.01",
-                "Frequency": "Monthly"
-            }
-        ],
+        "Expenditure": [],
         "ExistingMortgage": [],
         "MortgageRequirements": []
     }
