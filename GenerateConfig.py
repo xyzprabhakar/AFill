@@ -291,7 +291,8 @@ class GenerateConfig:
         if not os.path.exists(dirpath):
             os.makedirs(dirpath)
         url="http://wms.galway.in/afill/template.json"
-        wget.download(url, out=dirpath)
+        if os.path.isfile(os.path.join(dirpath, "template.json")) is False:
+            wget.download(url, out=dirpath)
         url="http://wms.galway.in/afill/data.json"        
         wget.download(url, out=dirpath)
         url="http://wms.galway.in/afill/wrapperdata.json"

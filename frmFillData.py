@@ -2,7 +2,7 @@ from curses import keyname
 from typing import Counter
 import fontawesome as fa
 from multiprocessing.sharedctypes import Value
-from tkinter import TOP, font
+from tkinter import TOP, Widget,  font
 #import PyPDF2 as pdf
 #from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 #from pdfminer.converter import TextConverter
@@ -38,7 +38,7 @@ from dateutil.relativedelta import relativedelta
 
 class FillData(ttk.Frame):
     config=None
-    frm_Applicant1Canvas,ContainerFrame=None ,None 
+    frm_Applicant1Canvas,ContainerFrame,IsShrink=None ,None ,False
     varCurrentTemplateName,varCurrentDataFileName,varCurrentTab  = None,None,None
     varAllTemlateName,varAllTemlate,varAllJsonData,varAllJsonFileName,varAllWrapperData=[],[],[],[],[]
     frmLeftPanel,frmRightPanel,ddlTemplateName,ddlFileName=None,None,None,None
@@ -542,7 +542,19 @@ class FillData(ttk.Frame):
             return True
         else:
             return False
-    
+
+    def shrinkForm(self):   
+        parent = Widget.winfo_toplevel(self.ContainerFrame)
+        if(not self.IsShrink):            
+            parent.geometry("400x800")  
+            parent.minsize(400,800)
+            self.btnShrinkData["image"]=self.config.ico_up
+        else:
+            parent.geometry("900x600")
+            parent.minsize(900,600)
+            self.btnShrinkData["image"]=self.config.ico_down
+        self.IsShrink= not self.IsShrink
+            
 
     def fncCreateItems(self):
         self.varCurrentTab.set("1")
@@ -560,6 +572,8 @@ class FillData(ttk.Frame):
         frmbtn1.grid(row=0,column = 1, columnspan=3, sticky=tk.N+tk.W+tk.E)
         btnReffreshData = ttk.Button ( frmbtn1,name="btnReffreshData",image=self.config.ico_sync, text =fa.icons['sync'],   command = lambda :self.LoadAllJsonData() )
         btnReffreshData.grid(row=0,column = 0, padx=(10,0),pady=(3,5))
+        self.btnShrinkData = ttk.Button ( frmbtn1,name="btnShrink",image=self.config.ico_down,    command = lambda :self.shrinkForm() )
+        self.btnShrinkData.grid(row=0,column = 1, padx=(10,0),pady=(3,5))
         
         
         frmBody.columnconfigure(0, weight=1)
