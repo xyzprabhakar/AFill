@@ -569,6 +569,7 @@ class FillData(ttk.Frame):
         
         self.frmLeftPanel.grid(row=0,column=0,sticky=tk.N+tk.S+tk.W+tk.E,padx=(10,10))
         self.frmRightPanel.grid(row=0,column=1,sticky=tk.N+tk.S+tk.W+tk.E,padx=(10,10))
+        self.frmRightPanel.grid_forget()
         self.frmRightPanel.columnconfigure(0, weight=100)  
         self.frmRightPanel.rowconfigure(0, weight=100)  
         self.txtData= tk.Text(self.frmRightPanel, name="txtData")
