@@ -3,6 +3,8 @@ from ast import Return
 from csv import excel
 import ctypes
 from email.headerregistry import Address
+import enum
+from operator import concat
 import os
 import tabula
 from tabula.io import read_pdf
@@ -75,12 +77,25 @@ class ImportData:
     def LoadJsonData(self):
         if not os.path.exists(self.config.FilePath):
             os.makedirs(self.config.FilePath)
-        if os.path.isfile(os.path.join(self.config.FilePath, self.varFileName.get())) is False:
+        if os.path.isfile(os.path.join(self.config.FilePath, self.varFileName.get()+".json")) is False:
             messagebox.showerror("Invalid", "File name is invalid or removed")
         else:
-            with io.open(os.path.join(self.config.FilePath, self.varFileName.get())) as fp:
+            for x in self.varAllJsonData:
+                if(self.varFileName.get()==x["FileName"]):
+                    self.varApplicantType.set(x["ApplicantType"])
+                    self.varTemplateType.set( x["TemplateType"])
+            with io.open(os.path.join(self.config.FilePath, self.varFileName.get()+".json")) as fp:
+                self.varError_.delete("1.0","end")
+                self.varError_.insert(tk.END,"Loading Data..")
+                self.ContainerFrame.update()
                 self.varOneJsonFileJsonData = json.load(fp)
-                print(self.varOneJsonFileJsonData)
+                #set Applicant Name
+                self.varApplicant1.set(concat( self.varOneJsonFileJsonData[0]["PersonalDetails"]["First_Name"]+" ",self.varOneJsonFileJsonData[0]["PersonalDetails"]["Last_Name"]))
+                if(self.varApplicantType.get()=="Co Applicant"):
+                    self.varApplicant2.set(concat( self.varOneJsonFileJsonData[1]["PersonalDetails"]["First_Name"]+" ",self.varOneJsonFileJsonData[1]["PersonalDetails"]["Last_Name"]))
+                self.fncGenrateCanvas()
+                
+                
                 # self.varAllJsonFileName.clear()
                 # for x in self.varAllJsonData:
                 #     self.varAllJsonFileName.append(x["FileName"])
@@ -100,15 +115,19 @@ class ImportData:
         frmTopFrame = ttk.Notebook(ParentContainer,name="tab_Section_"+str(Applicantid))
         frmTopFrame.pack(fill="both",anchor="nw")        
 
-        if(self.varTemplateType.get() == "IO Template"): 
-            
+        if(self.varTemplateType.get() == "IO Template"):             
             self.varError_.insert(tk.END,"\nAdding Personal Details")
             self.ContainerFrame.update()
             frmDetailFrame = ttk.Frame(frmTopFrame ,name="frmDetailFrame_"+str(Applicantid)) 
             frmPersonalDetailsFrame = ttk.LabelFrame(frmDetailFrame,name="frmPersonalDetailsFrame_"+str(Applicantid), text="Personal Details", style="Details.TLabelframe")
             frmPersonalDetailsFrame.grid(row=0, column=0, sticky=tk.N+tk.W, pady=(10, 10), padx=(10, 10))
             try:
-                self.fnc_Read_PersonalDetails_IO_Template(frmPersonalDetailsFrame, Applicantid)            
+                if(self.varImportType.get()=="New"):
+                    self.fnc_Read_PersonalDetails_IO_Template(frmPersonalDetailsFrame, Applicantid)            
+                else:
+                    if not (len(self.varOneJsonFileJsonData)>= Applicantid) :
+                        return                    
+                    self.fnc_GenrateControl_Json("Personal Details",Applicantid,self.varOneJsonFileJsonData[Applicantid-1],frmPersonalDetailsFrame)
             except Exception as ex:
                 self.varError_.insert(tk.END,"\Error in Personal Detail "+ str(ex) )
                 
@@ -119,9 +138,12 @@ class ImportData:
             self.varError_.insert(tk.END,"\nAdding Current Address")
             self.ContainerFrame.update()
             
-            frmCurrentAddressFrame = ttk.Frame(frmAddressFrame, name="frmCurrentAddressFrame_"+str(Applicantid))    
-            self.fnc_Read_CurrentAddress_IO_Template(frmCurrentAddressFrame, Applicantid)
+            frmCurrentAddressFrame = ttk.Frame(frmAddressFrame, name="frmCurrentAddressFrame_"+str(Applicantid))                
             try:
+                if(self.varImportType.get()=="New"):
+                    self.fnc_Read_CurrentAddress_IO_Template(frmCurrentAddressFrame, Applicantid)
+                else:
+                    self.fnc_GenrateControl_Json("Current Address",Applicantid,self.varOneJsonFileJsonData[Applicantid-1],frmCurrentAddressFrame)
                 frmAddressFrame.add(frmCurrentAddressFrame, text ='Current Address')            
             except Exception as ex:
                 self.varError_.insert(tk.END,"\Error in Current Address "+ str(ex))
@@ -129,9 +151,12 @@ class ImportData:
             # Add Previous Address
             self.varError_.insert(tk.END,"\nAdding Previous Address")
             self.ContainerFrame.update()            
-            frmPreviousAddressFrame = ttk.Frame(frmAddressFrame,name="frmPreviousAddressFrame_"+str(Applicantid))
-            self.fnc_Read_PreviousAddress_IO_Template(frmPreviousAddressFrame, Applicantid)
+            frmPreviousAddressFrame = ttk.Frame(frmAddressFrame,name="frmPreviousAddressFrame_"+str(Applicantid))            
             try:
+                if(self.varImportType.get()=="New"):
+                    self.fnc_Read_PreviousAddress_IO_Template(frmPreviousAddressFrame, Applicantid)
+                else:
+                    self.fnc_GenrateControl_Json("Previous Address",Applicantid,self.varOneJsonFileJsonData[Applicantid-1],frmPreviousAddressFrame)
                 frmAddressFrame.add(frmPreviousAddressFrame, text ='Previous Address')
             except Exception as ex:
                 self.varError_.insert(tk.END,"\Error in Previous Address "+ str(ex))
@@ -139,8 +164,12 @@ class ImportData:
             self.varError_.insert(tk.END,"\nAdding Contact Details")
             self.ContainerFrame.update()            
             frmContactDetailFrame = ttk.LabelFrame(frmDetailFrame,name="frmContactDetailFrame_"+str(Applicantid) ,text="Contact Details", style="Details.TLabelframe")            
-            self.fnc_Read_ContactDetails_IO_Template(frmContactDetailFrame, Applicantid)
+            
             try:
+                if(self.varImportType.get()=="New"):
+                    self.fnc_Read_ContactDetails_IO_Template(frmContactDetailFrame, Applicantid)
+                else:
+                    self.fnc_GenrateControl_Json("Contact Details",Applicantid,self.varOneJsonFileJsonData[Applicantid-1],frmContactDetailFrame)
                 frmContactDetailFrame.grid(row=1, column=0, sticky=tk.N+tk.W, pady=(10, 10), padx=(10, 10))
             except Exception as ex:
                 self.varError_.insert(tk.END,"\Error in Contact Detail "+ str(ex))
@@ -149,18 +178,24 @@ class ImportData:
             # ProfessionalContacts
             self.varError_.insert(tk.END,"\nAdding Professional Contacts")
             self.ContainerFrame.update()
-            frmProfessionalContactsFrame = ttk.Frame(frmAddressFrame,name="frmProfessionalContactsFrame_"+str(Applicantid))
-            self.fnc_Read_ProfessionalContact_IO_Template(frmProfessionalContactsFrame, Applicantid)
+            frmProfessionalContactsFrame = ttk.Frame(frmAddressFrame,name="frmProfessionalContactsFrame_"+str(Applicantid))            
             try:
+                if(self.varImportType.get()=="New"):
+                    self.fnc_Read_ProfessionalContact_IO_Template(frmProfessionalContactsFrame, Applicantid)
+                else:
+                    self.fnc_GenrateControl_Json("Professional Contacts",Applicantid,self.varOneJsonFileJsonData[Applicantid-1],frmProfessionalContactsFrame)
                 frmAddressFrame.add(frmProfessionalContactsFrame, text ='Professional Contacts')
             except Exception as ex:
                 self.varError_.insert(tk.END,"\Error in Professional Contatct "+ str(ex))
             # Bank Details
             self.varError_.insert(tk.END,"\nAdding Bank Details")
             self.ContainerFrame.update()
-            frmBankDetailFrame = ttk.Frame(frmAddressFrame,name="frmBankDetailFrame_"+str(Applicantid))
-            self.fnc_Read_BankAccountDetails_IO_Template(frmBankDetailFrame, Applicantid)
+            frmBankDetailFrame = ttk.Frame(frmAddressFrame,name="frmBankDetailFrame_"+str(Applicantid))            
             try:
+                if(self.varImportType.get()=="New"):
+                    self.fnc_Read_BankAccountDetails_IO_Template(frmBankDetailFrame, Applicantid)
+                else:
+                    self.fnc_GenrateControl_Json("Bank Account Details",Applicantid,self.varOneJsonFileJsonData[Applicantid-1],frmBankDetailFrame)
                 frmAddressFrame.add(frmBankDetailFrame, text ='Bank Details')
             except Exception as ex:
                 self.varError_.insert(tk.END,"\Error in Banks Detail "+ str(ex))
@@ -174,9 +209,12 @@ class ImportData:
             # Family And Dependants
             self.varError_.insert(tk.END,"\nAdding Family And Dependants")
             self.ContainerFrame.update()
-            frmFamilyAndDependantsrame = ttk.LabelFrame(frmTopFrame,name="frmFamilyAndDependantsrame_"+str(Applicantid), text="Family And Dependants", style="Details.TLabelframe")
-            self.fnc_Read_FamilyAndDependants_IO_Template(frmFamilyAndDependantsrame, Applicantid)
+            frmFamilyAndDependantsrame = ttk.LabelFrame(frmTopFrame,name="frmFamilyAndDependantsrame_"+str(Applicantid), text="Family And Dependants", style="Details.TLabelframe")            
             try:
+                if(self.varImportType.get()=="New"):
+                    self.fnc_Read_FamilyAndDependants_IO_Template(frmFamilyAndDependantsrame, Applicantid)
+                else:
+                    self.fnc_GenrateControl_Json("Family And Dependants",Applicantid,self.varOneJsonFileJsonData[Applicantid-1],frmFamilyAndDependantsrame)
                 frmTopFrame.add(frmFamilyAndDependantsrame, text ='Family')
             except Exception as ex:
                 self.varError_.insert(tk.END,"\Error in Family Details "+ str(ex))
@@ -185,7 +223,10 @@ class ImportData:
             self.ContainerFrame.update()
             frmIDVerificationFrame = ttk.Frame(frmTopFrame,name="frmIDVerificationFrame_"+str(Applicantid))
             try:
-                self.fnc_Read_IDVerification_IO_Template(frmIDVerificationFrame, Applicantid)
+                if(self.varImportType.get()=="New"):
+                    self.fnc_Read_IDVerification_IO_Template(frmIDVerificationFrame, Applicantid)
+                else:
+                    self.fnc_GenrateControl_Json("ID Verification",Applicantid,self.varOneJsonFileJsonData[Applicantid-1],frmIDVerificationFrame)
             except Exception as ex:
                 self.varError_.insert(tk.END,"\Error in ID Verification "+ str(ex))
             frmTopFrame.add(frmIDVerificationFrame, text ='ID Verification')
@@ -195,7 +236,10 @@ class ImportData:
             self.ContainerFrame.update()
             frmCurrentEmploymentDetailsFrame = ttk.LabelFrame(frmTopFrame,name="frmCurrentEmploymentDetailsFrame_"+str(Applicantid),text="Current Employment Details",style="Details.TLabelframe")
             try:
-                self.fnc_Read_CurrentEmploymentDetails_IO_Template(frmCurrentEmploymentDetailsFrame, Applicantid)           
+                if(self.varImportType.get()=="New"):
+                    self.fnc_Read_CurrentEmploymentDetails_IO_Template(frmCurrentEmploymentDetailsFrame, Applicantid)           
+                else:
+                    self.fnc_GenrateControl_Json("Current Employment Details",Applicantid,self.varOneJsonFileJsonData[Applicantid-1],frmCurrentEmploymentDetailsFrame)
             except Exception as ex:
                 self.varError_.insert(tk.END,"\Error in Employment Detail "+ str(ex))
             frmTopFrame.add(frmCurrentEmploymentDetailsFrame, text ='Employment')
@@ -207,7 +251,11 @@ class ImportData:
             # Assets Details            
             frmAssetsFrame = ttk.Frame(frmAssetsLiabilitiesFrame,name="frmAssetsFrame_"+str(Applicantid))
             try:
-                self.fnc_Read_Assets_IO_Template(frmAssetsFrame, Applicantid)            
+                if(self.varImportType.get()=="New"):
+                    self.fnc_Read_Assets_IO_Template(frmAssetsFrame, Applicantid)            
+                else:
+                    self.fnc_GenrateControl_Json("Assets",Applicantid,self.varOneJsonFileJsonData[Applicantid-1],frmAssetsFrame)
+
             except Exception as ex:
                 self.varError_.insert(tk.END,"\Error in Assets "+ str(ex))
             frmAssetsLiabilitiesFrame.add(frmAssetsFrame, text ='Assets')
@@ -218,7 +266,10 @@ class ImportData:
             self.ContainerFrame.update()
             frmLiabilitiesFrame = ttk.Frame(frmAssetsLiabilitiesFrame,name="frmLiabilitiesFrame_"+str(Applicantid))
             try:
-                self.fnc_Read_Liabilities_IO_Template(frmLiabilitiesFrame, Applicantid)
+                if(self.varImportType.get()=="New"):
+                    self.fnc_Read_Liabilities_IO_Template(frmLiabilitiesFrame, Applicantid)
+                else:
+                    self.fnc_GenrateControl_Json("Liabilities",Applicantid,self.varOneJsonFileJsonData[Applicantid-1],frmLiabilitiesFrame)
             except Exception as ex:
                 self.varError_.insert(tk.END,"\Error in Libilities "+ str(ex))
             frmAssetsLiabilitiesFrame.add(frmLiabilitiesFrame, text ='Liabilities')
@@ -227,7 +278,10 @@ class ImportData:
             self.ContainerFrame.update()
             frmExpenditureFrame = ttk.Frame(frmAssetsLiabilitiesFrame,name="frmExpenditureFrame_"+str(Applicantid))
             try:
-                self.fnc_Read_Expenditure_IO_Template(frmExpenditureFrame, Applicantid)
+                if(self.varImportType.get()=="New"):
+                    self.fnc_Read_Expenditure_IO_Template(frmExpenditureFrame, Applicantid)
+                else:
+                    self.fnc_GenrateControl_Json("Expenditure",Applicantid,self.varOneJsonFileJsonData[Applicantid-1],frmExpenditureFrame)
             except Exception as ex:
                 self.varError_.insert(tk.END,"\Error in Expenditure "+ str(ex))
             frmAssetsLiabilitiesFrame.add(frmExpenditureFrame, text ='Expenditure')
@@ -239,7 +293,10 @@ class ImportData:
             self.varError_.insert(tk.END,"\nAdding Existing Mortgage")
             frmExistingMortgageFrame = ttk.Frame(frmMortgageFrame,name="frmExistingMortgageFrame_"+str(Applicantid))
             try:
-                self.fnc_Read_ExistingMortgageDetails_IO_Template(frmExistingMortgageFrame, Applicantid)
+                if(self.varImportType.get()=="New"):
+                    self.fnc_Read_ExistingMortgageDetails_IO_Template(frmExistingMortgageFrame, Applicantid)
+                else:
+                    self.fnc_GenrateControl_Json("Existing Mortgage",Applicantid,self.varOneJsonFileJsonData[Applicantid-1],frmExistingMortgageFrame)
             except Exception as ex:
                 self.varError_.insert(tk.END,"\Error in Existing Mortage "+ str(ex))
             frmMortgageFrame.add(frmExistingMortgageFrame, text ='Existing Mortgage')
@@ -248,7 +305,10 @@ class ImportData:
             self.ContainerFrame.update()
             frmMortgageRequirementsFrame = ttk.Frame(frmMortgageFrame,name="frmMortgageRequirementsFrame_"+str(Applicantid))
             try:
-                self.fnc_Read_MortgageRequirements_IO_Template(frmMortgageRequirementsFrame, Applicantid)
+                if(self.varImportType.get()=="New"):
+                    self.fnc_Read_MortgageRequirements_IO_Template(frmMortgageRequirementsFrame, Applicantid)
+                else:
+                    self.fnc_GenrateControl_Json("Mortgage Requirements",Applicantid,self.varOneJsonFileJsonData[Applicantid-1],frmMortgageRequirementsFrame)
             except Exception as ex:
                 self.varError_.insert(tk.END,"\Error in Mortagage Requirement "+ str(ex))
             frmMortgageFrame.add(frmMortgageRequirementsFrame, text ='Mortgage Requirements')
@@ -348,7 +408,10 @@ class ImportData:
 
    
     def fnc_GenrateControl_Json(self,sectionName,applicantId,jsonData,ParentContainer):        
-        keyindex=self.config.SectionNames(sectionName)
+        self.IsEvenColumn = False
+        self.gridrowindex = -1
+        self.gridcolumnindex = 0
+        keyindex=self.config.SectionNames.index(sectionName)
         keyName=self.config.SectionCategory[keyindex]
         textPrefix=self.config.SectionCategoryTextPrefix[keyindex]
         configDatas=self.fnc_GetConfigData(sectionName)
@@ -360,10 +423,11 @@ class ImportData:
             tempdata=jsonData[keyName]
             if(isMultiple):
                 for sectCounter, sect in enumerate(tempdata) :                    
+                    self.IsEvenColumn = False
                     for  cfd in configDatas :
                         HeaderName=cfd.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')                        
                         FindingValue = sect[HeaderName]
-                        txtboxname = textPrefix+ str(sectCounter)+"_"+str(applicantId) +HeaderName
+                        txtboxname = textPrefix+ str(sectCounter +1)+"_"+str(applicantId) +HeaderName
                         if(self.IsEvenColumn):
                             self.IsEvenColumn = False
                             self.gridcolumnindex = 2
@@ -375,11 +439,13 @@ class ImportData:
                         entrybox = ttk.Entry(ParentContainer, name=txtboxname)
                         entrybox.insert(0, self.fncReplaceName(FindingValue) )
                         entrybox.grid(row=self.gridrowindex, column=(self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
+                    self.gridrowindex = self.gridrowindex+1
+                    ttk.Frame(ParentContainer, style="NormalSeparator.TFrame", height=1).grid(row=self.gridrowindex, column=0, columnspan=4, sticky=tk.E+tk.W, pady=(5, 5))
             else:
                 for  cfd in configDatas :
                     HeaderName=cfd.strip().replace(' ','_').replace('[M]', '').replace('[D]', '')                        
                     FindingValue = tempdata[HeaderName]
-                    txtboxname = textPrefix+ str(sectCounter)+"_"+str(applicantId) +HeaderName
+                    txtboxname = textPrefix+str(applicantId) +HeaderName
                     if(self.IsEvenColumn):
                         self.IsEvenColumn = False
                         self.gridcolumnindex = 2
@@ -403,22 +469,25 @@ class ImportData:
             return self.config.IO_Name_ContactDetails
         if(sectionName=="Professional Contacts"):
             return self.config.IO_Name_ProfessionalContacts
-        if(sectionName=="BankAccountDetails"):
+        if(sectionName=="Bank Account Details"):
             return self.config.IO_Name_BankAccountDetails
-        if(sectionName=="FamilyAndDependants"):
+        if(sectionName=="Family And Dependants"):
             return self.config.IO_Name_FamilyAndDependants
-        if(sectionName=="IDVerification"):
+        if(sectionName=="ID Verification"):
             return self.config.IO_Name_IDVerification
-        if(sectionName=="CurrentEmploymentDetails"):
+        if(sectionName=="Current Employment Details"):
             return self.config.IO_Name_CurrentEmploymentDetails
         if(sectionName=="Assets"):
             return self.config.IO_Name_Assets
         if(sectionName=="Liabilities"):
             return self.config.IO_Name_Liabilities
-        if(sectionName=="ExistingMortgage"):
+        if(sectionName=="Expenditure"):
+            return self.config.IO_Name_Expenditure
+        if(sectionName=="Existing Mortgage"):
             return self.config.IO_Name_ExistingMortgage
-        if(sectionName=="MortgageRequirements"):
+        if(sectionName=="Mortgage Requirements"):
             return self.config.IO_Name_MortgageRequirements
+        
 
 
     def fun_mergetables(self, table, IsPrentTable, IncludeHeader=False):
@@ -1672,6 +1741,82 @@ class ImportData:
         self.LoadAllJsonData()
         self.ContainerFrame.children["cmbFileName"]["values"]=self.varAllJsonFileName
 
+    def fncGenrateCanvas(self):
+        
+        #self.varError_.insert(tk.END,self.tables)
+        #time.sleep(10)
+        self.ContainerFrame.update()
+        self.varError_.insert(tk.END,"\nGenrating Canvas")
+        self.CurrentAddressFound = False
+        self.hide_unhide_applicant(None)                
+        self.frm_Applicant1Parent=ttk.Frame(self.ApplicantTab)
+        self.frm_Applicant2Parent=ttk.Frame(self.ApplicantTab)
+        self.frm_Applicant1Canvas = tk.Canvas(self.frm_Applicant1Parent, bg=self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge')
+        self.frm_Applicant1 = ttk.Frame(self.frm_Applicant1Canvas)            
+        self.frm_Applicant1.columnconfigure(0, weight=1)
+        self.frm_Applicant1.rowconfigure(0, weight=1)
+        self.frm_Applicant1.rowconfigure(1, weight=1)
+        self.frm_Applicant1.rowconfigure(2, weight=1)
+        self.frm_Applicant1.rowconfigure(3, weight=1)
+        self.frm_Applicant1.rowconfigure(4, weight=1)
+        self.frm_Applicant1.rowconfigure(5, weight=100)                                
+        ttk.Frame(self.frm_Applicant1, height=10).grid(row=0, column=0, sticky=tk.E+tk.W)
+        ttk.Label(self.frm_Applicant1, text="Applicant 1", textvariable=self.varApplicant1, style="H1.TLabel").grid(row=1, column=0, sticky=tk.N+tk.W)
+        ttk.Frame(self.frm_Applicant1, height=10).grid(row=2, column=0, sticky=tk.E+tk.W)
+        ttk.Frame(self.frm_Applicant1, style="Separator.TFrame", height=1).grid(row=3, column=0, sticky=tk.E+tk.W)
+        ttk.Frame(self.frm_Applicant1, height=10).grid(row=4, column=0, sticky=tk.E+tk.W)
+        frmInnerContentFrame1 = ttk.Frame(self.frm_Applicant1,name="frmInnerContentFrame1")
+        frmInnerContentFrame1.grid(row=5, column=0, sticky=tk.E+tk.W+tk.N+tk.S)            
+        self.SkipTable=0
+        self.ContainerFrame.update()
+        self.varError_.insert(tk.END,"\nGenrating Control (Applicant 1)")                
+        self.fnc_Read_PersonalDetails(frmInnerContentFrame1, 1)
+        self.frm_Applicant1Canvas.create_window((0, 0), window=self.frm_Applicant1, anchor='nw')
+        self.ApplicantTab.add(self.frm_Applicant1Parent, text ='Applicant 1')
+        scrollbar_y_Applicant1 = ttk.Scrollbar(self.frm_Applicant1Parent, orient=tk.VERTICAL, command=self.frm_Applicant1Canvas.yview)
+        scrollbar_x_Applicant1 = ttk.Scrollbar(self.frm_Applicant1Parent, orient=tk.HORIZONTAL, command=self.frm_Applicant1Canvas.xview)
+        scrollbar_y_Applicant1.pack(side=tk.RIGHT, fill="y")
+        scrollbar_x_Applicant1.pack(side=tk.BOTTOM, fill="x")
+        self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
+        self.frm_Applicant1Canvas.configure(yscrollcommand=scrollbar_y_Applicant1.set,xscrollcommand=scrollbar_x_Applicant1.set)
+        self.frm_Applicant1Canvas.bind("<Configure>",  lambda e: self.frm_Applicant1Canvas.configure(scrollregion=self.frm_Applicant1Canvas.bbox("all")))
+        self.frm_Applicant1Canvas.bind_all("<MouseWheel>",   lambda e: self.OnMouseWheel1(e,1) )        
+        if(self.varApplicantType.get() == "Co Applicant"):
+            self.ContainerFrame.update()
+            self.varError_.insert(tk.END,"\nGenrating Canvas (Applicant 2)")
+            self.frm_Applicant2Canvas = tk.Canvas(self.frm_Applicant2Parent, bg=self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge')
+            self.frm_Applicant2 = ttk.Frame(self.frm_Applicant2Canvas)
+            scrollbar_y_Applicant2 = ttk.Scrollbar(self.frm_Applicant2Parent, orient=tk.VERTICAL, command=self.frm_Applicant2Canvas.yview)
+            scrollbar_x_Applicant2 = ttk.Scrollbar(self.frm_Applicant2Parent, orient=tk.HORIZONTAL, command=self.frm_Applicant2Canvas.xview)
+            scrollbar_y_Applicant2.pack(side=tk.RIGHT, fill="y")
+            scrollbar_x_Applicant2.pack(side=tk.BOTTOM, fill="x")
+            self.frm_Applicant2Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
+            self.frm_Applicant2.columnconfigure(0, weight=1)
+            self.frm_Applicant2.rowconfigure(0, weight=1)
+            self.frm_Applicant2.rowconfigure(1, weight=1)
+            self.frm_Applicant2.rowconfigure(2, weight=1)
+            self.frm_Applicant2.rowconfigure(3, weight=1)
+            self.frm_Applicant2.rowconfigure(4, weight=1)
+            self.frm_Applicant2.rowconfigure(5, weight=100)                                
+            ttk.Frame(self.frm_Applicant2, height=10).grid(row=0, column=0, sticky=tk.E+tk.W)
+            ttk.Label(self.frm_Applicant2, text="Applicant 2", textvariable=self.varApplicant2, style="H1.TLabel").grid(row=1, column=0, sticky=tk.N+tk.W)
+            ttk.Frame(self.frm_Applicant2, height=10).grid(row=2, column=0, sticky=tk.E+tk.W)
+            ttk.Frame(self.frm_Applicant2, style="Separator.TFrame", height=1).grid(row=3, column=0, sticky=tk.E+tk.W)
+            ttk.Frame(self.frm_Applicant2, height=10).grid(row=4, column=0, sticky=tk.E+tk.W)
+            frmInnerContentFrame2 = ttk.Frame(self.frm_Applicant2,name="frmInnerContentFrame2" )
+            frmInnerContentFrame2.grid(row=5, column=0, sticky=tk.E+tk.W+tk.N+tk.S)            
+            self.SkipTable=0
+            self.ContainerFrame.update()
+            self.varError_.insert(tk.END,"\nGenrating Control (Applicant 2)")
+            self.fnc_Read_PersonalDetails(frmInnerContentFrame2, 2)
+            self.ApplicantTab.add(self.frm_Applicant2Parent, text ='Applicant 2')
+            self.frm_Applicant2Canvas.configure(yscrollcommand=scrollbar_y_Applicant2.set,xscrollcommand=scrollbar_x_Applicant2.set)
+            self.frm_Applicant2Canvas.bind("<Configure>",  lambda e: self.frm_Applicant2Canvas.configure(scrollregion=self.frm_Applicant2Canvas.bbox("all")))
+            self.frm_Applicant2Canvas.bind_all("<MouseWheel>",   lambda e: self.OnMouseWheel1(e,2) )
+            self.frm_Applicant2Canvas.create_window((0, 0), window=self.frm_Applicant2, anchor='nw')
+            self.ContainerFrame.update()
+        self.varError_.insert(tk.END,"\nDone")
+
     def open_file(self):
         try:
             self.varError_.delete("1.0","end")
@@ -1681,82 +1826,10 @@ class ImportData:
                 self.ContainerFrame.update()
                 self.varError_.insert(tk.END,"Loading Data..")
                 self.tables = tabula.read_pdf(open_file, pages="all")
-                print(self.tables)
+                #print(self.tables)
                 self.ContainerFrame.update()
                 self.varError_.insert(tk.END,"\nPdf read Successfully")
-                #self.varError_.insert(tk.END,self.tables)
-                time.sleep(10)
-                self.ContainerFrame.update()
-                self.varError_.insert(tk.END,"\nGenrating Canvas")
-                self.CurrentAddressFound = False
-                self.hide_unhide_applicant(None)                
-                self.frm_Applicant1Parent=ttk.Frame(self.ApplicantTab)
-                self.frm_Applicant2Parent=ttk.Frame(self.ApplicantTab)
-                self.frm_Applicant1Canvas = tk.Canvas(self.frm_Applicant1Parent, bg=self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge')
-                self.frm_Applicant1 = ttk.Frame(self.frm_Applicant1Canvas)            
-                self.frm_Applicant1.columnconfigure(0, weight=1)
-                self.frm_Applicant1.rowconfigure(0, weight=1)
-                self.frm_Applicant1.rowconfigure(1, weight=1)
-                self.frm_Applicant1.rowconfigure(2, weight=1)
-                self.frm_Applicant1.rowconfigure(3, weight=1)
-                self.frm_Applicant1.rowconfigure(4, weight=1)
-                self.frm_Applicant1.rowconfigure(5, weight=100)                                
-                ttk.Frame(self.frm_Applicant1, height=10).grid(row=0, column=0, sticky=tk.E+tk.W)
-                ttk.Label(self.frm_Applicant1, text="Applicant 1", textvariable=self.varApplicant1, style="H1.TLabel").grid(row=1, column=0, sticky=tk.N+tk.W)
-                ttk.Frame(self.frm_Applicant1, height=10).grid(row=2, column=0, sticky=tk.E+tk.W)
-                ttk.Frame(self.frm_Applicant1, style="Separator.TFrame", height=1).grid(row=3, column=0, sticky=tk.E+tk.W)
-                ttk.Frame(self.frm_Applicant1, height=10).grid(row=4, column=0, sticky=tk.E+tk.W)
-                frmInnerContentFrame1 = ttk.Frame(self.frm_Applicant1,name="frmInnerContentFrame1")
-                frmInnerContentFrame1.grid(row=5, column=0, sticky=tk.E+tk.W+tk.N+tk.S)            
-                self.SkipTable=0
-                self.ContainerFrame.update()
-                self.varError_.insert(tk.END,"\nGenrating Control (Applicant 1)")                
-                self.fnc_Read_PersonalDetails(frmInnerContentFrame1, 1)
-                self.frm_Applicant1Canvas.create_window((0, 0), window=self.frm_Applicant1, anchor='nw')
-                self.ApplicantTab.add(self.frm_Applicant1Parent, text ='Applicant 1')
-                scrollbar_y_Applicant1 = ttk.Scrollbar(self.frm_Applicant1Parent, orient=tk.VERTICAL, command=self.frm_Applicant1Canvas.yview)
-                scrollbar_x_Applicant1 = ttk.Scrollbar(self.frm_Applicant1Parent, orient=tk.HORIZONTAL, command=self.frm_Applicant1Canvas.xview)
-                scrollbar_y_Applicant1.pack(side=tk.RIGHT, fill="y")
-                scrollbar_x_Applicant1.pack(side=tk.BOTTOM, fill="x")
-                self.frm_Applicant1Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
-                self.frm_Applicant1Canvas.configure(yscrollcommand=scrollbar_y_Applicant1.set,xscrollcommand=scrollbar_x_Applicant1.set)
-                self.frm_Applicant1Canvas.bind("<Configure>",  lambda e: self.frm_Applicant1Canvas.configure(scrollregion=self.frm_Applicant1Canvas.bbox("all")))
-                self.frm_Applicant1Canvas.bind_all("<MouseWheel>",   lambda e: self.OnMouseWheel1(e,1) )        
-                if(self.varApplicantType.get() == "Co Applicant"):
-                    self.ContainerFrame.update()
-                    self.varError_.insert(tk.END,"\nGenrating Canvas (Applicant 2)")
-                    self.frm_Applicant2Canvas = tk.Canvas(self.frm_Applicant2Parent, bg=self.config.COLOR_MENU_BACKGROUND,highlightthickness=0, relief='ridge')
-                    self.frm_Applicant2 = ttk.Frame(self.frm_Applicant2Canvas)
-                    scrollbar_y_Applicant2 = ttk.Scrollbar(self.frm_Applicant2Parent, orient=tk.VERTICAL, command=self.frm_Applicant2Canvas.yview)
-                    scrollbar_x_Applicant2 = ttk.Scrollbar(self.frm_Applicant2Parent, orient=tk.HORIZONTAL, command=self.frm_Applicant2Canvas.xview)
-                    scrollbar_y_Applicant2.pack(side=tk.RIGHT, fill="y")
-                    scrollbar_x_Applicant2.pack(side=tk.BOTTOM, fill="x")
-                    self.frm_Applicant2Canvas.pack(expand=tk.TRUE, fill="both",pady=(5,3), padx=(10,10))
-                    self.frm_Applicant2.columnconfigure(0, weight=1)
-                    self.frm_Applicant2.rowconfigure(0, weight=1)
-                    self.frm_Applicant2.rowconfigure(1, weight=1)
-                    self.frm_Applicant2.rowconfigure(2, weight=1)
-                    self.frm_Applicant2.rowconfigure(3, weight=1)
-                    self.frm_Applicant2.rowconfigure(4, weight=1)
-                    self.frm_Applicant2.rowconfigure(5, weight=100)                                
-                    ttk.Frame(self.frm_Applicant2, height=10).grid(row=0, column=0, sticky=tk.E+tk.W)
-                    ttk.Label(self.frm_Applicant2, text="Applicant 2", textvariable=self.varApplicant2, style="H1.TLabel").grid(row=1, column=0, sticky=tk.N+tk.W)
-                    ttk.Frame(self.frm_Applicant2, height=10).grid(row=2, column=0, sticky=tk.E+tk.W)
-                    ttk.Frame(self.frm_Applicant2, style="Separator.TFrame", height=1).grid(row=3, column=0, sticky=tk.E+tk.W)
-                    ttk.Frame(self.frm_Applicant2, height=10).grid(row=4, column=0, sticky=tk.E+tk.W)
-                    frmInnerContentFrame2 = ttk.Frame(self.frm_Applicant2,name="frmInnerContentFrame2" )
-                    frmInnerContentFrame2.grid(row=5, column=0, sticky=tk.E+tk.W+tk.N+tk.S)            
-                    self.SkipTable=0
-                    self.ContainerFrame.update()
-                    self.varError_.insert(tk.END,"\nGenrating Control (Applicant 2)")
-                    self.fnc_Read_PersonalDetails(frmInnerContentFrame2, 2)
-                    self.ApplicantTab.add(self.frm_Applicant2Parent, text ='Applicant 2')
-                    self.frm_Applicant2Canvas.configure(yscrollcommand=scrollbar_y_Applicant2.set,xscrollcommand=scrollbar_x_Applicant2.set)
-                    self.frm_Applicant2Canvas.bind("<Configure>",  lambda e: self.frm_Applicant2Canvas.configure(scrollregion=self.frm_Applicant2Canvas.bbox("all")))
-                    self.frm_Applicant2Canvas.bind_all("<MouseWheel>",   lambda e: self.OnMouseWheel1(e,2) )
-                    self.frm_Applicant2Canvas.create_window((0, 0), window=self.frm_Applicant2, anchor='nw')
-                    self.ContainerFrame.update()
-                self.varError_.insert(tk.END,"\nDone")
+                self.fncGenrateCanvas()
             #self.ApplicantTab.update_idletasks()
         except Exception as ex:
             print(ex)
@@ -1767,10 +1840,14 @@ class ImportData:
             os.makedirs(self.config.FilePath)
         if(self.varFileName.get()==""):
             messagebox.showerror("Required", "Please add FileName")
-            return
+            return        
         if os.path.isfile(os.path.join(self.config.FilePath, self.varFileName.get()+".json")):
-            messagebox.showerror("Already Exists", "FileName already Exists")
-            return
+            if(self.varImportType.get()=="New"):
+                messagebox.showerror("Already Exists", "FileName already Exists")
+                return
+            else:
+                os.remove(os.path.join(self.config.FilePath, self.varFileName.get()+".json"))
+
 
         with io.open(os.path.join(self.config.FilePath, self.config.DataFileName)) as fp:
             self.varAllDataFile = json.load(fp)
@@ -1778,9 +1855,16 @@ class ImportData:
                 self.varAllDataFile=[]
 
         varAllDataFileDetails ={}   
-        varAllDataFileDetails.update({"FileName":self.varFileName.get(),"ApplicantType":self.varApplicantType.get(), "TemplateType":self.varTemplateType.get(),"CreationDt": datetime.now().strftime("%d-%b-%Y %H:%M:%S"),"ModifyDt": datetime.now().strftime("%d-%b-%Y %H:%M:%S")}) 
-        self.varAllDataFile.append(varAllDataFileDetails)
         
+        if(self.varImportType.get()=="New"):
+            varAllDataFileDetails.update({"FileName":self.varFileName.get(),"ApplicantType":self.varApplicantType.get(), "TemplateType":self.varTemplateType.get(),"CreationDt": datetime.now().strftime("%d-%b-%Y %H:%M:%S"),"ModifyDt": datetime.now().strftime("%d-%b-%Y %H:%M:%S")}) 
+            self.varAllDataFile.append(varAllDataFileDetails)
+        else:
+            for index_x,x in  enumerate(self.varAllDataFile):
+                if(x["FileName"]==self.varFileName.get()):
+                    self.varAllDataFile[index_x]["ModifyDt"]=datetime.now().strftime("%d-%b-%Y %H:%M:%S")
+                    self.varAllDataFile[index_x]["ApplicantType"]=self.varApplicantType.get()
+                    self.varAllDataFile[index_x]["TemplateType"]=self.varTemplateType.get()        
 
         TotalApplicant=1
         if(self.varApplicantType.get()=="Co Applicant"):
@@ -2278,7 +2362,8 @@ class ImportData:
         cmbFileName.grid(row=1, column=3, sticky=tk.N+tk.S+tk.W, pady=(5, 2), padx=(10, 10))
         cmbFileName.grid_forget()
         cmbImporType.bind("<<ComboboxSelected>>",lambda e: self.hide_unhide_FineName(e))
-
+        cmbFileName.bind("<<ComboboxSelected>>",lambda e: self.LoadJsonData())
+         
         # row 2
         ttk.Label(self.ContainerFrame, text="Template Type").grid(row=2, column=0, sticky=tk.N+tk.S+tk.E, pady=(5, 2), padx=(10, 10))
         cmbTemplateType = ttk.Combobox(self.ContainerFrame, width=23, textvariable=self.varTemplateType)
