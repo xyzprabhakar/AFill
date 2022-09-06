@@ -146,6 +146,13 @@
             "ioName": "Source_Of_Deposit",
             "ioValue": "Equity",
             "wrapperValue": "Equity in Existing Residential Property"
+        },
+        {
+            "template": "Barclays",
+            "sectionCategory": "MortgageRequirements",
+            "ioName": "Source_Of_Deposit",
+            "ioValue": "Saving",
+            "wrapperValue": "Assets/Savings"
         }
 
     ]

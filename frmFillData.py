@@ -218,19 +218,34 @@ class FillData(ttk.Frame):
             return " "
 
     def GetYearMonth(self,inputvalue,procType):
-        if(procType==1):
-            return inputvalue[-4:]
-        elif(procType==2):
-            return inputvalue[3:5]
-        elif(procType==3):
-            EndDt=datetime.today()
-            StartDt=datetime.strptime(inputvalue, '%d/%m/%Y')
-            return relativedelta(EndDt,StartDt).years
+        tempinputvalue=''
+        try:
+            if(procType==1):
+                return inputvalue[-4:]
+            elif(procType==2):
+                return inputvalue[3:5]
+            elif(procType==3):
+                EndDt=datetime.today()
+                StartDt=datetime.strptime(inputvalue, '%d/%m/%Y')
+                return int( (EndDt-StartDt).days//365.4)            
+            elif(procType==4):
+                EndDt=datetime.today()
+                StartDt=datetime.strptime(inputvalue, '%d/%m/%Y')
+                return int(((EndDt-StartDt).days - (self.GetYearMonth(inputvalue,3)*365.4))//30.41667)
+            elif(procType==5):
+                if(str(inputvalue).lower().find('y')):
+                    return int( str(inputvalue).lower().replace(' ','').split('y')[0])
+                else:
+                    return '0'
+            elif(procType==6):
+                if(str(inputvalue).lower().find('y')):
+                    tempinputvalue= str(inputvalue).lower().replace(' ','').split('y')[1]
+                if(str(tempinputvalue).lower().find('m')):                
+                    return int( str(tempinputvalue).lower().replace(' ','').split('m')[0])
+                return '0'
+        except Exception as ex:
+                print("Error", ex)
             
-        elif(procType==4):
-            EndDt=datetime.today()
-            StartDt=datetime.strptime(inputvalue, '%d/%m/%Y')
-            return relativedelta(EndDt,StartDt).months
 
 
     def Get_ActionValue(self,jsonKeyName,counter,ApplicantId):
@@ -255,7 +270,7 @@ class FillData(ttk.Frame):
             ApplicantId=0
         tempData=self.varCurrentData[ApplicantId]
 
-        HaveWrapper,HaveGetYearFunction,HaveGetMonthFunction,HaveYearDiff,HaveMonthDiff=False,False,False,False,False
+        HaveWrapper,HaveGetYearFunction,HaveGetMonthFunction,HaveGetYearTermFunction,HaveGetMonthTermFunction,HaveYearDiff,HaveMonthDiff=False,False,False,False,False,False,False
         if(sectionkeyname.find('fncWrapper ')!=-1):
             HaveWrapper=True
             sectionkeyname=sectionkeyname.replace('fncWrapper ','')
@@ -265,6 +280,12 @@ class FillData(ttk.Frame):
         if(sectionkeyname.find('fncGetMonth ')!=-1):
             HaveGetMonthFunction=True
             sectionkeyname=sectionkeyname.replace('fncGetMonth ','')
+        if(sectionkeyname.find('fncGetYearTerm ')!=-1):
+            HaveGetYearTermFunction=True
+            sectionkeyname=sectionkeyname.replace('fncGetYearTerm ','')        
+        if(sectionkeyname.find('fncGetMonthTerm ')!=-1):
+            HaveGetMonthTermFunction=True
+            sectionkeyname=sectionkeyname.replace('fncGetMonthTerm ','')
         if(sectionkeyname.find('fncCalculateYearDiff ')!=-1):
             HaveYearDiff=True
             sectionkeyname=sectionkeyname.replace('fncCalculateYearDiff ','')        
@@ -287,6 +308,10 @@ class FillData(ttk.Frame):
                             return self.GetYearMonth(tempData[sectionkeyname][counter][datakeyname],3)
                         elif(HaveMonthDiff):
                            return self.GetYearMonth(tempData[sectionkeyname][counter][datakeyname],4)
+                        elif(HaveGetYearTermFunction):
+                            return self.GetYearMonth(tempData[sectionkeyname][counter][datakeyname],5)
+                        elif(HaveGetMonthTermFunction):
+                            return self.GetYearMonth(tempData[sectionkeyname][counter][datakeyname],6)
                         else:
                            return tempData[sectionkeyname][counter][datakeyname]
         elif(sectionkeyname.find('[@]')!=-1):
@@ -304,6 +329,10 @@ class FillData(ttk.Frame):
                            return self.GetYearMonth(tempData[sectionkeyname][self.FindIndex][datakeyname],3)
                         elif(HaveMonthDiff):
                            return self.GetYearMonth(tempData[sectionkeyname][self.FindIndex][datakeyname],4)
+                        elif(HaveGetYearTermFunction):
+                            return self.GetYearMonth(tempData[sectionkeyname][self.FindIndex][datakeyname],5)
+                        elif(HaveGetMonthTermFunction):
+                           return self.GetYearMonth(tempData[sectionkeyname][self.FindIndex][datakeyname],6)
                         else:
                            return tempData[sectionkeyname][self.FindIndex][datakeyname]
         else:

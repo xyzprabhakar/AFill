@@ -22,7 +22,7 @@ import time
 class ImportData:
     varError=None;
     config = None
-    varApplicant1,varApplicant2 = None,None     
+    varApplicant1,varApplicant2,varCurrentApplicant = None,None,None
     varImportType,varTemplateType,varApplicantType,varFileName = None,None  ,None ,None 
     varStarttingPoint = 0
     varOneJsonFileJsonData,varAllJsonData,varAllJsonFileName = [],[],[]
@@ -114,6 +114,13 @@ class ImportData:
         return value
 
     def fnc_Read_PersonalDetails(self, ParentContainer, Applicantid):
+        if(Applicantid==1):
+            self.varCurrentApplicant=self.varApplicant1.get()
+        if(Applicantid==2):
+            self.varCurrentApplicant=self.varApplicant2.get()
+        if(self.varCurrentApplicant==None):
+            self.varCurrentApplicant=''
+
         frmTopFrame = ttk.Notebook(ParentContainer,name="tab_Section_"+str(Applicantid))
         frmTopFrame.pack(fill="both",anchor="nw")        
 
@@ -342,11 +349,14 @@ class ImportData:
 
                     except Exception as ex:
                         print("Error", ex)
+            if(IO_Name=="Owner" and  str(FindingValue).strip()  == ""):
+                FindingValue = self.varCurrentApplicant
+
             ttk.Label(ParentContainer, text=IO_Name.replace('[M]', '').replace('[D]', '')).grid(
                 row=self.gridrowindex, column=self.gridcolumnindex, sticky=tk.N+tk.S+tk.E, padx=(10, 10), pady=(5, 2))
             txtboxname = Suffix+IO_Name.strip().replace(' ',
                                                         '_').replace('[M]', '').replace('[D]', '')
-            FindingValue=FindingValue.replace('\r',' ').replace('\n',' ')
+            FindingValue=str(FindingValue).replace('\r',' ').replace('\n',' ')
             entrybox = ttk.Entry(ParentContainer, name=txtboxname)
             entrybox.insert(0, self.fncReplaceName(FindingValue) )
             entrybox.grid(row=self.gridrowindex, column=(
@@ -378,11 +388,17 @@ class ImportData:
                         break
                     except Exception as ex:
                         print("Error", ex)
+            if(IO_Name=="Owner" and  str(FindingValue).strip()  == ""):
+                FindingValue = self.varCurrentApplicant
+            if(IO_Name=="Age" and  str(FindingValue).strip()  == ""):
+                FindingValue = ''
+            elif(IO_Name=="Age"):
+                FindingValue = int(FindingValue)
             ttk.Label(ParentContainer, text=IO_Name.replace('[M]', '').replace('[D]', '')).grid(
                 row=self.gridrowindex, column=self.gridcolumnindex, sticky=tk.N+tk.S+tk.E, padx=(10, 10), pady=(5, 2))
             txtboxname = Suffix+IO_Name.strip().replace(' ',
                                                         '_').replace('[M]', '').replace('[D]', '')
-            FindingValue=FindingValue.replace('\r',' ').replace('\n',' ')
+            FindingValue=str(FindingValue).replace('\r',' ').replace('\n',' ')
             entrybox = ttk.Entry(ParentContainer, name=txtboxname)
             entrybox.insert(0,self.fncReplaceName(FindingValue) )
             entrybox.grid(row=self.gridrowindex, column=(
@@ -403,9 +419,11 @@ class ImportData:
                 row=self.gridrowindex, column=self.gridcolumnindex, sticky=tk.N+tk.S+tk.E, padx=(10, 10), pady=(5, 2))
             txtboxname = Suffix+IO_Name.strip().replace(' ',
                                                         '_').replace('[M]', '').replace('[D]', '')
-            FindingValue=FindingValue.replace('\r',' ').replace('\n',' ')
+            FindingValue=str( FindingValue).replace('\r',' ').replace('\n',' ')
+            if(IO_Name=="Owner" and  str(FindingValue).strip()  == ""):
+                FindingValue = self.varCurrentApplicant
             entrybox = ttk.Entry(ParentContainer, name=txtboxname)
-            entrybox.insert(0,self.fncReplaceName( FindingValue))
+            entrybox.insert(0,self.fncReplaceName(FindingValue))
             entrybox.grid(row=self.gridrowindex, column=(
                 self.gridcolumnindex + 1), sticky=tk.N+tk.S+tk.W, padx=(10, 10), pady=(5, 2))
         except Exception as ex:
@@ -671,21 +689,21 @@ class ImportData:
                 self.SkipTable=tableindex
                 break
         if(foundTable):
-            addressee = ""
+            self.varCurrentApplicant = ""
             try:
                 for i, j in PersonalDetailTable.iterrows():
                     if(j[0] == "First Name"):
-                        addressee = j[1] if(Applicantid == 1) else j[2]
+                        self.varCurrentApplicant = j[1] if(Applicantid == 1) else j[2]
                     elif(j[0] == "Last Name"):
-                        addressee = addressee+" " + \
+                        self.varCurrentApplicant = self.varCurrentApplicant+" " + \
                             (j[1] if(Applicantid == 1) else j[2])
                         break
             except:
                 print('Some Error')
             if(Applicantid == 1):
-                self.varApplicant1.set(addressee)
+                self.varApplicant1.set(self.varCurrentApplicant)
             elif(Applicantid == 2):
-                self.varApplicant2.set(addressee)
+                self.varApplicant2.set(self.varCurrentApplicant)
             for ioindex, x in enumerate(self.config.IO_Name_PersonalDetails):
                 self.fnc_GenrateControl(ParentContainer, PersonalDetailTable, Applicantid, 0, x,
                                         self.config.IO_Template_PersonalDetails[ioindex], "txt_PersonalDetails_"+str(Applicantid))
