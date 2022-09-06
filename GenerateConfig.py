@@ -10,7 +10,7 @@ class GenerateConfig:
     # CREATE OBJECT
     config_file = configparser.ConfigParser(interpolation=None)
     ConfigFileName="configurations.ini"
-    Name,Email,ContactNo=None,None,None    
+    AppVersion,Name,Email,ContactNo='0.0.8',None,None,None    
     IO_Name,IO_Template=[],[]    
     COLOR_TOP_BACKGROUND,COLOR_BACKGROUND,COLOR_FOREGROUND,COLOR_MENU_BACKGROUND,COLOR_MENU_FOREGROUND="#44a2d2","#f2f5f7","#343a40","#ffffff","#44a2d2"        
     displayFont=( "Verdana", 10)
@@ -27,7 +27,7 @@ class GenerateConfig:
     SectionCategory=("PersonalDetails","CurrentAddress","PreviousAddress","ContactDetails","ProfessionalContacts","BankAccount","FamilyAndDependants","IDVerification","CurrentEmploymentDetails","Assets","Liabilities","Expenditure","ExistingMortgage","MortgageRequirements")
     SectionCategoryType=("Single","Single","Multiple","Single","Multiple","Multiple","Multiple","Single","Single","Multiple","Multiple","Multiple","Multiple","Multiple")
     SectionCategoryTextPrefix=("txt_PersonalDetails_","txt_CurrentAddress_","txt_PreviousAddress_","txt_ContactDetails_","txt_ProfessionalContacts_","txt_BankAccountDetails_","txt_FamilyAndDependants_","txt_IDVerification_1_","txt_CurrentEmploymentDetails_1_","txt_Assets_","txt_Liabilities_","txt_Expenditure_","txt_ExistingMortgage_","txt_MortgageRequirements_")
-    CustomFunction=("None","fncWrapper ","fncGetYear ","fncGetMonth ","fncCalculateYearDiff ","fncCalcualteMonthDiff ","fncGetApplicantName(1)","fncGetApplicantName(2)","fncGetApplicantName(3)","fncGetApplicantName(4)","fncGetApplicantName(@)")
+    CustomFunction=("None","fncWrapper ","fncGetYear ","fncGetMonth ","fncGetYearTerm ","fncGetMonthTerm ","fncCalculateYearDiff ","fncCalcualteMonthDiff ","fncGetApplicantName(1)","fncGetApplicantName(2)","fncGetApplicantName(3)","fncGetApplicantName(4)","fncGetApplicantName(@)")
     
 
     def set_icons(self):        
@@ -129,6 +129,7 @@ class GenerateConfig:
         if not os.path.exists(self.ConfigFileName):
             print("Genrating new Fileat ",os.getcwd())
             self.fnc_CreateDefaultFile()
+            self.fnc_DownloadFile()
             print( "Completed ",os.getcwd())
         else:
             print( "File Already genrated at ",os.getcwd())
@@ -143,6 +144,7 @@ class GenerateConfig:
         self.DataFileName = self.config_file['AFill_FileSetting']['DataFileName']
         self.WrapperFileName = self.config_file['AFill_FileSetting']['WrapperFileName']
         self.DriverName = self.config_file['AFill_FileSetting']['DriverName']
+        self.AppVersion = self.config_file['AFill_FileSetting']['AppVersion']
         self.UserName = self.config_file['AFill_Users']['UserName']
         self.Password = self.config_file['AFill_Users']['Password']
         self.IO_Name=self.config_file['InputTemplate']['IO_Name'].split(",")
@@ -180,7 +182,79 @@ class GenerateConfig:
         self.IO_Template_Whichofthefollowingareimportant=self.config_file['InputTemplate']['IO_Template_Whichofthefollowingareimportant'].split(",")
         self.themeName= self.config_file['Themes']['Theme_Name']
 
-        
+    def fnc_DownloadFile(self): 
+        filepath=os.getcwd()
+        dirpath=filepath+"/data"
+        if not os.path.exists(dirpath):
+            os.makedirs(dirpath)
+        url="http://wms.galway.in/afill/template.json"        
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/data.json"        
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/wrapperdata.json"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/PankajAggarwal.json"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/logo.png"
+        wget.download(url, out=filepath)
+        url="http://wms.galway.in/afill/logoicon.png"
+        wget.download(url, out=filepath)
+        url="http://wms.galway.in/afill/logoIcon.ico"
+        wget.download(url, out=filepath)
+        url="http://wms.galway.in/afill/logoIcon32.png"
+        wget.download(url, out=filepath)
+        url="http://wms.galway.in/afill/logoIcon64.png"
+        wget.download(url, out=filepath)
+
+
+        url="http://wms.galway.in/afill/Change-Password.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Change-Password-1.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Dashboard.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Dashboard-1.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Fill-Data.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Fill-Data-1.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Import-Data.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Import-Data-1.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Report.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Report-1.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Setting.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Setting-1.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/template.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/template-1.png"
+
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/arrow-down.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/arrow-up.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/pen.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/plus.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/sync.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/trash.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/trash1.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Wrapper.png"
+        wget.download(url, out=dirpath)
+        url="http://wms.galway.in/afill/Wrapper-1.png"
+        wget.download(url, out=dirpath)
+ 
 
     def fnc_CreateDefaultFile(self):    
         # ADD SECTION
@@ -191,6 +265,7 @@ class GenerateConfig:
         self.config_file.set("AFill_FileSetting", "DataFileName", "data.json")        
         self.config_file.set("AFill_FileSetting", "WrapperFileName", "wrapperdata.json")    
         self.config_file.set("AFill_FileSetting", "DriverName", "Chrome")
+        self.config_file.set("AFill_FileSetting", "AppVersion", "0.0.8")        
         self.config_file.add_section("AFill_Users")
         # ADD SETTINGS TO SECTION        
         self.config_file.set("AFill_Users", "UserName", "admin")
@@ -286,79 +361,7 @@ class GenerateConfig:
             configfileObj.flush()
             configfileObj.close()
         
-        filepath=os.getcwd()
-        dirpath=filepath+"/data"
-        if not os.path.exists(dirpath):
-            os.makedirs(dirpath)
-        url="http://wms.galway.in/afill/template.json"
-        if os.path.isfile(os.path.join(dirpath, "template.json")) is False:
-            wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/data.json"        
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/wrapperdata.json"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/PankajAggarwal.json"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/logo.png"
-        wget.download(url, out=filepath)
-        url="http://wms.galway.in/afill/logoicon.png"
-        wget.download(url, out=filepath)
-        url="http://wms.galway.in/afill/logoIcon.ico"
-        wget.download(url, out=filepath)
-        url="http://wms.galway.in/afill/logoIcon32.png"
-        wget.download(url, out=filepath)
-        url="http://wms.galway.in/afill/logoIcon64.png"
-        wget.download(url, out=filepath)
-
-
-        url="http://wms.galway.in/afill/Change-Password.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/Change-Password-1.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/Dashboard.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/Dashboard-1.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/Fill-Data.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/Fill-Data-1.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/Import-Data.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/Import-Data-1.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/Report.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/Report-1.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/Setting.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/Setting-1.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/template.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/template-1.png"
-
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/arrow-down.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/arrow-up.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/pen.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/plus.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/sync.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/trash.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/trash1.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/Wrapper.png"
-        wget.download(url, out=dirpath)
-        url="http://wms.galway.in/afill/Wrapper-1.png"
-        wget.download(url, out=dirpath)
-        #self.LoadAllData()
+                #self.LoadAllData()
         print("Config file 'configurations.ini' created")
 
     def fnc_RegisterUser(self,Name,Email,ContactNo):
