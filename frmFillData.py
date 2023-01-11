@@ -183,7 +183,8 @@ class FillData(ttk.Frame):
         return None
 
     def Get_Element(self,actionOn,ControlName,GetOnlyId,counter,ApplicantId):        
-        ControlName=ControlName.replace("{applicantid}",str(ApplicantId+1))           
+        ControlName=ControlName.replace("{applicantid}",str(ApplicantId+1))
+        ControlName=ControlName.replace("{applicantindex}",str(ApplicantId))
         ControlName=ControlName.replace("{counter}",str(counter))
 
         if(GetOnlyId=="GetOnlyId"):
@@ -246,7 +247,10 @@ class FillData(ttk.Frame):
         except Exception as ex:
                 print("Error", ex)
             
-
+    def clean_currency(self,x):
+        if isinstance(x, str):
+            return( int( float( x.replace('$', '').replace(',', '').replace('£','').replace('₹',''))))
+        return(x)
 
     def Get_ActionValue(self,jsonKeyName,counter,ApplicantId):
         if(jsonKeyName.strip().lower()=="fncgetapplicantname(1)"):
@@ -259,6 +263,8 @@ class FillData(ttk.Frame):
             return self.GetApplicantFullName(4)
         elif(jsonKeyName.strip().lower()=="fncgetapplicantname(@)"):
             return self.GetApplicantFullName(ApplicantId+1)
+        elif(jsonKeyName.strip().lower()=="fncGetApplicantCount()"):
+            return len(self.varCurrentData)
 
         keynames=jsonKeyName.split(":")
         sectionkeyname,datakeyname='',''
@@ -270,7 +276,7 @@ class FillData(ttk.Frame):
             ApplicantId=0
         tempData=self.varCurrentData[ApplicantId]
 
-        HaveWrapper,HaveGetYearFunction,HaveGetMonthFunction,HaveGetYearTermFunction,HaveGetMonthTermFunction,HaveYearDiff,HaveMonthDiff=False,False,False,False,False,False,False
+        HaveWrapper,HaveGetYearFunction,HaveGetMonthFunction,HaveGetYearTermFunction,HaveGetMonthTermFunction,HaveYearDiff,HaveMonthDiff,HaveCurrency=False,False,False,False,False,False,False,False
         if(sectionkeyname.find('fncWrapper ')!=-1):
             HaveWrapper=True
             sectionkeyname=sectionkeyname.replace('fncWrapper ','')
@@ -292,6 +298,9 @@ class FillData(ttk.Frame):
         if(sectionkeyname.find('fncCalcualteMonthDiff ')!=-1):
             HaveMonthDiff=True
             sectionkeyname=sectionkeyname.replace('fncCalcualteMonthDiff ','')
+        if(sectionkeyname.find('fncIsNumber ')!=-1):
+            HaveCurrency=True
+            sectionkeyname=sectionkeyname.replace('fncIsNumber ','')
 
         if(sectionkeyname.find('[]')!=-1):
             sectionkeyname=sectionkeyname.replace('[]','')
@@ -312,6 +321,8 @@ class FillData(ttk.Frame):
                             return self.GetYearMonth(tempData[sectionkeyname][counter][datakeyname],5)
                         elif(HaveGetMonthTermFunction):
                             return self.GetYearMonth(tempData[sectionkeyname][counter][datakeyname],6)
+                        elif(HaveCurrency):
+                            return self.clean_currency(tempData[sectionkeyname][counter][datakeyname])
                         else:
                            return tempData[sectionkeyname][counter][datakeyname]
         elif(sectionkeyname.find('[@]')!=-1):
@@ -333,6 +344,8 @@ class FillData(ttk.Frame):
                             return self.GetYearMonth(tempData[sectionkeyname][self.FindIndex][datakeyname],5)
                         elif(HaveGetMonthTermFunction):
                            return self.GetYearMonth(tempData[sectionkeyname][self.FindIndex][datakeyname],6)
+                        elif(HaveCurrency):
+                            return self.clean_currency(tempData[sectionkeyname][self.FindIndex][datakeyname])
                         else:
                            return tempData[sectionkeyname][self.FindIndex][datakeyname]
         else:
@@ -348,6 +361,8 @@ class FillData(ttk.Frame):
                         return self.GetYearMonth(tempData[sectionkeyname][datakeyname],3)
                     elif(HaveMonthDiff):
                         return self.GetYearMonth(tempData[sectionkeyname][datakeyname],4)
+                    elif(HaveCurrency):
+                        return self.clean_currency(tempData[sectionkeyname][datakeyname])
                     else:
                         return tempData[sectionkeyname][datakeyname]
         return ""
@@ -375,6 +390,10 @@ class FillData(ttk.Frame):
                     if(self.checkKey( data,datakeyname)):
                         if(conditionType=="eq"):
                             if(str(self.Get_WrapperValue(HaveWrapper,sectionkeyname,datakeyname,data[datakeyname])).strip().lower()  == str(checkValue).strip().lower() ):
+                                self.FindIndex=index
+                                return index
+                        if(conditionType=="nq"):
+                            if(str(self.Get_WrapperValue(HaveWrapper,sectionkeyname,datakeyname,data[datakeyname])).strip().lower()  != str(checkValue).strip().lower() ):
                                 self.FindIndex=index
                                 return index
                         
@@ -494,6 +513,26 @@ class FillData(ttk.Frame):
                                     CurrentActionId=CurrentAction["falseActionId"]
                             elif(CurrentAction["conditionType"]=="nq"):
                                 if(str(leftfinalValue)!=str(rightfinalValue)):
+                                    CurrentActionId=CurrentAction["trueActionId"]
+                                else:
+                                    CurrentActionId=CurrentAction["falseActionId"]
+                            elif(CurrentAction["conditionType"]=="gt"):
+                                if(float(leftfinalValue)>float(rightfinalValue)):
+                                    CurrentActionId=CurrentAction["trueActionId"]
+                                else:
+                                    CurrentActionId=CurrentAction["falseActionId"]
+                            elif(CurrentAction["conditionType"]=="lt"):
+                                if(float(leftfinalValue)<float(rightfinalValue)):
+                                    CurrentActionId=CurrentAction["trueActionId"]
+                                else:
+                                    CurrentActionId=CurrentAction["falseActionId"]
+                            elif(CurrentAction["conditionType"]=="ge"):
+                                if(float(leftfinalValue)>=float(rightfinalValue)):
+                                    CurrentActionId=CurrentAction["trueActionId"]
+                                else:
+                                    CurrentActionId=CurrentAction["falseActionId"]
+                            elif(CurrentAction["conditionType"]=="le"):
+                                if(float(leftfinalValue)<=float(rightfinalValue)):
                                     CurrentActionId=CurrentAction["trueActionId"]
                                 else:
                                     CurrentActionId=CurrentAction["falseActionId"]

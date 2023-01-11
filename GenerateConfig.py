@@ -27,7 +27,7 @@ class GenerateConfig:
     SectionCategory=("PersonalDetails","CurrentAddress","PreviousAddress","ContactDetails","ProfessionalContacts","BankAccount","FamilyAndDependants","IDVerification","CurrentEmploymentDetails","Assets","Liabilities","Expenditure","ExistingMortgage","MortgageRequirements")
     SectionCategoryType=("Single","Single","Multiple","Single","Multiple","Multiple","Multiple","Single","Single","Multiple","Multiple","Multiple","Multiple","Multiple")
     SectionCategoryTextPrefix=("txt_PersonalDetails_","txt_CurrentAddress_","txt_PreviousAddress_","txt_ContactDetails_","txt_ProfessionalContacts_","txt_BankAccountDetails_","txt_FamilyAndDependants_","txt_IDVerification_1_","txt_CurrentEmploymentDetails_1_","txt_Assets_","txt_Liabilities_","txt_Expenditure_","txt_ExistingMortgage_","txt_MortgageRequirements_")
-    CustomFunction=("None","fncWrapper ","fncGetYear ","fncGetMonth ","fncGetYearTerm ","fncGetMonthTerm ","fncCalculateYearDiff ","fncCalcualteMonthDiff ","fncGetApplicantName(1)","fncGetApplicantName(2)","fncGetApplicantName(3)","fncGetApplicantName(4)","fncGetApplicantName(@)")
+    CustomFunction=("None","fncWrapper ","fncGetYear ","fncGetMonth ","fncGetYearTerm ","fncGetMonthTerm ","fncCalculateYearDiff ","fncCalcualteMonthDiff ","fncGetApplicantName(1)","fncGetApplicantName(2)","fncGetApplicantName(3)","fncGetApplicantName(4)","fncGetApplicantName(@)","fncGetApplicantCount()","fncIsNumber ")
     
 
     def set_icons(self):        
@@ -265,7 +265,7 @@ class GenerateConfig:
         self.config_file.set("AFill_FileSetting", "DataFileName", "data.json")        
         self.config_file.set("AFill_FileSetting", "WrapperFileName", "wrapperdata.json")    
         self.config_file.set("AFill_FileSetting", "DriverName", "Chrome")
-        self.config_file.set("AFill_FileSetting", "AppVersion", "0.0.8")        
+        self.config_file.set("AFill_FileSetting", "AppVersion", "0.0.9")        
         self.config_file.add_section("AFill_Users")
         # ADD SETTINGS TO SECTION        
         self.config_file.set("AFill_Users", "UserName", "admin")
