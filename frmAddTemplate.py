@@ -621,7 +621,7 @@ class AddTemplate:
 
         frmbtn1 = ttk.Frame(self.frmHeader1,name="frmTreeviewhandler1")
         frmbtn1.grid(row=3,column = 1, columnspan=4, sticky=tk.N+tk.W+tk.E)
-        btnAddAction = ttk.Button ( frmbtn1,name="btnAddAction" , image=self.config.ico_add ,command =lambda: self.fncOpenInnerChildForm() )        
+        btnAddAction = ttk.Button ( frmbtn1,name="btnAddAction" , image=self.config.ico_add ,command =lambda: self.fncAddInnerChildForm() )        
         btnEditAction = ttk.Button ( frmbtn1,name="btnEditAction" , image=self.config.ico_edit ,command =lambda: self.fncUpdateInnerChildForm() )        
         btnRemoveAction = ttk.Button ( frmbtn1,name="btnRemoveAction", image=self.config.ico_delete, state=tk.DISABLED, command =lambda: self.fncRemove(2) )
         btnMoveUpAction = ttk.Button ( frmbtn1,name="btnMoveUpAction", image=self.config.ico_up,  state=tk.DISABLED,  command =lambda: self.fncMoveUp(2) )
@@ -789,7 +789,9 @@ class AddTemplate:
             self.IsUpdateAction=True
         self.fncOpenInnerChildForm()
 
-        
+    def fncAddInnerChildForm(self):
+        self.IsUpdateAction=False
+        self.fncOpenInnerChildForm()
     
     def fncOpenInnerChildForm(self):    
         containter = tk.Toplevel(self.frmHeader1)        
@@ -825,6 +827,7 @@ class AddTemplate:
         ttk.Radiobutton(rdoFrm,text="End",value="End",variable =  self.var_ActionStartupType).grid(row=0,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
         ttk.Radiobutton(rdoFrm,text="Middle",value="Middle",variable =  self.var_ActionStartupType).grid(row=0,column = 2,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
 
+        self.chdFrm1=None
         self.chdFrm1=ttk.Frame(chdFrm) 
         self.chdFrm1.grid(row=2,column=0,columnspan=4)
         self.chdFrm1.columnconfigure(0, weight=1)
@@ -869,7 +872,8 @@ class AddTemplate:
 
         ttk.Label(self.chdFrm1,text = "Next Action Id :").grid(row=3,column = 0,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.E)
         ttk.Entry(self.chdFrm1, width = 26, textvariable = self.var_nextActionId).grid(row=3,column = 1,padx=(10, 10), pady=(5, 2), sticky=tk.N+tk.S+tk.W)
-
+        
+        self.chdFrm2=None
         self.chdFrm2=ttk.Frame(chdFrm) 
         self.chdFrm2.grid(row=4,column=0,columnspan=4)
         self.chdFrm2.columnconfigure(0, weight=1)

@@ -2631,7 +2631,6 @@
                         "rightIOValue": "",
                         "falseActionId": ""
                     }
-                    
                 ]
             }
         ]
@@ -2679,7 +2678,7 @@
                 "sectionType": "Single",
                 "actions": [
                     {
-                        "actionId": "1",
+                        "actionId": "2",
                         "actionType": "Fill Input",
                         "startupType": "Start",
                         "selectorType": "ByName",
@@ -2687,7 +2686,7 @@
                         "inputType": "ManualValue",
                         "manualValue": "asd",
                         "ioValue": "",
-                        "nextActionId": "2",
+                        "nextActionId": "3",
                         "conditionType": "",
                         "leftInputType": "ManualValue",
                         "leftManualValue": "",
